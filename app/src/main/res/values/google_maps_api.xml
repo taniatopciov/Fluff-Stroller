@@ -1,0 +1,12 @@
+<resources>
+    <!--
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=C7:D8:16:8F:8E:5A:2D:D2:3C:AE:9F:71:F9:17:A8:31:B5:62:53:F8%3Bcom.example.mapdemo
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAFtpo7iuqseHMe289ReQHX5uhWJTjjV9c</string>
+</resources>
