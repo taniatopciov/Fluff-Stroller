@@ -10,4 +10,13 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="find_stroller">Find Stroller</string>
+    <string name="walk_price">Walk Price</string>
+    <string name="walk_time">Walk Time</string>
+    <string name="fees">Fees</string>
+    <string name="total_price">Total Price</string>
+    <string name="select_dogs">Select Dogs</string>
+    <string name="dog_name">Dog Name</string>
+    <string name="please_add_dogs_in_your_profile">Please add dogs in your profile!</string>
+    <string name="empty_required_fields">Some required fields are empty!</string>
 </resources>

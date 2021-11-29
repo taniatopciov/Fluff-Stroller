@@ -22,4 +22,18 @@
         android:name="com.example.flusffstroller.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_dog_owner_home"
+        android:name="com.example.flusffstroller.pages.main.DogOwnerMainPageFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/dog_owner_main_page_fragment" />
+
+
+    <fragment
+        android:id="@+id/nav_dog_owner_home_no_dogs"
+        android:name="com.example.flusffstroller.pages.main.DogOwnerWithNoDogsMainPageFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/dog_owner_with_no_dogs_main_page_fragment" />
+
 </navigation>
