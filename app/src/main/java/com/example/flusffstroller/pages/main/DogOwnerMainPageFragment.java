@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.example.flusffstroller.R;
 import com.example.flusffstroller.databinding.DogOwnerMainPageFragmentBinding;
 import com.example.flusffstroller.di.Injectable;
 import com.example.flusffstroller.di.ServiceLocator;
 import com.example.flusffstroller.services.FeesService;
+import com.example.flusffstroller.utils.components.TextWithLabel;
 import com.example.flusffstroller.utils.formatting.CurrencyIntegerTextWatcher;
 import com.example.flusffstroller.utils.formatting.TimeIntegerTextWatcher;
 import com.google.android.material.snackbar.Snackbar;
@@ -46,17 +46,16 @@ public class DogOwnerMainPageFragment extends Fragment {
 
         final RecyclerView selectedDogsRecyclerView = binding.selectedDogsRecyclerView;
 
-        binding.walkPriceEditText.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.walkPriceEditText, "$", text -> {
+        binding.walkPriceTextWithLabel.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.walkPriceTextWithLabel.editText, "$", text -> {
             try {
                 viewModel.setWalkPrice(Integer.parseInt(text));
             } catch (Exception e) {
                 viewModel.setWalkPrice(0);
             }
         }));
-        binding.walkTimeEditText.addTextChangedListener(new TimeIntegerTextWatcher(binding.walkTimeEditText, "minutes"));
-
-        binding.feesEditText.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.feesEditText, "$"));
-        binding.totalPriceEditText.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.totalPriceEditText, "$"));
+        binding.walkTimeTextWithLabel.addTextChangedListener(new TimeIntegerTextWatcher(binding.walkTimeTextWithLabel.editText, "minutes"));
+        binding.feesTextWithLabel.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.feesTextWithLabel.editText, "$"));
+        binding.totalPriceTextWithLabel.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.totalPriceTextWithLabel.editText, "$"));
 
         DogNamesAdapter dogNamesAdapter = new DogNamesAdapter(new ArrayList<>());
         selectedDogsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -65,8 +64,7 @@ public class DogOwnerMainPageFragment extends Fragment {
         viewModel.getDogNames().observe(getViewLifecycleOwner(), dogNamesAdapter::setDogNames);
 
         viewModel.getFees().observe(getViewLifecycleOwner(), fees -> {
-            binding.feesEditText.setText(fees.toString());
-
+            binding.feesTextWithLabel.setText(fees.toString());
 
             MutableLiveData<Integer> walkPrice = viewModel.getWalkPrice();
             int totalPrice = fees;
@@ -75,7 +73,7 @@ public class DogOwnerMainPageFragment extends Fragment {
                 totalPrice += walkPrice.getValue();
             }
 
-            binding.totalPriceEditText.setText(totalPrice + "");
+            binding.totalPriceTextWithLabel.setText(totalPrice + "");
         });
 
         viewModel.getWalkPrice().observe(getViewLifecycleOwner(), walkPrice -> {
@@ -86,7 +84,7 @@ public class DogOwnerMainPageFragment extends Fragment {
                 totalPrice += fees.getValue();
             }
 
-            binding.totalPriceEditText.setText(totalPrice + "");
+            binding.totalPriceTextWithLabel.setText(totalPrice + "");
         });
 
         // todo get names from database
@@ -119,11 +117,11 @@ public class DogOwnerMainPageFragment extends Fragment {
     }
 
     private boolean validateInputs() {
-        return validateEditText(binding.walkPriceEditText) && validateEditText(binding.walkTimeEditText)
-                && validateEditText(binding.feesEditText) && validateEditText(binding.totalPriceEditText);
+        return validateEditText(binding.walkPriceTextWithLabel) && validateEditText(binding.walkTimeTextWithLabel)
+                && validateEditText(binding.feesTextWithLabel) && validateEditText(binding.totalPriceTextWithLabel);
     }
 
-    private boolean validateEditText(EditText editText) {
-        return !editText.getText().toString().isEmpty();
+    private boolean validateEditText(TextWithLabel textWithLabel) {
+        return !textWithLabel.editText.getText().toString().isEmpty();
     }
 }

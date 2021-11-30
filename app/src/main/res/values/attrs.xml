@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TextWithLabel">
+        <attr name="label" format="string" />
+        <attr name="android:text" />
+        <attr name="android:hint" />
+        <attr name="android:ems" />
+        <attr name="android:inputType" />
+        <attr name="android:maxLength" />
+        <attr name="android:minHeight" />
+        <attr name="android:clickable" />
+        <attr name="android:focusable" />
+        <attr name="android:cursorVisible" />
+    </declare-styleable>
+</resources>

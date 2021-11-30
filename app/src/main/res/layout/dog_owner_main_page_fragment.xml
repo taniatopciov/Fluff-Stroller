@@ -41,8 +41,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selectedDogsRecyclerView">
 
-        <EditText
-            android:id="@+id/walkPriceEditText"
+        <com.example.flusffstroller.utils.components.TextWithLabel
+            android:id="@+id/walkPriceTextWithLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -51,14 +51,15 @@
             android:importantForAutofill="no"
             android:inputType="number"
             android:maxLength="5"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            app:label="@string/walk_price" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="@dimen/vertical_linear_layout_spacing" />
 
-        <EditText
-            android:id="@+id/walkTimeEditText"
+        <com.example.flusffstroller.utils.components.TextWithLabel
+            android:id="@+id/walkTimeTextWithLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -67,14 +68,15 @@
             android:importantForAutofill="no"
             android:inputType="number"
             android:maxLength="12"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            app:label="@string/walk_time" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="@dimen/vertical_linear_layout_spacing" />
 
-        <EditText
-            android:id="@+id/feesEditText"
+        <com.example.flusffstroller.utils.components.TextWithLabel
+            android:id="@+id/feesTextWithLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -85,14 +87,15 @@
             android:hint="@string/fees"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            app:label="@string/fees" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="@dimen/vertical_linear_layout_spacing" />
 
-        <EditText
-            android:id="@+id/totalPriceEditText"
+        <com.example.flusffstroller.utils.components.TextWithLabel
+            android:id="@+id/totalPriceTextWithLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -103,7 +106,8 @@
             android:hint="@string/total_price"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            app:label="@string/total_price" />
 
     </LinearLayout>
 

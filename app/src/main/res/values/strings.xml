@@ -19,4 +19,6 @@
     <string name="dog_name">Dog Name</string>
     <string name="please_add_dogs_in_your_profile">Please add dogs in your profile!</string>
     <string name="empty_required_fields">Some required fields are empty!</string>
+    <string name="label">Label</string>
+    <string name="hint">Hint</string>
 </resources>
