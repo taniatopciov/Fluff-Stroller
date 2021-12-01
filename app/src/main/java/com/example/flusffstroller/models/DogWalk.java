@@ -1,9 +1,10 @@
 package com.example.flusffstroller.models;
 
+import com.example.flusffstroller.repository.FirebaseDocument;
+
 import java.util.List;
 
-public class DogWalk {
-    private String id;
+public class DogWalk extends FirebaseDocument {
     private String ownerId;
     private List<String> dogNames;
     private Integer totalPrice;
@@ -17,14 +18,6 @@ public class DogWalk {
         this.dogNames = dogNames;
         this.totalPrice = totalPrice;
         this.walkTime = walkTime;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getOwnerId() {

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class FirebaseRepository {
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-    public <T> Subject<T> getDocument(String pathToDocument, Class<T> tClass) {
+    public <T extends FirebaseDocument> Subject<T> getDocument(String pathToDocument, Class<T> tClass) {
         Subject<T> subject = new Subject<>();
 
         firestore.document(pathToDocument)
@@ -26,7 +26,7 @@ public class FirebaseRepository {
         return subject;
     }
 
-    public <T> Subject<List<T>> getAllDocuments(String pathToCollection, Class<T> tClass) {
+    public <T extends FirebaseDocument> Subject<List<T>> getAllDocuments(String pathToCollection, Class<T> tClass) {
         Subject<List<T>> subject = new Subject<>();
 
         firestore.collection(pathToCollection)
@@ -40,12 +40,15 @@ public class FirebaseRepository {
         return subject;
     }
 
-    public <T> Subject<String> addDocument(String pathToCollection, T documentData) {
-        Subject<String> subject = new Subject<>();
+    public <T extends FirebaseDocument> Subject<T> addDocument(String pathToCollection, T documentData) {
+        Subject<T> subject = new Subject<>();
 
         firestore.collection(pathToCollection)
                 .add(documentData)
-                .addOnSuccessListener(documentReference -> subject.notifyObservers(documentReference.getId()))
+                .addOnSuccessListener(documentReference -> {
+                    documentData.id = documentReference.getId();
+                    subject.notifyObservers(documentData);
+                })
                 .addOnFailureListener(subject::notifyObservers);
         return subject;
     }

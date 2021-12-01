@@ -18,7 +18,7 @@ public class FirebaseDogWalksService implements DogWalksService {
     }
 
     @Override
-    public Subject<String> createDogWalk(DogWalk dogWalk) {
+    public Subject<DogWalk> createDogWalk(DogWalk dogWalk) {
         return firebaseRepository.addDocument(WALKS_PATH, dogWalk);
     }
 

@@ -91,38 +91,33 @@ public class DogOwnerMainPageFragment extends FragmentWithSubjects {
 
             String userId = profileService.getLoggedUserId();
 
-            final DogWalk dogWalk = new DogWalk(userId, checkedDogs, walkTime, totalPrice);
-            registerSubject(dogWalksService.createDogWalk(dogWalk)).map(id -> {
-                dogWalk.setId(id);
-                return dogWalk;
-            }).subscribe(response -> {
+            registerSubject(dogWalksService.createDogWalk(new DogWalk(userId, checkedDogs, walkTime, totalPrice))).subscribe(response -> {
                 if (response.hasErrors()) {
                     response.exception.printStackTrace();
                     Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                registerSubject(dogWalksService.updateDogWalkId(dogWalk.getId())).subscribe(res -> {
+                registerSubject(dogWalksService.updateDogWalkId(response.data.id)).subscribe(res -> {
                     if (res.hasErrors()) {
                         res.exception.printStackTrace();
                         Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    registerSubject(profileService.setCurrentDogWalk(dogWalk)).subscribe(res1 -> {
+                    registerSubject(profileService.setCurrentDogWalk(response.data)).subscribe(res1 -> {
                         if (res1.hasErrors()) {
                             res1.exception.printStackTrace();
                             Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         DogOwnerMainPageWaitingForStrollerViewModel waitingForStrollerViewModel = new ViewModelProvider(requireActivity()).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
-                        waitingForStrollerViewModel.setCurrentDogWalk(dogWalk);
+                        waitingForStrollerViewModel.setCurrentDogWalk(response.data);
 
                         Navigation.findNavController(view).navigate(R.id.nav_dog_owner_home_waiting_for_stroller);
                     });
                 });
             });
-
         });
 
         viewModel.getDogNames().observe(getViewLifecycleOwner(), dogNamesAdapter::setDogNames);
