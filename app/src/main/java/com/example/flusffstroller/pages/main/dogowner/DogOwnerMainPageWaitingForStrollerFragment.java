@@ -44,7 +44,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
         WalkRequestAdapter walkRequestAdapter = new WalkRequestAdapter(new ArrayList<>(),
                 this::handleRequestAccepted, this::handleRequestRejected,
                 this::handleRequestViewProfile, this::handleRequestCall);
-        binding.requestsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.requestsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         binding.requestsRecyclerView.setAdapter(walkRequestAdapter);
 
         viewModel.getRemainingWaitingForStrollerMills().observe(getViewLifecycleOwner(), millisUntilFinished -> {
