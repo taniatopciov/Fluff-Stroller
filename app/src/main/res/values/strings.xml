@@ -57,4 +57,17 @@
     <string name="finish_walk">Finish Walk</string>
     <string name="distance_metres">Distance (km)</string>
     <string name="zero">0</string>
+    <string name="or">or</string>
+    <string name="connect_with">Connect with</string>
+
+    <string name="app_logo">Application Logo</string>
+    <string name="facebook">Facebook</string>
+    <string name="google">Google</string>
+    <string name="login">Login</string>
+    <string name="email">E-mail</string>
+    <string name="email_hint">name@example.com</string>
+    <string name="password">Password</string>
+    <string name="password_hint">************</string>
+    <string name="forgot_password_click_here">Forgot your password? <font color='#F57F17'>Click here!</font></string>
+    <string name="no_account_signup">You don\'t have an account? <font color='#F57F17'>Sign up!</font></string>
 </resources>

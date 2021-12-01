@@ -33,6 +33,8 @@ public class HomeFragment extends Fragment {
 
         binding.walkInProgressButton.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_walk_in_progress));
 
+        binding.loginButtonTemp.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_login));
+
         return binding.getRoot();
     }
 
