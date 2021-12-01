@@ -13,11 +13,20 @@ import androidx.fragment.app.Fragment;
 
 public class DogOwnerWithNoDogsMainPageFragment extends Fragment {
 
+    private DogOwnerWithNoDogsMainPageFragmentBinding binding;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        DogOwnerWithNoDogsMainPageFragmentBinding binding = DogOwnerWithNoDogsMainPageFragmentBinding.inflate(inflater, container, false);
+        binding = DogOwnerWithNoDogsMainPageFragmentBinding.inflate(inflater, container, false);
 
         return binding.getRoot();
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

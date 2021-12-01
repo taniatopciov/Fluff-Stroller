@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <Space
+        android:layout_width="@dimen/horizontal_linear_layout_spacing"
+        android:layout_height="match_parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        card_view:cardCornerRadius="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/strollerNameTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/stroller_name"
+                android:textStyle="bold"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/strollerTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/stroller"
+                card_view:layout_constraintEnd_toEndOf="@+id/strollerNameTextView"
+                card_view:layout_constraintStart_toStartOf="@+id/strollerNameTextView"
+                card_view:layout_constraintTop_toBottomOf="@+id/strollerNameTextView" />
+
+            <TextView
+                android:id="@+id/strollerPhoneNumberTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@android:string/emptyPhoneNumber"
+                card_view:layout_constraintBottom_toBottomOf="@+id/phoneNumberTextView"
+                card_view:layout_constraintStart_toEndOf="@+id/phoneNumberTextView"
+                card_view:layout_constraintTop_toTopOf="@+id/phoneNumberTextView" />
+
+            <TextView
+                android:id="@+id/phoneNumberTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/phone_number"
+                card_view:layout_constraintStart_toStartOf="@+id/strollerTextView"
+                card_view:layout_constraintTop_toBottomOf="@+id/strollerTextView" />
+
+            <TextView
+                android:id="@+id/ratingTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/rating"
+                card_view:layout_constraintStart_toStartOf="@+id/phoneNumberTextView"
+                card_view:layout_constraintTop_toBottomOf="@+id/phoneNumberTextView" />
+
+            <TextView
+                android:id="@+id/strollerRatingTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/empty_rating"
+                card_view:layout_constraintBottom_toBottomOf="@+id/ratingTextView"
+                card_view:layout_constraintStart_toEndOf="@+id/ratingTextView"
+                card_view:layout_constraintTop_toTopOf="@+id/ratingTextView" />
+
+            <Button
+                android:id="@+id/acceptButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/accept"
+                card_view:layout_constraintStart_toStartOf="@+id/ratingTextView"
+                card_view:layout_constraintTop_toBottomOf="@+id/ratingTextView" />
+
+            <Button
+                android:id="@+id/rejectButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/reject"
+                android:textColor="@color/accent"
+                card_view:layout_constraintBottom_toBottomOf="@+id/acceptButton"
+                card_view:layout_constraintStart_toEndOf="@+id/acceptButton"
+                card_view:layout_constraintTop_toTopOf="@+id/acceptButton" />
+
+            <Button
+                android:id="@+id/visitProfileButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/profile"
+                card_view:layout_constraintBottom_toBottomOf="@+id/rejectButton"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toEndOf="@+id/rejectButton"
+                card_view:layout_constraintTop_toTopOf="@+id/rejectButton" />
+
+            <ImageButton
+                android:id="@+id/callImageButton"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:contentDescription="@string/call"
+                android:minHeight="48dp"
+                card_view:layout_constraintBottom_toBottomOf="@+id/strollerPhoneNumberTextView"
+                card_view:layout_constraintStart_toEndOf="@+id/strollerPhoneNumberTextView"
+                card_view:layout_constraintTop_toTopOf="@+id/strollerPhoneNumberTextView"
+                card_view:srcCompat="@drawable/ic_baseline_phone_24" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <Space
+        android:layout_width="@dimen/horizontal_linear_layout_spacing"
+        android:layout_height="match_parent" />
+</LinearLayout>

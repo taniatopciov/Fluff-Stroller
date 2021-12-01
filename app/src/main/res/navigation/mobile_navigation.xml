@@ -29,11 +29,16 @@
         android:label="@string/menu_home"
         tools:layout="@layout/dog_owner_main_page_fragment" />
 
-
     <fragment
         android:id="@+id/nav_dog_owner_home_no_dogs"
         android:name="com.example.flusffstroller.pages.main.DogOwnerWithNoDogsMainPageFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/dog_owner_with_no_dogs_main_page_fragment" />
+
+    <fragment
+        android:id="@+id/nav_dog_owner_home_waiting_for_stroller"
+        android:name="com.example.flusffstroller.pages.main.DogOwnerMainPageWaitingForStrollerFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/dog_owner_main_page_waiting_for_stroller_fragment" />
 
 </navigation>

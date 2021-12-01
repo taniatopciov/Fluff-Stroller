@@ -28,10 +28,7 @@ public class HomeFragment extends Fragment {
 
         binding.ownerHomeNoDogsButton.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_dog_owner_home_no_dogs));
 
-        binding.ownerHomeWaitingButton.setOnClickListener(view -> {
-
-        });
-
+        binding.ownerHomeWaitingButton.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_dog_owner_home_waiting_for_stroller));
 
         return binding.getRoot();
     }

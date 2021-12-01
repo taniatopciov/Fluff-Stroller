@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.main.DogOwnerMainPageWaitingForStrollerFragment">
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/waitingForStrollerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/waiting_for_stroller"
+            android:textColor="@color/primary" />
+
+        <TextView
+            android:id="@+id/waitingForStrollerTimeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_0_minutes_remaining"
+            android:textColor="@color/primary" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/vertical_linear_layout_spacing" />
+
+
+        <Button
+            android:id="@+id/cancelWalkButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/accent"
+            android:text="@string/cancel_walk" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/currentWalkDetailsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/current_walk_details"
+        android:textColor="@color/primary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <TextView
+        android:id="@+id/dogsTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:scrollHorizontally="false"
+        android:text="@string/dogs"
+        app:layout_constraintEnd_toStartOf="@+id/guideline19"
+        app:layout_constraintStart_toStartOf="@+id/currentWalkDetailsTextView"
+        app:layout_constraintTop_toBottomOf="@+id/currentWalkDetailsTextView" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <TextView
+        android:id="@+id/initialWalkTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/initial_walk_time"
+        app:layout_constraintStart_toStartOf="@+id/dogsTextView"
+        app:layout_constraintTop_toBottomOf="@+id/dogsTextView" />
+
+    <TextView
+        android:id="@+id/totalPriceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/total_price_semicolon"
+        app:layout_constraintStart_toStartOf="@+id/initialWalkTimeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/initialWalkTimeTextView" />
+
+    <TextView
+        android:id="@+id/currentRequestsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/current_requests"
+        android:textColor="@color/primary"
+        app:layout_constraintStart_toStartOf="@+id/currentWalkDetailsTextView"
+        app:layout_constraintTop_toBottomOf="@+id/totalPriceTextView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/requestsRecyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentRequestsTextView" />
+
+    <TextView
+        android:id="@+id/noRequestsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/no_requests"
+        app:layout_constraintStart_toStartOf="@+id/currentRequestsTextView"
+        app:layout_constraintTop_toBottomOf="@+id/currentRequestsTextView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
