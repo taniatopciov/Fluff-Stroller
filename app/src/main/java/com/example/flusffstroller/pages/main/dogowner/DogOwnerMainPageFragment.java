@@ -4,15 +4,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.flusffstroller.R;
 import com.example.flusffstroller.databinding.DogOwnerMainPageFragmentBinding;
 import com.example.flusffstroller.di.Injectable;
 import com.example.flusffstroller.di.ServiceLocator;
+import com.example.flusffstroller.models.DogWalk;
+import com.example.flusffstroller.services.DogWalksService;
 import com.example.flusffstroller.services.FeesService;
+import com.example.flusffstroller.services.ProfileService;
+import com.example.flusffstroller.utils.FragmentWithSubjects;
 import com.example.flusffstroller.utils.components.TextWithLabel;
 import com.example.flusffstroller.utils.formatting.CurrencyIntegerTextWatcher;
 import com.example.flusffstroller.utils.formatting.TimeIntegerTextWatcher;
+import com.example.flusffstroller.utils.observer.Observer;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -20,16 +26,22 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DogOwnerMainPageFragment extends Fragment {
+public class DogOwnerMainPageFragment extends FragmentWithSubjects {
 
     @Injectable
     private FeesService feesService;
+
+    @Injectable
+    private DogWalksService dogWalksService;
+
+    @Injectable
+    private ProfileService profileService;
 
     private DogOwnerMainPageViewModel viewModel;
     private DogOwnerMainPageFragmentBinding binding;
@@ -53,13 +65,64 @@ public class DogOwnerMainPageFragment extends Fragment {
                 viewModel.setWalkPrice(0);
             }
         }));
-        binding.walkTimeTextWithLabel.addTextChangedListener(new TimeIntegerTextWatcher(binding.walkTimeTextWithLabel.editText, "minutes"));
+        binding.walkTimeTextWithLabel.addTextChangedListener(new TimeIntegerTextWatcher(binding.walkTimeTextWithLabel.editText, "minutes", text -> {
+            try {
+                viewModel.setWalkTime(Integer.parseInt(text));
+            } catch (Exception e) {
+                viewModel.setWalkPrice(0);
+            }
+        }));
         binding.feesTextWithLabel.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.feesTextWithLabel.editText, "$"));
         binding.totalPriceTextWithLabel.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.totalPriceTextWithLabel.editText, "$"));
 
         DogNamesAdapter dogNamesAdapter = new DogNamesAdapter(new ArrayList<>());
         selectedDogsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         selectedDogsRecyclerView.setAdapter(dogNamesAdapter);
+
+        binding.findStrollerButton.setOnClickListener(view -> {
+            List<String> checkedDogs = dogNamesAdapter.getCheckedDogs();
+
+            if (!validateInputs() || checkedDogs.isEmpty()) {
+                Snackbar.make(view, R.string.empty_required_fields, Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+
+            Integer walkTime = viewModel.getWalkTime().getValue();
+            Integer totalPrice = viewModel.getTotalPrice().getValue();
+
+            String userId = profileService.getLoggedUserId();
+
+            final DogWalk dogWalk = new DogWalk(userId, checkedDogs, walkTime, totalPrice);
+            registerSubject(dogWalksService.createDogWalk(dogWalk))
+                    .subscribe(new Observer<String>() {
+                        @Override
+                        public void accept(String id) {
+                            dogWalk.setId(id);
+                            registerSubject(profileService.setCurrentDogWalk(dogWalk))
+                                    .subscribe(new Observer<Boolean>() {
+                                        @Override
+                                        public void accept(Boolean success) {
+                                            DogOwnerMainPageWaitingForStrollerViewModel waitingForStrollerViewModel = new ViewModelProvider(requireActivity()).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
+                                            waitingForStrollerViewModel.setCurrentDogWalk(dogWalk);
+
+                                            Navigation.findNavController(view).navigate(R.id.nav_dog_owner_home_waiting_for_stroller);
+                                        }
+
+                                        @Override
+                                        public void error(Exception error) {
+                                            error.printStackTrace();
+                                            Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void error(Exception error) {
+                            error.printStackTrace();
+                            Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
 
         viewModel.getDogNames().observe(getViewLifecycleOwner(), dogNamesAdapter::setDogNames);
 
@@ -73,8 +136,10 @@ public class DogOwnerMainPageFragment extends Fragment {
                 totalPrice += walkPrice.getValue();
             }
 
-            binding.totalPriceTextWithLabel.setText(totalPrice + "");
+            viewModel.setTotalPrice(totalPrice);
         });
+
+        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceTextWithLabel.setText(totalPrice + ""));
 
         viewModel.getWalkPrice().observe(getViewLifecycleOwner(), walkPrice -> {
             MutableLiveData<Integer> fees = viewModel.getFees();
@@ -84,25 +149,19 @@ public class DogOwnerMainPageFragment extends Fragment {
                 totalPrice += fees.getValue();
             }
 
-            binding.totalPriceTextWithLabel.setText(totalPrice + "");
+            viewModel.setTotalPrice(totalPrice);
         });
 
-        // todo get names from database
-        List<String> names = new ArrayList<>();
-        names.add("John Dog");
-        names.add("Jane Dog");
-        viewModel.setDogNames(names);
-
-        binding.findStrollerButton.setOnClickListener(view -> {
-            List<String> checkedDogs = dogNamesAdapter.getCheckedDogs();
-
-            if (!validateInputs() || checkedDogs.isEmpty()) {
-                Snackbar.make(view, R.string.empty_required_fields, Snackbar.LENGTH_SHORT).show();
-                return;
+        registerSubject(profileService.getLoggedUserDogs()).subscribe(new Observer<List<String>>() {
+            @Override
+            public void accept(List<String> dogNames) {
+                viewModel.setDogNames(dogNames);
             }
 
-            // todo create walk
-            Snackbar.make(view, checkedDogs.stream().reduce("", (s, s2) -> s + " " + s2), Snackbar.LENGTH_SHORT).show();
+            @Override
+            public void error(Exception error) {
+                error.printStackTrace();
+            }
         });
 
         viewModel.setFees(feesService.getDogWalkFees());

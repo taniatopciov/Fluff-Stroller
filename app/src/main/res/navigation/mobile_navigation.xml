@@ -9,7 +9,14 @@
         android:id="@+id/nav_home"
         android:name="com.example.flusffstroller.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_nav_home_to_nav_dog_owner_home"
+            app:destination="@id/nav_dog_owner_home" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_dog_owner_home_no_dogs"
+            app:destination="@id/nav_dog_owner_home_no_dogs" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_gallery"
@@ -27,7 +34,11 @@
         android:id="@+id/nav_dog_owner_home"
         android:name="com.example.flusffstroller.pages.main.dogowner.DogOwnerMainPageFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/dog_owner_main_page_fragment" />
+        tools:layout="@layout/dog_owner_main_page_fragment">
+        <action
+            android:id="@+id/action_nav_dog_owner_home_to_nav_dog_owner_home_waiting_for_stroller"
+            app:destination="@id/nav_dog_owner_home_waiting_for_stroller" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_dog_owner_home_no_dogs"
@@ -39,7 +50,15 @@
         android:id="@+id/nav_dog_owner_home_waiting_for_stroller"
         android:name="com.example.flusffstroller.pages.main.dogowner.DogOwnerMainPageWaitingForStrollerFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/dog_owner_main_page_waiting_for_stroller_fragment" />
+        tools:layout="@layout/dog_owner_main_page_waiting_for_stroller_fragment">
+        <action
+            android:id="@+id/action_nav_dog_owner_home_waiting_for_stroller_to_nav_dog_owner_home_walk_in_progress"
+            app:destination="@id/nav_dog_owner_home_walk_in_progress" />
+        <action
+            android:id="@+id/action_nav_dog_owner_home_waiting_for_stroller_to_nav_dog_owner_home"
+            app:destination="@id/nav_dog_owner_home"
+            app:popUpTo="@id/nav_dog_owner_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_dog_owner_home_walk_in_progress"
