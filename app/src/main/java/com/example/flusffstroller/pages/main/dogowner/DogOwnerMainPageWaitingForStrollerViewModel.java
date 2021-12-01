@@ -1,4 +1,4 @@
-package com.example.flusffstroller.pages.main;
+package com.example.flusffstroller.pages.main.dogowner;
 
 import com.example.flusffstroller.models.WalkRequest;
 
@@ -43,22 +43,22 @@ public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
     }
 
     public void setDogNames(List<String> names) {
-        dogNames.setValue(names);
+        dogNames.postValue(names);
     }
 
     public void setInitialWalkTime(Integer initialWalkTime) {
-        this.initialWalkTime.setValue(initialWalkTime);
+        this.initialWalkTime.postValue(initialWalkTime);
     }
 
     public void setTotalPrice(Integer totalPrice) {
-        this.totalPrice.setValue(totalPrice);
+        this.totalPrice.postValue(totalPrice);
     }
 
     public void setWalkRequests(List<WalkRequest> walkRequests) {
-        this.walkRequests.setValue(walkRequests);
+        this.walkRequests.postValue(walkRequests);
     }
 
     public void setRemainingWaitingForStrollerMills(Long remainingWaitingForStrollerMills) {
-        this.remainingWaitingForStrollerMills.setValue(remainingWaitingForStrollerMills);
+        this.remainingWaitingForStrollerMills.postValue(remainingWaitingForStrollerMills);
     }
 }

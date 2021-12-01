@@ -1,4 +1,4 @@
-package com.example.flusffstroller.pages.main;
+package com.example.flusffstroller.pages.main.dogowner;
 
 import android.os.Bundle;
 import android.text.Spanned;
@@ -45,7 +45,6 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
                 this::handleRequestAccepted, this::handleRequestRejected,
                 this::handleRequestViewProfile, this::handleRequestCall);
         binding.requestsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        binding.requestsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         binding.requestsRecyclerView.setAdapter(walkRequestAdapter);
 
         viewModel.getRemainingWaitingForStrollerMills().observe(getViewLifecycleOwner(), millisUntilFinished -> {
@@ -111,7 +110,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
                             binding.noRequestsTextView.setVisibility(View.VISIBLE);
                         }
 
-                        getActivity().runOnUiThread(() -> walkRequestAdapter.setWalkRequests(walkRequests));
+                        viewModel.setWalkRequests(walkRequests);
 
                         cancel();
                     }

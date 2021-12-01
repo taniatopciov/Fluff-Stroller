@@ -1,4 +1,4 @@
-package com.example.flusffstroller.pages.main;
+package com.example.flusffstroller.pages.main.dogowner;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,7 +22,6 @@ public class DogOwnerWithNoDogsMainPageFragment extends Fragment {
 
         return binding.getRoot();
     }
-
 
     @Override
     public void onDestroyView() {

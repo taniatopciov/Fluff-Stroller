@@ -1,4 +1,4 @@
-package com.example.flusffstroller.pages.main;
+package com.example.flusffstroller.pages.main.dogowner;
 
 import com.example.flusffstroller.models.WalkRequest;
 
@@ -31,14 +31,14 @@ public class DogOwnerMainPageWalkInProgressViewModel extends ViewModel {
     }
 
     public void setDogNames(List<String> dogNames) {
-        this.dogNames.setValue(dogNames);
+        this.dogNames.postValue(dogNames);
     }
 
     public void setTotalPrice(Integer totalPrice) {
-        this.totalPrice.setValue(totalPrice);
+        this.totalPrice.postValue(totalPrice);
     }
 
     public void setWalkRequest(WalkRequest walkRequest) {
-        this.walkRequest.setValue(walkRequest);
+        this.walkRequest.postValue(walkRequest);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.flusffstroller.pages.main;
+package com.example.flusffstroller.pages.main.dogowner;
 
 import java.util.List;
 
@@ -30,14 +30,14 @@ public class DogOwnerMainPageViewModel extends ViewModel {
     }
 
     public void setDogNames(List<String> names) {
-        dogNames.setValue(names);
+        dogNames.postValue(names);
     }
 
     public void setWalkPrice(Integer walkPrice) {
-        this.walkPrice.setValue(walkPrice);
+        this.walkPrice.postValue(walkPrice);
     }
 
     public void setFees(Integer fees) {
-        this.fees.setValue(fees);
+        this.fees.postValue(fees);
     }
 }
