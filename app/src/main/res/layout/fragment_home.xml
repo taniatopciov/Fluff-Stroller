@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/walk_in_progress"
+        android:text="Owner Walk In Progress"
         app:layout_constraintEnd_toEndOf="@+id/ownerHomeNoDogsButton"
         app:layout_constraintStart_toStartOf="@+id/ownerHomeNoDogsButton"
         app:layout_constraintTop_toBottomOf="@+id/ownerHomeNoDogsButton" />
@@ -58,4 +58,14 @@
         app:layout_constraintEnd_toEndOf="@+id/ownerHomWalkInProgressButton"
         app:layout_constraintStart_toStartOf="@+id/ownerHomWalkInProgressButton"
         app:layout_constraintTop_toBottomOf="@+id/ownerHomWalkInProgressButton" />
+
+    <Button
+        android:id="@+id/walkInProgressButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/walk_in_progress"
+        app:layout_constraintEnd_toEndOf="@+id/strollerHomeButton"
+        app:layout_constraintStart_toStartOf="@+id/strollerHomeButton"
+        app:layout_constraintTop_toBottomOf="@+id/strollerHomeButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

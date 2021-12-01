@@ -53,4 +53,10 @@
         android:label="@string/menu_home"
         tools:layout="@layout/dog_stroller_home_page_fragment" />
 
+    <fragment
+        android:id="@+id/nav_walk_in_progress"
+        android:name="com.example.flusffstroller.pages.walkinprogress.WalkInProgressPage"
+        android:label="@string/menu_gallery"
+        tools:layout="@layout/walk_in_progress_fragment" />
+
 </navigation>
