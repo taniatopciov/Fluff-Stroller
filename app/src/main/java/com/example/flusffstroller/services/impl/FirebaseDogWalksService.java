@@ -5,6 +5,9 @@ import com.example.flusffstroller.repository.FirebaseRepository;
 import com.example.flusffstroller.services.DogWalksService;
 import com.example.flusffstroller.utils.observer.Subject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FirebaseDogWalksService implements DogWalksService {
 
     public static final String WALKS_PATH = "walks";
@@ -19,8 +22,11 @@ public class FirebaseDogWalksService implements DogWalksService {
         return firebaseRepository.addDocument(WALKS_PATH, dogWalk);
     }
 
+
     @Override
-    public Subject<DogWalk> getCurrentDogWalk(String userId) {
-        return null;
+    public Subject<Boolean> updateDogWalkId(String walkId) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("id", walkId);
+        return firebaseRepository.updateDocument(WALKS_PATH + "/" + walkId, values);
     }
 }

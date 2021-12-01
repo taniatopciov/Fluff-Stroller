@@ -18,7 +18,6 @@ import com.example.flusffstroller.utils.FragmentWithSubjects;
 import com.example.flusffstroller.utils.components.TextWithLabel;
 import com.example.flusffstroller.utils.formatting.CurrencyIntegerTextWatcher;
 import com.example.flusffstroller.utils.formatting.TimeIntegerTextWatcher;
-import com.example.flusffstroller.utils.observer.Observer;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -93,35 +92,37 @@ public class DogOwnerMainPageFragment extends FragmentWithSubjects {
             String userId = profileService.getLoggedUserId();
 
             final DogWalk dogWalk = new DogWalk(userId, checkedDogs, walkTime, totalPrice);
-            registerSubject(dogWalksService.createDogWalk(dogWalk))
-                    .subscribe(new Observer<String>() {
-                        @Override
-                        public void accept(String id) {
-                            dogWalk.setId(id);
-                            registerSubject(profileService.setCurrentDogWalk(dogWalk))
-                                    .subscribe(new Observer<Boolean>() {
-                                        @Override
-                                        public void accept(Boolean success) {
-                                            DogOwnerMainPageWaitingForStrollerViewModel waitingForStrollerViewModel = new ViewModelProvider(requireActivity()).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
-                                            waitingForStrollerViewModel.setCurrentDogWalk(dogWalk);
+            registerSubject(dogWalksService.createDogWalk(dogWalk)).map(id -> {
+                dogWalk.setId(id);
+                return dogWalk;
+            }).subscribe(response -> {
+                if (response.hasErrors()) {
+                    response.exception.printStackTrace();
+                    Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                                            Navigation.findNavController(view).navigate(R.id.nav_dog_owner_home_waiting_for_stroller);
-                                        }
+                registerSubject(dogWalksService.updateDogWalkId(dogWalk.getId())).subscribe(res -> {
+                    if (res.hasErrors()) {
+                        res.exception.printStackTrace();
+                        Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                                        @Override
-                                        public void error(Exception error) {
-                                            error.printStackTrace();
-                                            Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }
-
-                        @Override
-                        public void error(Exception error) {
-                            error.printStackTrace();
+                    registerSubject(profileService.setCurrentDogWalk(dogWalk)).subscribe(res1 -> {
+                        if (res1.hasErrors()) {
+                            res1.exception.printStackTrace();
                             Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+                        DogOwnerMainPageWaitingForStrollerViewModel waitingForStrollerViewModel = new ViewModelProvider(requireActivity()).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
+                        waitingForStrollerViewModel.setCurrentDogWalk(dogWalk);
+
+                        Navigation.findNavController(view).navigate(R.id.nav_dog_owner_home_waiting_for_stroller);
                     });
+                });
+            });
+
         });
 
         viewModel.getDogNames().observe(getViewLifecycleOwner(), dogNamesAdapter::setDogNames);
@@ -152,15 +153,11 @@ public class DogOwnerMainPageFragment extends FragmentWithSubjects {
             viewModel.setTotalPrice(totalPrice);
         });
 
-        registerSubject(profileService.getLoggedUserDogs()).subscribe(new Observer<List<String>>() {
-            @Override
-            public void accept(List<String> dogNames) {
-                viewModel.setDogNames(dogNames);
-            }
-
-            @Override
-            public void error(Exception error) {
-                error.printStackTrace();
+        registerSubject(profileService.getLoggedUserDogs()).subscribe(response -> {
+            if (response.hasErrors()) {
+                response.exception.printStackTrace();
+            } else {
+                viewModel.setDogNames(response.data);
             }
         });
 
