@@ -4,19 +4,19 @@ public class WalkRequest {
     private String id;
     private String strollerId;
     private String strollerName;
-    private String phoneNumber;
-    private Double rating;
+    private String strollerPhoneNumber;
+    private Double strollerRating;
     private WalkStatus walkStatus;
 
     public WalkRequest() {
     }
 
-    public WalkRequest(String id, String strollerId, String strollerName, String phoneNumber, Double rating, WalkStatus walkStatus) {
+    public WalkRequest(String id, String strollerId, String strollerName, String strollerPhoneNumber, Double strollerRating, WalkStatus walkStatus) {
         this.id = id;
         this.strollerId = strollerId;
         this.strollerName = strollerName;
-        this.phoneNumber = phoneNumber;
-        this.rating = rating;
+        this.strollerPhoneNumber = strollerPhoneNumber;
+        this.strollerRating = strollerRating;
         this.walkStatus = walkStatus;
     }
 
@@ -32,12 +32,12 @@ public class WalkRequest {
         return strollerName;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getStrollerPhoneNumber() {
+        return strollerPhoneNumber;
     }
 
-    public Double getRating() {
-        return rating;
+    public Double getStrollerRating() {
+        return strollerRating;
     }
 
     public WalkStatus getWalkStatus() {

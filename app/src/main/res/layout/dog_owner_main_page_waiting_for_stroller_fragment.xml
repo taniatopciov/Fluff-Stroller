@@ -65,12 +65,12 @@
         android:layout_marginTop="16dp"
         android:scrollHorizontally="false"
         android:text="@string/dogs"
-        app:layout_constraintEnd_toStartOf="@+id/guideline19"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/currentWalkDetailsTextView"
         app:layout_constraintTop_toBottomOf="@+id/currentWalkDetailsTextView" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline19"
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"

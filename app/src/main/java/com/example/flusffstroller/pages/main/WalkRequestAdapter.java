@@ -44,8 +44,8 @@ public class WalkRequestAdapter extends RecyclerView.Adapter<WalkRequestAdapter.
         WalkRequest request = walkRequests.get(position);
 
         holder.strollerNameTextView.setText(request.getStrollerName());
-        holder.strollerPhoneNumberTextView.setText(request.getPhoneNumber());
-        holder.strollerRatingNumberTextView.setText(formatRating(request.getRating()));
+        holder.strollerPhoneNumberTextView.setText(request.getStrollerPhoneNumber());
+        holder.strollerRatingNumberTextView.setText(formatRating(request.getStrollerRating()));
 
         holder.acceptButton.setOnClickListener(view -> {
             if (acceptButtonListener != null) {

@@ -41,4 +41,10 @@
         android:label="@string/menu_home"
         tools:layout="@layout/dog_owner_main_page_waiting_for_stroller_fragment" />
 
+    <fragment
+        android:id="@+id/nav_dog_owner_home_walk_in_progress"
+        android:name="com.example.flusffstroller.pages.main.DogOwnerMainPageWalkInProgressFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/dog_owner_main_page_walk_in_progress_fragment" />
+
 </navigation>
