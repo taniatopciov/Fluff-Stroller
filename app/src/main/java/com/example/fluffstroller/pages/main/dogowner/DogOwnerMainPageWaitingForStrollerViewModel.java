@@ -8,30 +8,24 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
-    private final MutableLiveData<List<String>> dogNames;
-    private final MutableLiveData<Integer> initialWalkTime;
-    private final MutableLiveData<Integer> totalPrice;
+    private final MutableLiveData<DogWalk> currentDogWalk;
     private final MutableLiveData<List<WalkRequest>> walkRequests;
     private final MutableLiveData<Long> remainingWaitingForStrollerMills;
 
     public DogOwnerMainPageWaitingForStrollerViewModel() {
-        dogNames = new MutableLiveData<>();
-        initialWalkTime = new MutableLiveData<>();
-        totalPrice = new MutableLiveData<>();
+        currentDogWalk = new MutableLiveData<>();
         walkRequests = new MutableLiveData<>();
         remainingWaitingForStrollerMills = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<String>> getDogNames() {
-        return dogNames;
+    public void removeValues() {
+        currentDogWalk.setValue(null);
+        walkRequests.setValue(null);
+        remainingWaitingForStrollerMills.setValue(null);
     }
 
-    public MutableLiveData<Integer> getInitialWalkTime() {
-        return initialWalkTime;
-    }
-
-    public MutableLiveData<Integer> getTotalPrice() {
-        return totalPrice;
+    public MutableLiveData<DogWalk> getCurrentDogWalk() {
+        return currentDogWalk;
     }
 
     public MutableLiveData<List<WalkRequest>> getWalkRequests() {
@@ -42,16 +36,8 @@ public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
         return remainingWaitingForStrollerMills;
     }
 
-    public void setDogNames(List<String> names) {
-        dogNames.postValue(names);
-    }
-
-    public void setInitialWalkTime(Integer initialWalkTime) {
-        this.initialWalkTime.postValue(initialWalkTime);
-    }
-
-    public void setTotalPrice(Integer totalPrice) {
-        this.totalPrice.postValue(totalPrice);
+    public void setCurrentDogWalk(DogWalk dogWalk) {
+        this.currentDogWalk.postValue(dogWalk);
     }
 
     public void setWalkRequests(List<WalkRequest> walkRequests) {

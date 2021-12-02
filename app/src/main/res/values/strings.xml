@@ -83,4 +83,10 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="area_radius">Area Radius</string>
+    <string name="_0_km">0 km</string>
+    <string name="waiting_for_dog_owner_approval">Waiting for Dog Owner Approval</string>
+    <string name="walk_not_started">Walk Not Started</string>
+    <string name="start_walk">Start Walk</string>
+    <string name="dog_owner_info">Dog Owner Info</string>
 </resources>

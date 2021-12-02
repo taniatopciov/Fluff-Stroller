@@ -34,7 +34,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DogOwnerMainPageWaitingForStrollerFragmentBinding.inflate(inflater, container, false);
 
-        viewModel = new ViewModelProvider(this).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
 
         binding.cancelWalkButton.setOnClickListener(view -> {
             // todo handle walk canceled
@@ -57,11 +57,11 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
 
         viewModel.getWalkRequests().observe(getViewLifecycleOwner(), walkRequestAdapter::setWalkRequests);
 
-        viewModel.getDogNames().observe(getViewLifecycleOwner(), dogNames -> {
+        viewModel.getCurrentDogWalk().observe(getViewLifecycleOwner(), dogWalk -> {
             String concatenatedDogNames = "";
 
-            if (dogNames != null) {
-                concatenatedDogNames = dogNames.stream().reduce("", (s, s2) -> s + s2 + ", ");
+            if (dogWalk.getDogNames() != null) {
+                concatenatedDogNames = dogWalk.getDogNames().stream().reduce("", (s, s2) -> s + s2 + ", ");
                 int lastIndex = concatenatedDogNames.lastIndexOf(", ");
                 if (lastIndex >= 0) {
                     concatenatedDogNames = concatenatedDogNames.substring(0, lastIndex);
@@ -69,30 +69,11 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
             }
 
             binding.dogsTextView.setText(formatCurrentDetail(R.string.dogs, concatenatedDogNames));
-        });
 
-        viewModel.getInitialWalkTime().observe(getViewLifecycleOwner(), initialWalkTime -> {
-            binding.initialWalkTimeTextView.setText(formatCurrentDetail(R.string.initial_walk_time, initialWalkTime + " minutes"));
-        });
+            binding.totalPriceTextView.setText(formatCurrentDetail(R.string.total_price_semicolon, dogWalk.getTotalPrice() + " $"));
 
-        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> {
-            binding.totalPriceTextView.setText(formatCurrentDetail(R.string.total_price_semicolon, totalPrice + " $"));
+            binding.initialWalkTimeTextView.setText(formatCurrentDetail(R.string.initial_walk_time, dogWalk.getWalkTime() + " minutes"));
         });
-
-        // todo get data from database
-        viewModel.setInitialWalkTime(20);
-        viewModel.setTotalPrice(12);
-        List<String> dogNames = new ArrayList<>();
-        dogNames.add("John Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        viewModel.setDogNames(dogNames);
 
         // todo get requests from database
         new java.util.Timer().schedule(
@@ -117,7 +98,6 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
                 },
                 1000
         );
-
 
         return binding.getRoot();
     }

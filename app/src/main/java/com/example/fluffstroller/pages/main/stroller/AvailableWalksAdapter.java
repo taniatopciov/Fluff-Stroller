@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.fluffstroller.R;
@@ -18,15 +19,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class AvailableWalksAdapter extends RecyclerView.Adapter<AvailableWalksAdapter.ViewHolder> {
 
-    private final Consumer<Pair<AvailableWalk, Integer>> requestButtonListener, visitProfileButtonListener;
+    private final Consumer<Pair<AvailableWalk, Integer>> requestButtonListener, visitProfileButtonListener, callButtonListener;
     private List<AvailableWalk> availableWalks;
 
     public AvailableWalksAdapter(List<AvailableWalk> availableWalks,
                                  Consumer<Pair<AvailableWalk, Integer>> requestButtonListener,
-                                 Consumer<Pair<AvailableWalk, Integer>> visitProfileButtonListener) {
+                                 Consumer<Pair<AvailableWalk, Integer>> visitProfileButtonListener,
+                                 Consumer<Pair<AvailableWalk, Integer>> callButtonListener) {
         this.requestButtonListener = requestButtonListener;
         this.visitProfileButtonListener = visitProfileButtonListener;
         this.availableWalks = availableWalks;
+        this.callButtonListener = callButtonListener;
     }
 
     @NonNull
@@ -66,6 +69,11 @@ public class AvailableWalksAdapter extends RecyclerView.Adapter<AvailableWalksAd
             }
         });
 
+        holder.callButton.setOnClickListener(view -> {
+            if (callButtonListener != null){
+                callButtonListener.accept(new Pair<>(availableWalk, position));
+            }
+        });
     }
 
     @Override
@@ -97,6 +105,7 @@ public class AvailableWalksAdapter extends RecyclerView.Adapter<AvailableWalksAd
         public final TextView priceTextView;
         public final Button requestButton;
         public final Button visitProfileButton;
+        public final ImageButton callButton;
 
         public ViewHolder(View view) {
             super(view);
@@ -106,7 +115,7 @@ public class AvailableWalksAdapter extends RecyclerView.Adapter<AvailableWalksAd
             priceTextView = view.findViewById(R.id.priceValueTextView);
             requestButton = view.findViewById(R.id.requestButton);
             visitProfileButton = view.findViewById(R.id.visitProfileButton);
-
+            callButton = view.findViewById(R.id.callImageButton);
         }
     }
 }

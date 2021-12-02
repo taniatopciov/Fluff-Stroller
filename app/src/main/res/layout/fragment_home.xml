@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".pages.main.home.HomeFragment">
 
     <Button
         android:id="@+id/ownerHomeButton"
@@ -88,4 +88,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginButtonTemp" />
+
+    <Button
+        android:id="@+id/strollerHomeWalkInProgressButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Stroller Walk in Progress"
+        app:layout_constraintEnd_toEndOf="@+id/walkInProgressButton"
+        app:layout_constraintStart_toStartOf="@+id/walkInProgressButton"
+        app:layout_constraintTop_toBottomOf="@+id/walkInProgressButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
