@@ -9,7 +9,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.example.flusffstroller"
+        applicationId "com.example.fluffstroller"
         minSdk 24
         targetSdk 31
         versionCode 1

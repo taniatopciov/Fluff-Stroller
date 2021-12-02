@@ -14,9 +14,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FlusffStroller">
+        android:theme="@style/Theme.FluffStroller">
         <activity
-            android:name="com.example.fluffstroller.authentication.AuthenticationActivity"
+            android:name=".authentication.AuthenticationActivity"
             android:exported="true"
             android:label="@string/title_authentication_activity">
             <intent-filter>
@@ -38,10 +38,10 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name="com.example.fluffstroller.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.FlusffStroller.NoActionBar">
+            android:theme="@style/Theme.FluffStroller.NoActionBar">
             <intent-filter>
 <!--                <action android:name="android.intent.action.MAIN" />-->
 

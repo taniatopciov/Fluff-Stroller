@@ -1,11 +1,12 @@
 package com.example.fluffstroller.pages.main.dogowner;
 
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.WalkRequest;
 
 import java.util.List;
-
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
     private final MutableLiveData<DogWalk> currentDogWalk;
