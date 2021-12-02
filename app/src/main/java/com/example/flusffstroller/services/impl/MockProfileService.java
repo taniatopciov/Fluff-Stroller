@@ -1,6 +1,8 @@
 package com.example.flusffstroller.services.impl;
 
 import com.example.flusffstroller.models.DogWalk;
+import com.example.flusffstroller.models.ProfileData;
+import com.example.flusffstroller.models.UserType;
 import com.example.flusffstroller.repository.FirebaseRepository;
 import com.example.flusffstroller.services.ProfileService;
 import com.example.flusffstroller.utils.observer.Subject;
@@ -47,6 +49,27 @@ public class MockProfileService implements ProfileService {
                 },
                 1000
         );
+        return subject;
+    }
+
+    @Override
+    public Subject<ProfileData> getLoggedUser() {
+        Subject<ProfileData> subject = new Subject<>();
+
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        ProfileData profileData = new ProfileData("userId1", UserType.STROLLER, null);
+
+                        subject.notifyObservers(profileData);
+
+                        cancel();
+                    }
+                },
+                1000
+        );
+
         return subject;
     }
 }

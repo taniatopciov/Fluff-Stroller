@@ -106,8 +106,6 @@ public class DogStrollerHomePageFragment extends Fragment implements OnMapReadyC
                 1000
         );
 
-        viewModel.setWaitingForDogOwnerApproval(true);
-
         return binding.getRoot();
     }
 
