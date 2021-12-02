@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flusffstroller">
+    package="com.example.fluffstroller">
 
     <!--
      The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -30,7 +30,7 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.fluffstroller.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.FlusffStroller.NoActionBar">

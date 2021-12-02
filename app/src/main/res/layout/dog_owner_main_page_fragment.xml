@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selectedDogsRecyclerView">
 
-        <com.example.flusffstroller.utils.components.TextWithLabel
+        <com.example.fluffstroller.utils.components.TextWithLabel
             android:id="@+id/walkPriceTextWithLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/vertical_linear_layout_spacing" />
 
-        <com.example.flusffstroller.utils.components.TextWithLabel
+        <com.example.fluffstroller.utils.components.TextWithLabel
             android:id="@+id/walkTimeTextWithLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/vertical_linear_layout_spacing" />
 
-        <com.example.flusffstroller.utils.components.TextWithLabel
+        <com.example.fluffstroller.utils.components.TextWithLabel
             android:id="@+id/feesTextWithLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/vertical_linear_layout_spacing" />
 
-        <com.example.flusffstroller.utils.components.TextWithLabel
+        <com.example.fluffstroller.utils.components.TextWithLabel
             android:id="@+id/totalPriceTextWithLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
