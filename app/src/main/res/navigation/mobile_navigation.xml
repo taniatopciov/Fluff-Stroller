@@ -7,61 +7,66 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.flusffstroller.ui.home.HomeFragment"
+        android:name="com.example.fluffstroller.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.flusffstroller.ui.gallery.GalleryFragment"
+        android:name="com.example.fluffstroller.ui.gallery.GalleryFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.example.flusffstroller.ui.slideshow.SlideshowFragment"
+        android:name="com.example.fluffstroller.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
 
     <fragment
         android:id="@+id/nav_dog_owner_home"
-        android:name="com.example.flusffstroller.pages.main.dogowner.DogOwnerMainPageFragment"
+        android:name="com.example.fluffstroller.pages.main.dogowner.DogOwnerMainPageFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/dog_owner_main_page_fragment" />
 
     <fragment
         android:id="@+id/nav_dog_owner_home_no_dogs"
-        android:name="com.example.flusffstroller.pages.main.dogowner.DogOwnerWithNoDogsMainPageFragment"
+        android:name="com.example.fluffstroller.pages.main.dogowner.DogOwnerWithNoDogsMainPageFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/dog_owner_with_no_dogs_main_page_fragment" />
 
     <fragment
         android:id="@+id/nav_dog_owner_home_waiting_for_stroller"
-        android:name="com.example.flusffstroller.pages.main.dogowner.DogOwnerMainPageWaitingForStrollerFragment"
+        android:name="com.example.fluffstroller.pages.main.dogowner.DogOwnerMainPageWaitingForStrollerFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/dog_owner_main_page_waiting_for_stroller_fragment" />
 
     <fragment
         android:id="@+id/nav_dog_owner_home_walk_in_progress"
-        android:name="com.example.flusffstroller.pages.main.dogowner.DogOwnerMainPageWalkInProgressFragment"
+        android:name="com.example.fluffstroller.pages.main.dogowner.DogOwnerMainPageWalkInProgressFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/dog_owner_main_page_walk_in_progress_fragment" />
 
     <fragment
         android:id="@+id/nav_stroller_home"
-        android:name="com.example.flusffstroller.pages.main.stroller.DogStrollerHomePageFragment"
+        android:name="com.example.fluffstroller.pages.main.stroller.DogStrollerHomePageFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/dog_stroller_home_page_fragment" />
 
     <fragment
         android:id="@+id/nav_walk_in_progress"
-        android:name="com.example.flusffstroller.pages.walkinprogress.WalkInProgressPage"
+        android:name="com.example.fluffstroller.pages.walkinprogress.WalkInProgressPage"
         android:label="@string/menu_gallery"
         tools:layout="@layout/walk_in_progress_fragment" />
     <fragment
         android:id="@+id/nav_login"
-        android:name="com.example.flusffstroller.authentication.LoginFragment"
+        android:name="com.example.fluffstroller.authentication.LoginFragment"
         android:label="Login"
         tools:layout="@layout/login_fragment" />
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="com.example.fluffstroller.authentication.RegisterFragment"
+        android:label="Register"
+        tools:layout="@layout/register_fragment" />
 
 </navigation>
