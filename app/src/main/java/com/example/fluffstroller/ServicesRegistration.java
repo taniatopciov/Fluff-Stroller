@@ -2,10 +2,12 @@ package com.example.fluffstroller;
 
 import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.repository.FirebaseRepository;
+import com.example.fluffstroller.services.AuthenticationService;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.FeesService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.services.StrollerService;
+import com.example.fluffstroller.services.impl.FirebaseAuthenticationService;
 import com.example.fluffstroller.services.impl.FirebaseDogWalksService;
 import com.example.fluffstroller.services.impl.MockProfileService;
 import com.example.fluffstroller.services.impl.MockStrollerService;
@@ -34,5 +36,6 @@ public class ServicesRegistration {
         serviceLocator.register(StrollerService.class, new MockStrollerService());
         serviceLocator.register(ProfileService.class, new MockProfileService(firebaseRepository));
         serviceLocator.register(DogWalksService.class, new FirebaseDogWalksService(firebaseRepository));
+        serviceLocator.register(AuthenticationService.class, new FirebaseAuthenticationService());
     }
 }

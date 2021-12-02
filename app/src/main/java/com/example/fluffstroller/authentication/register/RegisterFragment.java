@@ -1,4 +1,4 @@
-package com.example.fluffstroller.authentication;
+package com.example.fluffstroller.authentication.register;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
