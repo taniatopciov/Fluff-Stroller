@@ -41,14 +41,49 @@
                 card_view:layout_constraintTop_toBottomOf="@+id/dogOwnerNameTextView" />
 
             <TextView
-                android:id="@+id/walkingTimeTextView"
+                android:id="@+id/phoneNumberTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/walking_time"
+                android:layout_marginTop="16dp"
+                android:text="@string/phone_number"
                 android:textStyle="bold"
                 card_view:layout_constraintStart_toStartOf="@+id/dogNamesTextView"
                 card_view:layout_constraintTop_toBottomOf="@+id/dogNamesTextView" />
+
+            <TextView
+                android:id="@+id/dogOwnerPhoneNumberTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@android:string/emptyPhoneNumber"
+                card_view:layout_constraintBottom_toBottomOf="@+id/phoneNumberTextView"
+                card_view:layout_constraintStart_toEndOf="@+id/phoneNumberTextView"
+                card_view:layout_constraintTop_toTopOf="@+id/phoneNumberTextView" />
+
+            <ImageButton
+                android:id="@+id/callImageButton"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/call"
+                android:minHeight="48dp"
+                card_view:layout_constraintBottom_toBottomOf="@+id/dogOwnerPhoneNumberTextView"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toEndOf="@+id/dogOwnerPhoneNumberTextView"
+                card_view:layout_constraintTop_toTopOf="@+id/dogOwnerPhoneNumberTextView"
+                card_view:srcCompat="@drawable/ic_baseline_phone_24" />
+
+            <TextView
+                android:id="@+id/walkingTimeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/walking_time"
+                android:textStyle="bold"
+                card_view:layout_constraintStart_toStartOf="@+id/phoneNumberTextView"
+                card_view:layout_constraintTop_toBottomOf="@+id/phoneNumberTextView" />
 
             <TextView
                 android:id="@+id/walkingTimeValueTextView"
@@ -85,7 +120,7 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/request"
                 card_view:layout_constraintBottom_toBottomOf="parent"
@@ -98,12 +133,9 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:text="@string/profile"
                 card_view:layout_constraintBottom_toBottomOf="@+id/requestButton"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintStart_toEndOf="@+id/requestButton"
+                card_view:layout_constraintEnd_toEndOf="@+id/callImageButton"
                 card_view:layout_constraintTop_toTopOf="@+id/requestButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

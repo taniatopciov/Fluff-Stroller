@@ -30,6 +30,7 @@ public class HomeFragment extends Fragment {
         binding.ownerHomWalkInProgressButton.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_dog_owner_home_walk_in_progress));
 
         binding.strollerHomeButton.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_stroller_home));
+        binding.strollerHomeWalkInProgressButton.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_stroller_home_walk_in_progress));
 
         binding.walkInProgressButton.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_walk_in_progress));
 

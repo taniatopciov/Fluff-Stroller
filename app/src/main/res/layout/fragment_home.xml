@@ -68,4 +68,15 @@
         app:layout_constraintEnd_toEndOf="@+id/strollerHomeButton"
         app:layout_constraintStart_toStartOf="@+id/strollerHomeButton"
         app:layout_constraintTop_toBottomOf="@+id/strollerHomeButton" />
+
+    <Button
+        android:id="@+id/strollerHomeWalkInProgressButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Stroller Walk in Progress"
+        app:layout_constraintEnd_toEndOf="@+id/walkInProgressButton"
+        app:layout_constraintStart_toStartOf="@+id/walkInProgressButton"
+        app:layout_constraintTop_toBottomOf="@+id/walkInProgressButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

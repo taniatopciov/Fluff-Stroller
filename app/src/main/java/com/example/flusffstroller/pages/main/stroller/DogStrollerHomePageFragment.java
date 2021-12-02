@@ -5,6 +5,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.flusffstroller.databinding.DogStrollerHomePageFragmentBinding;
@@ -28,6 +29,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DogStrollerHomePageFragment extends Fragment implements OnMapReadyCallback {
 
+    private final static int[] AREA_RADIUS_STEPS = {1, 2, 5, 10, 15};
+
     private DogStrollerHomePageViewModel viewModel;
     private DogStrollerHomePageFragmentBinding binding;
     private GoogleMap mMap;
@@ -40,11 +43,50 @@ public class DogStrollerHomePageFragment extends Fragment implements OnMapReadyC
 
         AvailableWalksAdapter availableWalksAdapter = new AvailableWalksAdapter(new ArrayList<>(),
                 this::handleRequestWalk,
-                this::handleViewProfile);
+                this::handleViewProfile,
+                this::callButtonListener);
         binding.availableWalksRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.availableWalksRecyclerView.setAdapter(availableWalksAdapter);
 
+        binding.areaRadiusSeekBar.setMax(AREA_RADIUS_STEPS.length - 1);
+        binding.areaRadiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                viewModel.setSelectedRadius(AREA_RADIUS_STEPS[progress]);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        binding.areaRadiusSeekBar.setProgress(0);
+        viewModel.setSelectedRadius(AREA_RADIUS_STEPS[0]);
+
+        binding.waitingForApprovalFrameLayout.setOnClickListener(view -> {
+            // must be present to prevent click propagation
+        });
+
         viewModel.getAvailableWalks().observe(getViewLifecycleOwner(), availableWalks -> requireActivity().runOnUiThread(() -> availableWalksAdapter.setAvailableWalks(availableWalks)));
+
+        viewModel.getSelectedRadius().observe(getViewLifecycleOwner(), radius -> {
+            binding.areaRadiusValueTextView.setText(radius + " km");
+        });
+
+        viewModel.getWaitingForDogOwnerApproval().observe(getViewLifecycleOwner(), waitingForApproval -> {
+            if (waitingForApproval) {
+                binding.waitingForApprovalFrameLayout.setVisibility(View.VISIBLE);
+                binding.controlsLayout.setVisibility(View.INVISIBLE);
+                binding.availableWalksRecyclerView.setVisibility(View.INVISIBLE);
+            } else {
+                binding.waitingForApprovalFrameLayout.setVisibility(View.GONE);
+                binding.controlsLayout.setVisibility(View.VISIBLE);
+                binding.availableWalksRecyclerView.setVisibility(View.VISIBLE);
+            }
+        });
 
         // todo replace with database call
         new java.util.Timer().schedule(
@@ -56,12 +98,6 @@ public class DogStrollerHomePageFragment extends Fragment implements OnMapReadyC
                         availableWalks.add(new AvailableWalk("2", "abc", "Owner2", new ArrayList<>(Arrays.asList("John Dog", "Jane Dog")), 50, 15));
                         availableWalks.add(new AvailableWalk("3", "0863", "Owner3", new ArrayList<>(Collections.singletonList("Johny Dog")), 6, 14));
 
-                        if (availableWalks.size() > 0) {
-//                            binding.noAvailableWalksNearbyTextView.setVisibility(View.INVISIBLE);
-                        } else {
-//                            binding.noAvailableWalksNearbyTextView.setVisibility(View.VISIBLE);
-                        }
-
                         viewModel.setAvailableWalks(availableWalks);
 
                         cancel();
@@ -70,6 +106,7 @@ public class DogStrollerHomePageFragment extends Fragment implements OnMapReadyC
                 1000
         );
 
+        viewModel.setWaitingForDogOwnerApproval(true);
 
         return binding.getRoot();
     }
@@ -104,5 +141,9 @@ public class DogStrollerHomePageFragment extends Fragment implements OnMapReadyC
 
     private void handleViewProfile(Pair<AvailableWalk, Integer> pair) {
         Toast.makeText(getContext(), "Profile: " + pair.first.getDogOwnerName() + " " + pair.second, Toast.LENGTH_SHORT).show();
+    }
+
+    private void callButtonListener(Pair<AvailableWalk, Integer> pair) {
+        Toast.makeText(getContext(), "Call: " + pair.first.getDogOwnerName() + " " + pair.second, Toast.LENGTH_SHORT).show();
     }
 }

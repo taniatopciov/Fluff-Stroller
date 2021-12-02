@@ -72,6 +72,13 @@
         android:label="@string/menu_home"
         tools:layout="@layout/dog_stroller_home_page_fragment" />
 
+
+    <fragment
+        android:id="@+id/nav_stroller_home_walk_in_progress"
+        android:name="com.example.flusffstroller.pages.main.stroller.DogStrollerHomePageWalkInProgressFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/dog_stroller_home_page_walk_in_progress_fragment" />
+
     <fragment
         android:id="@+id/nav_walk_in_progress"
         android:name="com.example.flusffstroller.pages.walkinprogress.WalkInProgressPage"
