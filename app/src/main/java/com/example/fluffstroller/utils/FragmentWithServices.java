@@ -1,13 +1,17 @@
 package com.example.fluffstroller.utils;
 
+import android.os.Bundle;
+
+import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.utils.observer.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class FragmentWithSubjects extends Fragment {
+public class FragmentWithServices extends Fragment {
     private final List<Subject<?>> subjects = new ArrayList<>();
 
     protected <T> Subject<T> registerSubject(Subject<T> subject) {
@@ -23,5 +27,12 @@ public class FragmentWithSubjects extends Fragment {
             subject.clearAllObservers();
         }
         subjects.clear();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        ServiceLocator.getInstance().inject(this);
     }
 }

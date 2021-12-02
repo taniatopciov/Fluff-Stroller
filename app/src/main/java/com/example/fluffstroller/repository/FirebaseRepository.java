@@ -10,6 +10,87 @@ import java.util.stream.Collectors;
 public class FirebaseRepository {
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
+    public <T extends FirebaseDocument> Subject<T> listenForDocumentChanges(String pathToDocument, Class<T> tClass) {
+        Subject<T> subject = new Subject<>();
+
+        firestore.document(pathToDocument)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        subject.notifyObservers(error);
+                        return;
+                    }
+                    if (value != null && value.exists()) {
+                        subject.notifyObservers(value.toObject(tClass));
+                    } else {
+                        subject.notifyObservers((T) null);
+                    }
+                });
+
+        return subject;
+    }
+
+    public <T extends FirebaseDocument> Subject<T> listenForDocumentChanges(String pathToDocument, String typeNameField, Map<String, Class<? extends T>> possibleTypes) {
+        Subject<T> subject = new Subject<>();
+
+        firestore.document(pathToDocument)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        subject.notifyObservers(error);
+                        return;
+                    }
+                    if (value != null && value.exists()) {
+                        try {
+                            Map<String, Object> data = value.getData();
+                            if (data == null) {
+                                subject.notifyObservers((T) null);
+                                return;
+                            }
+
+                            String type = (String) data.get(typeNameField);
+                            Class<? extends T> tClass = possibleTypes.get(type);
+
+                            subject.notifyObservers(value.toObject(tClass));
+                        } catch (Exception e) {
+                            subject.notifyObservers(e);
+                        }
+                    } else {
+                        subject.notifyObservers((T) null);
+                    }
+                });
+
+        return subject;
+    }
+
+
+    public <T extends FirebaseDocument> Subject<T> getDocument(String pathToDocument, String typeNameField, Map<String, Class<? extends T>> possibleTypes) {
+        Subject<T> subject = new Subject<>();
+
+        firestore.document(pathToDocument)
+                .get()
+                .addOnSuccessListener(documentReference -> {
+                    if (documentReference.exists()) {
+                        try {
+                            Map<String, Object> data = documentReference.getData();
+                            if (data == null) {
+                                subject.notifyObservers((T) null);
+                                return;
+                            }
+
+                            String type = (String) data.get(typeNameField);
+                            Class<? extends T> tClass = possibleTypes.get(type);
+
+                            subject.notifyObservers(documentReference.toObject(tClass));
+                        } catch (Exception e) {
+                            subject.notifyObservers(e);
+                        }
+                    } else {
+                        subject.notifyObservers((T) null);
+                    }
+                })
+                .addOnFailureListener(subject::notifyObservers);
+        return subject;
+    }
+
     public <T extends FirebaseDocument> Subject<T> getDocument(String pathToDocument, Class<T> tClass) {
         Subject<T> subject = new Subject<>();
 

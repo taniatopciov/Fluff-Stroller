@@ -2,30 +2,41 @@ package com.example.fluffstroller.models;
 
 import com.example.fluffstroller.repository.FirebaseDocument;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DogWalk extends FirebaseDocument {
-    private String ownerId;
     private List<String> dogNames;
+    private String ownerId;
+    private String ownerName;
     private Integer totalPrice;
     private Integer walkTime;
+    private List<WalkRequest> requests;
+    private WalkStatus status;
 
     public DogWalk() {
     }
 
-    public DogWalk(String ownerId, List<String> dogNames, Integer totalPrice, Integer walkTime) {
-        this.ownerId = ownerId;
+    public DogWalk(List<String> dogNames, String ownerId, String ownerName, Integer totalPrice, Integer walkTime) {
         this.dogNames = dogNames;
+        this.ownerId = ownerId;
+        this.ownerName = ownerName;
         this.totalPrice = totalPrice;
         this.walkTime = walkTime;
+        this.requests = new ArrayList<>();
+        this.status = WalkStatus.PENDING;
+    }
+
+    public List<String> getDogNames() {
+        return dogNames;
     }
 
     public String getOwnerId() {
         return ownerId;
     }
 
-    public List<String> getDogNames() {
-        return dogNames;
+    public String getOwnerName() {
+        return ownerName;
     }
 
     public Integer getTotalPrice() {
@@ -34,5 +45,13 @@ public class DogWalk extends FirebaseDocument {
 
     public Integer getWalkTime() {
         return walkTime;
+    }
+
+    public List<WalkRequest> getRequests() {
+        return requests;
+    }
+
+    public WalkStatus getStatus() {
+        return status;
     }
 }

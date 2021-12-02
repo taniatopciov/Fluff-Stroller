@@ -70,26 +70,6 @@
         app:layout_constraintTop_toBottomOf="@+id/strollerHomeButton" />
 
     <Button
-        android:id="@+id/loginButtonTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/walkInProgressButton" />
-
-    <Button
-        android:id="@+id/registerButtonTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/register"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButtonTemp" />
-
-    <Button
         android:id="@+id/strollerHomeWalkInProgressButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

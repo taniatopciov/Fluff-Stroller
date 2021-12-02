@@ -1,7 +1,9 @@
 package com.example.fluffstroller.services.impl;
 
+import com.example.fluffstroller.models.DogOwnerProfileData;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.ProfileData;
+import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.models.UserType;
 import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.ProfileService;
@@ -22,6 +24,16 @@ public class MockProfileService implements ProfileService {
     @Override
     public String getLoggedUserId() {
         return "userId1";
+    }
+
+    @Override
+    public String getLoggedUserName() {
+        return "TestName";
+    }
+
+    @Override
+    public UserType getLoggedUserType() {
+        return UserType.STROLLER;
     }
 
     @Override
@@ -53,23 +65,11 @@ public class MockProfileService implements ProfileService {
     }
 
     @Override
-    public Subject<ProfileData> getLoggedUser() {
-        Subject<ProfileData> subject = new Subject<>();
+    public Subject<ProfileData> getProfileData(String userId) {
+        HashMap<String, Class<? extends ProfileData>> possibleTypes = new HashMap<>();
+        possibleTypes.put(UserType.STROLLER.toString(), StrollerProfileData.class);
+        possibleTypes.put(UserType.DOG_OWNER.toString(), DogOwnerProfileData.class);
 
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        ProfileData profileData = new ProfileData("userId1", UserType.STROLLER, null);
-
-                        subject.notifyObservers(profileData);
-
-                        cancel();
-                    }
-                },
-                1000
-        );
-
-        return subject;
+        return firebaseRepository.listenForDocumentChanges("profiles/" + userId, "userType", possibleTypes);
     }
 }

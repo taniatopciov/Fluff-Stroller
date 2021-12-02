@@ -9,20 +9,11 @@ import android.widget.Toast;
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
-import com.example.fluffstroller.di.ServiceLocator;
-import com.example.fluffstroller.services.FeesService;
-import com.example.fluffstroller.utils.components.TextWithLabel;
-import com.example.fluffstroller.utils.formatting.CurrencyIntegerTextWatcher;
-import com.example.fluffstroller.utils.formatting.TimeIntegerTextWatcher;
-import com.example.fluffstroller.R;
-import com.example.fluffstroller.databinding.DogOwnerMainPageFragmentBinding;
-import com.example.fluffstroller.di.Injectable;
-import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.FeesService;
 import com.example.fluffstroller.services.ProfileService;
-import com.example.fluffstroller.utils.FragmentWithSubjects;
+import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.components.TextWithLabel;
 import com.example.fluffstroller.utils.formatting.CurrencyIntegerTextWatcher;
 import com.example.fluffstroller.utils.formatting.TimeIntegerTextWatcher;
@@ -39,7 +30,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DogOwnerMainPageFragment extends FragmentWithSubjects {
+public class DogOwnerMainPageFragment extends FragmentWithServices {
 
     @Injectable
     private FeesService feesService;
@@ -52,10 +43,6 @@ public class DogOwnerMainPageFragment extends FragmentWithSubjects {
 
     private DogOwnerMainPageViewModel viewModel;
     private DogOwnerMainPageFragmentBinding binding;
-
-    public DogOwnerMainPageFragment() {
-        ServiceLocator.getInstance().inject(this);
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,8 +85,9 @@ public class DogOwnerMainPageFragment extends FragmentWithSubjects {
             Integer totalPrice = viewModel.getTotalPrice().getValue();
 
             String userId = profileService.getLoggedUserId();
+            String userName = profileService.getLoggedUserName();
 
-            registerSubject(dogWalksService.createDogWalk(new DogWalk(userId, checkedDogs, walkTime, totalPrice))).subscribe(response -> {
+            registerSubject(dogWalksService.createDogWalk(new DogWalk(checkedDogs, userId, userName, totalPrice, walkTime))).subscribe(response -> {
                 if (response.hasErrors()) {
                     response.exception.printStackTrace();
                     Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();

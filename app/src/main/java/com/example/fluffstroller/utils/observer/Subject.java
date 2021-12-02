@@ -1,19 +1,29 @@
 package com.example.fluffstroller.utils.observer;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Subject<T> {
-    private final List<Observer<T>> observers = new ArrayList<>();
+    private final List<Pair<Observer<T>, Boolean>> observers = new ArrayList<>();
     private final List<Subject<?>> createdSubjects = new ArrayList<>();
 
+    public void subscribe(Observer<T> observer, boolean unsubscribeAfterNotify) {
+        observers.add(new Pair<>(observer, unsubscribeAfterNotify));
+    }
+
     public void subscribe(Observer<T> observer) {
-        observers.add(observer);
+        subscribe(observer, true);
     }
 
     public void unsubscribe(Observer<T> observer) {
-        observers.remove(observer);
+        List<Pair<Observer<T>, Boolean>> pairsToRemove = observers.stream().filter(pair -> pair.first.equals(observer)).collect(Collectors.toList());
+        for (Pair<Observer<T>, Boolean> pair : pairsToRemove) {
+            observers.remove(pair);
+        }
     }
 
     public <R> Subject<R> mapAndSubscribe(Function<T, R> function, Observer<R> observer) {
@@ -48,14 +58,32 @@ public class Subject<T> {
     }
 
     public void notifyObservers(T state) {
-        for (Observer<T> observer : observers) {
-            observer.accept(new Response<>(state));
+        List<Pair<Observer<T>, Boolean>> pairsToRemove = new ArrayList<>();
+        for (Pair<Observer<T>, Boolean> pair : observers) {
+            pair.first.accept(new Response<>(state));
+
+            if (pair.second) {
+                pairsToRemove.add(pair);
+            }
+        }
+
+        for (Pair<Observer<T>, Boolean> pair : pairsToRemove) {
+            observers.remove(pair);
         }
     }
 
     public void notifyObservers(Exception error) {
-        for (Observer<T> observer : observers) {
-            observer.accept(new Response<>(error));
+        List<Pair<Observer<T>, Boolean>> pairsToRemove = new ArrayList<>();
+        for (Pair<Observer<T>, Boolean> pair : observers) {
+            pair.first.accept(new Response<>(error));
+
+            if (pair.second) {
+                pairsToRemove.add(pair);
+            }
+        }
+
+        for (Pair<Observer<T>, Boolean> pair : pairsToRemove) {
+            observers.remove(pair);
         }
     }
 }

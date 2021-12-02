@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWaitingForStrollerFragmentBinding;
 import com.example.fluffstroller.models.WalkRequest;
-import com.example.fluffstroller.models.WalkStatus;
+import com.example.fluffstroller.models.WalkRequestStatus;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -81,9 +81,9 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
                     @Override
                     public void run() {
                         List<WalkRequest> walkRequests = new ArrayList<>();
-                        walkRequests.add(new WalkRequest("1", "1234", "Stroller1", "0745", 2.4, WalkStatus.PENDING));
-                        walkRequests.add(new WalkRequest("2", "abc", "Stroller2", "123", 4.0, WalkStatus.PENDING));
-                        walkRequests.add(new WalkRequest("3", "5661", "Stroller3", "", 5.0, WalkStatus.PENDING));
+                        walkRequests.add(new WalkRequest("1234", "Stroller1", "0745", 2.4));
+                        walkRequests.add(new WalkRequest("abc", "Stroller2", "123", 4.0));
+                        walkRequests.add(new WalkRequest("5661", "Stroller3", "", 5.0));
 
                         if (walkRequests.size() > 0) {
                             binding.noRequestsTextView.setVisibility(View.INVISIBLE);

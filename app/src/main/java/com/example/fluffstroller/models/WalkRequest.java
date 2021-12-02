@@ -1,27 +1,23 @@
 package com.example.fluffstroller.models;
 
-public class WalkRequest {
-    private String id;
+import com.example.fluffstroller.repository.FirebaseDocument;
+
+public class WalkRequest extends FirebaseDocument {
     private String strollerId;
     private String strollerName;
     private String strollerPhoneNumber;
     private Double strollerRating;
-    private WalkStatus walkStatus;
+    private WalkRequestStatus status;
 
     public WalkRequest() {
     }
 
-    public WalkRequest(String id, String strollerId, String strollerName, String strollerPhoneNumber, Double strollerRating, WalkStatus walkStatus) {
-        this.id = id;
+    public WalkRequest(String strollerId, String strollerName, String strollerPhoneNumber, Double strollerRating) {
         this.strollerId = strollerId;
         this.strollerName = strollerName;
         this.strollerPhoneNumber = strollerPhoneNumber;
         this.strollerRating = strollerRating;
-        this.walkStatus = walkStatus;
-    }
-
-    public String getId() {
-        return id;
+        this.status = WalkRequestStatus.PENDING;
     }
 
     public String getStrollerId() {
@@ -40,7 +36,7 @@ public class WalkRequest {
         return strollerRating;
     }
 
-    public WalkStatus getWalkStatus() {
-        return walkStatus;
+    public WalkRequestStatus getStatus() {
+        return status;
     }
 }
