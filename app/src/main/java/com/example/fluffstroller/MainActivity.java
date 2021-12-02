@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 
 import com.example.fluffstroller.databinding.ActivityMainBinding;
+import com.example.fluffstroller.databinding.ActivityMainBinding;
 import com.example.fluffstroller.di.ServiceLocator;
 import com.google.android.material.navigation.NavigationView;
 

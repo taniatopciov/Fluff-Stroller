@@ -11,7 +11,6 @@ import com.example.fluffstroller.services.impl.MockProfileService;
 import com.example.fluffstroller.services.impl.MockStrollerService;
 
 public class ServicesRegistration {
-
     private final static ServicesRegistration instance = new ServicesRegistration();
     private static boolean servicesRegistered = false;
 

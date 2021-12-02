@@ -9,7 +9,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.example.flusffstroller"
+        applicationId "com.example.fluffstroller"
         minSdk 24
         targetSdk 31
         versionCode 1
@@ -35,6 +35,7 @@ android {
 
 dependencies {
 
+    implementation 'androidx.annotation:annotation:1.2.0'
     def lifecycle_version = "2.4.0"
 
     implementation 'androidx.appcompat:appcompat:1.4.0'
