@@ -1,4 +1,4 @@
-package com.example.flusffstroller.authentication;
+package com.example.fluffstroller.authentication;
 
 import androidx.lifecycle.ViewModel;
 
