@@ -9,5 +9,5 @@ public interface AuthenticationService {
 
     void logout();
 
-    Subject<FirebaseUser> register(String name, String email, String password, String userType);
+    Subject<FirebaseUser> register( String email, String password);
 }

@@ -8,15 +8,9 @@ import com.example.fluffstroller.utils.observer.Subject;
 import java.util.List;
 
 public interface ProfileService {
-    String getLoggedUserId();
-
-    String getLoggedUserName();
-
-    UserType getLoggedUserType();
-
-    Subject<List<String>> getLoggedUserDogs();
-
     Subject<Boolean> setCurrentDogWalk(DogWalk dogWalk);
 
     Subject<ProfileData> getProfileData(String userId);
+
+    Subject<ProfileData> createProfile(String uid, String name, String email, UserType userType);
 }

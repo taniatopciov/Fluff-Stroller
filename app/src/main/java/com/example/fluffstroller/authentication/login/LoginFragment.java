@@ -8,29 +8,29 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.fluffstroller.databinding.LoginFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
-import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.services.AuthenticationService;
+import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
-import com.example.fluffstroller.services.impl.FirebaseAuthenticationService;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.fluffstroller.utils.FragmentWithServices;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends FragmentWithServices {
 
     @Injectable
     private AuthenticationService authenticationService;
 
+    @Injectable
+    private ProfileService profileService;
+
+    @Injectable
+    private LoggedUserDataService loggedUserDataService;
+
     private LoginViewModel mViewModel;
     private LoginFragmentBinding binding;
-
-    public LoginFragment() {
-        ServiceLocator.getInstance().inject(this);
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -44,18 +44,31 @@ public class LoginFragment extends Fragment {
         });
 
         binding.loginButton.setOnClickListener(view -> {
-            String email = binding.emailTextWithLabelLoginFragment.toString();
-            String password = binding.passwordTextWithLabelLoginFragment.toString();
+            String email = binding.emailTextWithLabelLoginFragment.editText.getText().toString();
+            String password = binding.passwordTextWithLabelLoginFragment.editText.getText().toString();
+
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this.getContext(), "Empty fields!",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
 
             authenticationService.loginWithEmailAndPassword(email, password).subscribe(response -> {
-                if(response.hasErrors()) {
+                if (response.hasErrors()) {
                     Toast.makeText(this.getContext(), "Log in failed.",
                             Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                //currentUser = response.data()
-                getActivity().finish();
+                profileService.getProfileData(response.data.getUid()).subscribe(response2 -> {
+                    if (response2.hasErrors()) {
+                        Toast.makeText(this.getContext(), "Fetching data from Firebase failed",
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    loggedUserDataService.setLoggedUserData(response2.data);
+                    getActivity().finish();
+                });
             });
         });
 
