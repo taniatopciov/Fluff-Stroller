@@ -45,7 +45,11 @@ public class ServiceLocator {
         }
     }
 
-    private Object getConcreteClass(Class c) {
+    public <T> T getService(Class<T> tClass) {
+        return (T) getConcreteClass(tClass);
+    }
+
+    private Object getConcreteClass(Class<?> c) {
         if (injectionMap.containsKey(c)) {
             return injectionMap.get(c);
         }
