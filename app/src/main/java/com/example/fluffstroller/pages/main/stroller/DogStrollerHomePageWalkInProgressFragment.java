@@ -1,27 +1,42 @@
 package com.example.fluffstroller.pages.main.stroller;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogStrollerHomePageWalkInProgressFragmentBinding;
+import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.models.WalkStatus;
+import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.utils.FragmentWithServices;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
-public class DogStrollerHomePageWalkInProgressFragment extends Fragment {
+public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServices {
 
-    private DogStrollerHomePageWalkInProgressViewModel mViewModel;
+    @Injectable
+    private LoggedUserDataService loggedUserDataService;
+
+    @Injectable
+    private DogWalksService dogWalksService;
+
+    private DogStrollerHomePageWalkInProgressViewModel viewModel;
     private DogStrollerHomePageWalkInProgressFragmentBinding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DogStrollerHomePageWalkInProgressFragmentBinding.inflate(inflater, container, false);
+
+        viewModel = new ViewModelProvider(this).get(DogStrollerHomePageWalkInProgressViewModel.class);
 
         // todo add call button and phone number to includeAvailableWalkDetails
         binding.includeAvailableWalkDetails.dogNamesTextView.setVisibility(View.INVISIBLE);
@@ -29,6 +44,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends Fragment {
 
         binding.startWalkButton.setOnClickListener(view -> {
             setControlsForWalkInProgress();
+            // todo start walk
         });
 
         binding.goToMapPageButton.setOnClickListener(view -> {
@@ -45,7 +61,46 @@ public class DogStrollerHomePageWalkInProgressFragment extends Fragment {
             Snackbar.make(view, "Call", Snackbar.LENGTH_SHORT).show();
         });
 
-        mViewModel = new ViewModelProvider(this).get(DogStrollerHomePageWalkInProgressViewModel.class);
+        viewModel.getDogWalk().observe(getViewLifecycleOwner(), dogWalk -> {
+            if (dogWalk.getStatus().equals(WalkStatus.IN_PROGRESS)) {
+                setControlsForWalkInProgress();
+            }
+
+            String concatenatedDogNames = "";
+            if (dogWalk.getDogNames() != null) {
+                concatenatedDogNames = dogWalk.getDogNames().stream().reduce("", (s, s2) -> s + s2 + ", ");
+                int lastIndex = concatenatedDogNames.lastIndexOf(", ");
+                if (lastIndex >= 0) {
+                    concatenatedDogNames = concatenatedDogNames.substring(0, lastIndex);
+                }
+            }
+            binding.dogsValueTextView.setText(concatenatedDogNames);
+
+            if (dogWalk.getOwnerPhoneNumber() == null || dogWalk.getOwnerPhoneNumber().isEmpty()) {
+                binding.includeAvailableWalkDetails.callImageButton.setVisibility(View.INVISIBLE);
+            } else {
+                binding.includeAvailableWalkDetails.phoneNumberTextView.setText(dogWalk.getOwnerPhoneNumber());
+            }
+
+            binding.includeAvailableWalkDetails.dogOwnerNameTextView.setText(dogWalk.getOwnerName());
+            binding.includeAvailableWalkDetails.walkingTimeTextView.setText(dogWalk.getWalkTime() + " minutes");
+            binding.includeAvailableWalkDetails.walkingTimeTextView.setText(dogWalk.getTotalPrice() + " $");
+        });
+
+        Pair<String, WalkRequest> currentWalkRequestPair = loggedUserDataService.getLoggedUserCurrentWalkRequest();
+
+        if (currentWalkRequestPair.first == null || currentWalkRequestPair.first.isEmpty() || currentWalkRequestPair.second == null) {
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_stroller_home);
+            return binding.getRoot();
+        }
+
+        dogWalksService.getDogWalk(currentWalkRequestPair.first).subscribe(response -> {
+            if (response.hasErrors() || response.data == null) {
+                return;
+            }
+
+            viewModel.setDogWalk(response.data);
+        });
 
         return binding.getRoot();
     }

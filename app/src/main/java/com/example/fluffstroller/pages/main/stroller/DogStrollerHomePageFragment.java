@@ -9,7 +9,10 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.fluffstroller.databinding.DogStrollerHomePageFragmentBinding;
+import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.utils.FragmentWithServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,13 +23,15 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-public class DogStrollerHomePageFragment extends Fragment implements OnMapReadyCallback {
+public class DogStrollerHomePageFragment extends FragmentWithServices implements OnMapReadyCallback {
 
     private final static int[] AREA_RADIUS_STEPS = {1, 2, 5, 10, 15};
+
+    @Injectable
+    private DogWalksService dogWalksService;
 
     private DogStrollerHomePageViewModel viewModel;
     private DogStrollerHomePageFragmentBinding binding;
@@ -85,23 +90,7 @@ public class DogStrollerHomePageFragment extends Fragment implements OnMapReadyC
             }
         });
 
-        // todo replace with database call
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-//                        List<AvailableWalk> availableWalks = new ArrayList<>();
-//                        availableWalks.add(new AvailableWalk("1", "1234", "Owner1", new ArrayList<>(Arrays.asList("John Dog", "Dog1", "Dog2", "Jane Dog", "James Dogg", "Snoop Dogg")), 20, 24));
-//                        availableWalks.add(new AvailableWalk("2", "abc", "Owner2", new ArrayList<>(Arrays.asList("John Dog", "Jane Dog")), 50, 15));
-//                        availableWalks.add(new AvailableWalk("3", "0863", "Owner3", new ArrayList<>(Collections.singletonList("Johny Dog")), 6, 14));
-//
-//                        viewModel.setAvailableWalks(availableWalks);
-
-                        cancel();
-                    }
-                },
-                1000
-        );
+        // todo replace with database call - dogWalksService listen for nearby Walks
 
         return binding.getRoot();
     }

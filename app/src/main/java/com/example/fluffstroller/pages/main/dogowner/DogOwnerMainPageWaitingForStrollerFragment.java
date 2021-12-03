@@ -100,6 +100,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
             binding.dogsTextView.setText(formatCurrentDetail(R.string.dogs, concatenatedDogNames));
         });
 
+        // todo remove format current detail
         viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceTextView.setText(formatCurrentDetail(R.string.total_price_semicolon, totalPrice + " $")));
 
         viewModel.getWalkTime().observe(getViewLifecycleOwner(), walkTime -> binding.initialWalkTimeTextView.setText(formatCurrentDetail(R.string.initial_walk_time, walkTime + " minutes")));

@@ -2,6 +2,7 @@ package com.example.fluffstroller.models;
 
 public class StrollerProfileData extends ProfileData {
     private WalkRequest currentRequest;
+    private String walkId;
 
     public StrollerProfileData() {
     }
@@ -12,5 +13,9 @@ public class StrollerProfileData extends ProfileData {
 
     public WalkRequest getCurrentRequest() {
         return currentRequest;
+    }
+
+    public String getWalkId() {
+        return walkId;
     }
 }
