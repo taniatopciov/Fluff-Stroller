@@ -106,7 +106,7 @@
                     android:ems="10"
                     android:hint="@string/description_hint"
                     android:importantForAutofill="no"
-                    android:inputType="textLongMessage"
+                    android:inputType="textMultiLine"
                     android:minHeight="48dp"
                     app:label="@string/description" />
             </LinearLayout>
