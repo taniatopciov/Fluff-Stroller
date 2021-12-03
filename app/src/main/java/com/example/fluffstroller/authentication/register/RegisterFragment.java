@@ -1,5 +1,6 @@
 package com.example.fluffstroller.authentication.register;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,6 +84,7 @@ public class RegisterFragment extends FragmentWithServices {
                     }
 
                     loggedUserDataService.setLoggedUserData(response2.data);
+                    requireActivity().setResult(Activity.RESULT_OK);
                     requireActivity().finish();
                 });
             });

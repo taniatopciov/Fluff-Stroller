@@ -9,22 +9,26 @@ public class DogWalk extends FirebaseDocument {
     private List<String> dogNames;
     private String ownerId;
     private String ownerName;
+    private String ownerPhoneNumber;
     private Integer totalPrice;
     private Integer walkTime;
     private WalkStatus status;
-    private List<WalkRequest> requests; // todo convert to collection
+    private List<WalkRequest> requests;
+    private Long creationTimeMillis;
 
     public DogWalk() {
     }
 
-    public DogWalk(List<String> dogNames, String ownerId, String ownerName, Integer totalPrice, Integer walkTime) {
+    public DogWalk(List<String> dogNames, String ownerId, String ownerName, String ownerPhoneNumber, Integer totalPrice, Integer walkTime) {
         this.dogNames = dogNames;
         this.ownerId = ownerId;
         this.ownerName = ownerName;
+        this.ownerPhoneNumber = ownerPhoneNumber;
         this.totalPrice = totalPrice;
         this.walkTime = walkTime;
         this.requests = new ArrayList<>();
         this.status = WalkStatus.PENDING;
+        this.creationTimeMillis = System.currentTimeMillis();
     }
 
     public List<String> getDogNames() {
@@ -37,6 +41,10 @@ public class DogWalk extends FirebaseDocument {
 
     public String getOwnerName() {
         return ownerName;
+    }
+
+    public String getOwnerPhoneNumber() {
+        return ownerPhoneNumber;
     }
 
     public Integer getTotalPrice() {
@@ -53,5 +61,9 @@ public class DogWalk extends FirebaseDocument {
 
     public WalkStatus getStatus() {
         return status;
+    }
+
+    public Long getCreationTimeMillis() {
+        return creationTimeMillis;
     }
 }

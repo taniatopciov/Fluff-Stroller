@@ -15,14 +15,18 @@ public class FirebaseRepository {
 
         firestore.document(pathToDocument)
                 .addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        subject.notifyObservers(error);
-                        return;
-                    }
-                    if (value != null && value.exists()) {
-                        subject.notifyObservers(value.toObject(tClass));
-                    } else {
-                        subject.notifyObservers((T) null);
+                    try {
+                        if (error != null) {
+                            subject.notifyObservers(error);
+                            return;
+                        }
+                        if (value != null && value.exists()) {
+                            subject.notifyObservers(value.toObject(tClass));
+                        } else {
+                            subject.notifyObservers((T) null);
+                        }
+                    } catch (Exception e) {
+                        subject.notifyObservers(e);
                     }
                 });
 
@@ -34,12 +38,13 @@ public class FirebaseRepository {
 
         firestore.document(pathToDocument)
                 .addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        subject.notifyObservers(error);
-                        return;
-                    }
-                    if (value != null && value.exists()) {
-                        try {
+                    try {
+                        if (error != null) {
+                            subject.notifyObservers(error);
+                            return;
+                        }
+                        if (value != null && value.exists()) {
+
                             Map<String, Object> data = value.getData();
                             if (data == null) {
                                 subject.notifyObservers((T) null);
@@ -50,11 +55,12 @@ public class FirebaseRepository {
                             Class<? extends T> tClass = possibleTypes.get(type);
 
                             subject.notifyObservers(value.toObject(tClass));
-                        } catch (Exception e) {
-                            subject.notifyObservers(e);
+
+                        } else {
+                            subject.notifyObservers((T) null);
                         }
-                    } else {
-                        subject.notifyObservers((T) null);
+                    } catch (Exception e) {
+                        subject.notifyObservers(e);
                     }
                 });
 
@@ -68,8 +74,8 @@ public class FirebaseRepository {
         firestore.document(pathToDocument)
                 .get()
                 .addOnSuccessListener(documentReference -> {
-                    if (documentReference.exists()) {
-                        try {
+                    try {
+                        if (documentReference.exists()) {
                             Map<String, Object> data = documentReference.getData();
                             if (data == null) {
                                 subject.notifyObservers((T) null);
@@ -80,11 +86,12 @@ public class FirebaseRepository {
                             Class<? extends T> tClass = possibleTypes.get(type);
 
                             subject.notifyObservers(documentReference.toObject(tClass));
-                        } catch (Exception e) {
-                            subject.notifyObservers(e);
+
+                        } else {
+                            subject.notifyObservers((T) null);
                         }
-                    } else {
-                        subject.notifyObservers((T) null);
+                    } catch (Exception e) {
+                        subject.notifyObservers(e);
                     }
                 })
                 .addOnFailureListener(subject::notifyObservers);
@@ -97,13 +104,43 @@ public class FirebaseRepository {
         firestore.document(pathToDocument)
                 .get()
                 .addOnSuccessListener(documentReference -> {
-                    if (documentReference.exists()) {
-                        subject.notifyObservers(documentReference.toObject(tClass));
-                    } else {
-                        subject.notifyObservers((T) null);
+                    try {
+                        if (documentReference.exists()) {
+                            subject.notifyObservers(documentReference.toObject(tClass));
+                        } else {
+                            subject.notifyObservers((T) null);
+                        }
+                    } catch (Exception e) {
+                        subject.notifyObservers(e);
                     }
                 })
                 .addOnFailureListener(subject::notifyObservers);
+        return subject;
+    }
+
+    public <T extends FirebaseDocument> Subject<List<T>> listenForCollectionChanges(String pathToCollection, Class<T> tDocumentClass) {
+        Subject<List<T>> subject = new Subject<>();
+
+        firestore.collection(pathToCollection)
+                .addSnapshotListener((value, error) -> {
+                    try {
+                        if (error != null) {
+                            subject.notifyObservers(error);
+                            return;
+                        }
+                        if (value == null) {
+                            subject.notifyObservers((List<T>) null);
+                            return;
+                        }
+
+                        List<T> documents = value.getDocuments().stream().map(documentSnapshot -> documentSnapshot.toObject(tDocumentClass)).collect(Collectors.toList());
+
+                        subject.notifyObservers(documents);
+                    } catch (Exception e) {
+                        subject.notifyObservers(e);
+                    }
+                });
+
         return subject;
     }
 
@@ -113,9 +150,13 @@ public class FirebaseRepository {
         firestore.collection(pathToCollection)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<T> documents = queryDocumentSnapshots.getDocuments().stream().map(documentSnapshot -> documentSnapshot.toObject(tClass)).collect(Collectors.toList());
+                    try {
+                        List<T> documents = queryDocumentSnapshots.getDocuments().stream().map(documentSnapshot -> documentSnapshot.toObject(tClass)).collect(Collectors.toList());
 
-                    subject.notifyObservers(documents);
+                        subject.notifyObservers(documents);
+                    } catch (Exception e) {
+                        subject.notifyObservers(e);
+                    }
                 })
                 .addOnFailureListener(subject::notifyObservers);
         return subject;
@@ -127,8 +168,12 @@ public class FirebaseRepository {
         firestore.collection(pathToCollection)
                 .add(documentData)
                 .addOnSuccessListener(documentReference -> {
-                    documentData.setId(documentReference.getId());
-                    subject.notifyObservers(documentData);
+                    try {
+                        documentData.setId(documentReference.getId());
+                        subject.notifyObservers(documentData);
+                    } catch (Exception e) {
+                        subject.notifyObservers(e);
+                    }
                 })
                 .addOnFailureListener(subject::notifyObservers);
         return subject;

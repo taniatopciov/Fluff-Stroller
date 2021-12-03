@@ -6,18 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.FeesService;
 import com.example.fluffstroller.services.LoggedUserDataService;
@@ -31,6 +24,13 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class DogOwnerMainPageFragment extends FragmentWithServices {
 
@@ -91,32 +91,27 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
 
             String userId = loggedUserDataService.getLoggedUserId();
             String userName = loggedUserDataService.getLoggedUserName();
+            String userPhoneNumber = loggedUserDataService.getLoggedUserPhoneNumber();
 
-            registerSubject(dogWalksService.createDogWalk(new DogWalk(checkedDogs, userId, userName, totalPrice, walkTime))).subscribe(response -> {
+            dogWalksService.createDogWalk(new DogWalk(checkedDogs, userId, userName, userPhoneNumber, totalPrice, walkTime)).subscribe(response -> {
                 if (response.hasErrors()) {
                     response.exception.printStackTrace();
                     Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                registerSubject(dogWalksService.updateDogWalkId(response.data.getId())).subscribe(res -> {
-                    if (res.hasErrors()) {
-                        res.exception.printStackTrace();
+                DogWalk dogWalk = response.data;
+                if (dogWalk == null) {
+                    Toast.makeText(getContext(), "Create empty walk", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                DogWalkPreview walkPreview = new DogWalkPreview(dogWalk.getId(), dogWalk.getStatus());
+                profileService.updateDogWalkPreview(userId, walkPreview).subscribe(res1 -> {
+                    if (res1.hasErrors()) {
+                        res1.exception.printStackTrace();
                         Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
-                        return;
                     }
-
-                    registerSubject(profileService.setCurrentDogWalk(response.data)).subscribe(res1 -> {
-                        if (res1.hasErrors()) {
-                            res1.exception.printStackTrace();
-                            Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        DogOwnerMainPageWaitingForStrollerViewModel waitingForStrollerViewModel = new ViewModelProvider(requireActivity()).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
-                        waitingForStrollerViewModel.setCurrentDogWalk(response.data);
-
-                        Navigation.findNavController(view).navigate(R.id.nav_dog_owner_home_waiting_for_stroller);
-                    });
                 });
             });
         });

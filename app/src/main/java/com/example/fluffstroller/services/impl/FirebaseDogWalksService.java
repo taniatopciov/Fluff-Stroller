@@ -5,12 +5,11 @@ import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.utils.observer.Subject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class FirebaseDogWalksService implements DogWalksService {
 
     public static final String WALKS_PATH = "walks";
+    private static final String REQUESTS_COLLECTION_NAME = "requests";
+
     private final FirebaseRepository firebaseRepository;
 
     public FirebaseDogWalksService(FirebaseRepository firebaseRepository) {
@@ -22,11 +21,14 @@ public class FirebaseDogWalksService implements DogWalksService {
         return firebaseRepository.addDocument(WALKS_PATH, dogWalk);
     }
 
+    @Override
+    public Subject<DogWalk> getDogWalk(String id) {
+        return firebaseRepository.getDocument(WALKS_PATH + "/" + id, DogWalk.class);
+    }
 
     @Override
-    public Subject<Boolean> updateDogWalkId(String walkId) {
-        Map<String, Object> values = new HashMap<>();
-        values.put("id", walkId);
-        return firebaseRepository.updateDocument(WALKS_PATH + "/" + walkId, values);
+    public Subject<DogWalk> listenForDogWalkChanges(String walkId) {
+        return firebaseRepository.listenForDocumentChanges(WALKS_PATH + "/" + walkId, DogWalk.class);
     }
+
 }

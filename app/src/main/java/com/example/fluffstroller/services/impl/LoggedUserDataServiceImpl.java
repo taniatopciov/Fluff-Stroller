@@ -2,6 +2,7 @@ package com.example.fluffstroller.services.impl;
 
 import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogOwnerProfileData;
+import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.ProfileData;
 import com.example.fluffstroller.services.LoggedUserDataService;
 
@@ -59,5 +60,18 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
         }
 
         return new ArrayList<>();
+    }
+
+    @Override
+    public String getLoggedUserCurrentWalkId() {
+        if (profileData != null && profileData instanceof DogOwnerProfileData) {
+            DogWalkPreview currentWalkPreview = ((DogOwnerProfileData) profileData).getCurrentWalkPreview();
+            if (currentWalkPreview == null) {
+                return "";
+            }
+            return currentWalkPreview.getWalkId();
+        }
+
+        return "";
     }
 }

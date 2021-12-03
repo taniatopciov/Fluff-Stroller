@@ -1,7 +1,7 @@
 package com.example.fluffstroller.services.impl;
 
 import com.example.fluffstroller.models.DogOwnerProfileData;
-import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.ProfileData;
 import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.models.UserType;
@@ -21,15 +21,23 @@ public class FirebaseProfileService implements ProfileService {
     }
 
     @Override
-    @Deprecated
-    public Subject<Boolean> setCurrentDogWalk(DogWalk dogWalk) {
+    public Subject<Boolean> updateDogWalkPreview(String userId, DogWalkPreview walkPreview) {
         Map<String, Object> values = new HashMap<>();
-        values.put("currentWalk", dogWalk);
-        return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/userId1", values);
+        values.put("currentWalkPreview", walkPreview);
+        return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + userId, values);
     }
 
     @Override
     public Subject<ProfileData> getProfileData(String userId) {
+        HashMap<String, Class<? extends ProfileData>> possibleTypes = new HashMap<>();
+        possibleTypes.put(UserType.STROLLER.toString(), StrollerProfileData.class);
+        possibleTypes.put(UserType.DOG_OWNER.toString(), DogOwnerProfileData.class);
+
+        return firebaseRepository.getDocument(PROFILES_COLLECTION_PATH + "/" + userId, "userType", possibleTypes);
+    }
+
+    @Override
+    public Subject<ProfileData> listenForProfileData(String userId) {
         HashMap<String, Class<? extends ProfileData>> possibleTypes = new HashMap<>();
         possibleTypes.put(UserType.STROLLER.toString(), StrollerProfileData.class);
         possibleTypes.put(UserType.DOG_OWNER.toString(), DogOwnerProfileData.class);

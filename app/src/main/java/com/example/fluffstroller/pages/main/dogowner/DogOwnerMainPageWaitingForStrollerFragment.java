@@ -10,31 +10,42 @@ import android.widget.Toast;
 
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWaitingForStrollerFragmentBinding;
+import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.WalkRequest;
-import com.example.fluffstroller.models.WalkRequestStatus;
+import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.utils.FragmentWithServices;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.text.HtmlCompat;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
+
+public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServices {
+
+    @Injectable
+    private LoggedUserDataService loggedUserDataService;
+
+    @Injectable
+    private DogWalksService dogWalksService;
 
     private DogOwnerMainPageWaitingForStrollerViewModel viewModel;
     private DogOwnerMainPageWaitingForStrollerFragmentBinding binding;
+
+    // todo implement the timer
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DogOwnerMainPageWaitingForStrollerFragmentBinding.inflate(inflater, container, false);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
+        viewModel = new ViewModelProvider(this).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
 
         binding.cancelWalkButton.setOnClickListener(view -> {
             // todo handle walk canceled
@@ -55,13 +66,31 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
             }
         });
 
-        viewModel.getWalkRequests().observe(getViewLifecycleOwner(), walkRequestAdapter::setWalkRequests);
+        viewModel.getWalkCreationTimeMillis().observe(getViewLifecycleOwner(), walkCreationMillis -> {
+            // todo start the timer if necessary
+            // todo handle the case in which the 10 minutes timer has expired
+        });
 
-        viewModel.getCurrentDogWalk().observe(getViewLifecycleOwner(), dogWalk -> {
+        viewModel.getWalkRequests().observe(getViewLifecycleOwner(), walkRequests -> {
+
+            if (walkRequests == null) {
+                walkRequests = new ArrayList<>();
+            }
+
+            if (walkRequests.isEmpty()) {
+                binding.noRequestsTextView.setVisibility(View.VISIBLE);
+            } else {
+                binding.noRequestsTextView.setVisibility(View.INVISIBLE);
+            }
+
+            walkRequestAdapter.setWalkRequests(walkRequests);
+        });
+
+        viewModel.getDogNames().observe(getViewLifecycleOwner(), dogNames -> {
             String concatenatedDogNames = "";
 
-            if (dogWalk.getDogNames() != null) {
-                concatenatedDogNames = dogWalk.getDogNames().stream().reduce("", (s, s2) -> s + s2 + ", ");
+            if (dogNames != null) {
+                concatenatedDogNames = dogNames.stream().reduce("", (s, s2) -> s + s2 + ", ");
                 int lastIndex = concatenatedDogNames.lastIndexOf(", ");
                 if (lastIndex >= 0) {
                     concatenatedDogNames = concatenatedDogNames.substring(0, lastIndex);
@@ -69,35 +98,26 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends Fragment {
             }
 
             binding.dogsTextView.setText(formatCurrentDetail(R.string.dogs, concatenatedDogNames));
-
-            binding.totalPriceTextView.setText(formatCurrentDetail(R.string.total_price_semicolon, dogWalk.getTotalPrice() + " $"));
-
-            binding.initialWalkTimeTextView.setText(formatCurrentDetail(R.string.initial_walk_time, dogWalk.getWalkTime() + " minutes"));
         });
 
-        // todo get requests from database
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        List<WalkRequest> walkRequests = new ArrayList<>();
-                        walkRequests.add(new WalkRequest("1234", "Stroller1", "0745", 2.4));
-                        walkRequests.add(new WalkRequest("abc", "Stroller2", "123", 4.0));
-                        walkRequests.add(new WalkRequest("5661", "Stroller3", "", 5.0));
+        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceTextView.setText(formatCurrentDetail(R.string.total_price_semicolon, totalPrice + " $")));
 
-                        if (walkRequests.size() > 0) {
-                            binding.noRequestsTextView.setVisibility(View.INVISIBLE);
-                        } else {
-                            binding.noRequestsTextView.setVisibility(View.VISIBLE);
-                        }
+        viewModel.getWalkTime().observe(getViewLifecycleOwner(), walkTime -> binding.initialWalkTimeTextView.setText(formatCurrentDetail(R.string.initial_walk_time, walkTime + " minutes")));
 
-                        viewModel.setWalkRequests(walkRequests);
+        String currentWalkId = loggedUserDataService.getLoggedUserCurrentWalkId();
 
-                        cancel();
-                    }
-                },
-                1000
-        );
+        if (currentWalkId.isEmpty()) {
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_dog_owner_home);
+            return binding.getRoot();
+        }
+
+        registerSubject(dogWalksService.listenForDogWalkChanges(currentWalkId)).subscribe(response -> {
+            if (response.hasErrors() || response.data == null) {
+                return;
+            }
+
+            viewModel.setCurrentDogWalkDetails(response.data);
+        }, false);
 
         return binding.getRoot();
     }

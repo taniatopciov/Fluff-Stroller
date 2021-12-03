@@ -13,6 +13,7 @@ import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.ProfileData;
 import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.observer.Observer;
 import com.example.fluffstroller.utils.observer.Subject;
@@ -20,8 +21,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,14 +40,24 @@ public class MainActivity extends AppCompatActivity {
     private Observer<ProfileData> profileDataObserver;
     private Subject<ProfileData> loggedUserSubject;
 
-    private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Toast.makeText(getApplicationContext(), "Success",
-                                Toast.LENGTH_LONG).show();
-                    }
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    ServiceLocator serviceLocator = ServiceLocator.getInstance();
+                    ProfileService profileService = serviceLocator.getService(ProfileService.class);
+                    LoggedUserDataService loggedUserDataService = serviceLocator.getService(LoggedUserDataService.class);
+
+                    profileDataObserver = profileDataResponse -> {
+                        if (profileDataResponse.hasErrors()) {
+                            Toast.makeText(this, "Error while getting the profile", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        homeViewModel.setProfileData(profileDataResponse.data);
+                    };
+
+                    loggedUserSubject = profileService.listenForProfileData(loggedUserDataService.getLoggedUserId());
+                    loggedUserSubject.subscribe(profileDataObserver, false);
                 }
             });
 
@@ -76,22 +85,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-
-        ProfileService profileService = ServiceLocator.getInstance().getService(ProfileService.class);
-
-        profileDataObserver = profileDataResponse -> {
-            if (profileDataResponse.hasErrors()) {
-                Toast.makeText(this, "Error while getting the profile", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            homeViewModel.setProfileData(profileDataResponse.data);
-        };
-
-        // todo change with logged user id
-        loggedUserSubject = profileService.getProfileData("userId1");
-        loggedUserSubject.subscribe(profileDataObserver, false);
 
         homeViewModel.getDogOwnerProfileData().observe(this, dogOwnerProfileData -> {
             DogWalkPreview walkPreview = dogOwnerProfileData.getCurrentWalkPreview();
@@ -150,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ServiceLocator.getInstance().dispose();
+//        ServiceLocator.getInstance().dispose();
 
         if (loggedUserSubject != null) {
             if (profileDataObserver != null) {

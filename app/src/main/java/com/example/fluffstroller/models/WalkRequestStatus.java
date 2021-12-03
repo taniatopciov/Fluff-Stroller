@@ -4,4 +4,5 @@ public enum WalkRequestStatus {
     PENDING,
     ACCEPTED,
     REJECTED,
+    CANCELED
 }

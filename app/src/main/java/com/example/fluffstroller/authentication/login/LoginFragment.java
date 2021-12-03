@@ -1,15 +1,11 @@
 package com.example.fluffstroller.authentication.login;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import com.example.fluffstroller.databinding.LoginFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
@@ -17,6 +13,11 @@ import com.example.fluffstroller.services.AuthenticationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 public class LoginFragment extends FragmentWithServices {
 
@@ -67,7 +68,8 @@ public class LoginFragment extends FragmentWithServices {
                         return;
                     }
                     loggedUserDataService.setLoggedUserData(response2.data);
-                    getActivity().finish();
+                    requireActivity().setResult(Activity.RESULT_OK);
+                    requireActivity().finish();
                 });
             });
         });

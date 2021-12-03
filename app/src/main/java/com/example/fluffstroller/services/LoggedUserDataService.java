@@ -18,4 +18,6 @@ public interface LoggedUserDataService {
     String getLoggedUserPhoneNumber();
 
     List<Dog> getLoggedUserDogs();
+
+    String getLoggedUserCurrentWalkId();
 }
