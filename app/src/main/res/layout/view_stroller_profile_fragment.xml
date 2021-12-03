@@ -157,11 +157,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reviewsLabelViewStrollerProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/reviewsLabelViewStrollerProfile"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/editProfileButtonViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_edit_24"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/nameLabelViewStrollerProfile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/nameTextViewViewStrollerProfile"
+        app:layout_constraintTop_toTopOf="@+id/nameLabelViewStrollerProfile"
+        app:tint="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

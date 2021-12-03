@@ -14,11 +14,14 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="48dp"
+        android:layout_marginBottom="24dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/saveButtonEditStrollerProfile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <com.example.fluffstroller.utils.components.TextWithLabel
             android:id="@+id/nameTextViewWithLabelEditStrollerProfile"
@@ -77,66 +80,15 @@
             app:label="@string/description" />
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/averageRatingLabelEditStrollerProfile"
+    <Button
+        android:id="@+id/saveButtonEditStrollerProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="32dp"
-        android:text="@string/average_rating"
-        android:textColor="@color/primary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <RatingBar
-        android:id="@+id/ratingBarEditStrollerProfile"
-        style="@style/Widget.AppCompat.RatingBar.Indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="16dp"
-        android:numStars="5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/averageRatingLabelEditStrollerProfile" />
-
-    <TextView
-        android:id="@+id/averageRatingEditStrollerProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="@string/text"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/ratingBarEditStrollerProfile"
-        app:layout_constraintStart_toEndOf="@+id/ratingBarEditStrollerProfile"
-        app:layout_constraintTop_toTopOf="@+id/ratingBarEditStrollerProfile" />
-
-    <TextView
-        android:id="@+id/reviewsLabelEditStrollerProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="32dp"
-        android:textColor="@color/primary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:text="@string/reviews"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBarEditStrollerProfile" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reviewsRecyclerViewStrollerEditProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reviewsLabelEditStrollerProfile" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
