@@ -102,4 +102,7 @@
     <string name="my_dogs">My Dogs</string>
     <string name="average_rating">Average Rating</string>
     <string name="reviews">Reviews</string>
+    <string name="remove">Remove</string>
+    <string name="view_profile">View Profile</string>
+    <string name="edit_profile">Edit Profile</string>
 </resources>

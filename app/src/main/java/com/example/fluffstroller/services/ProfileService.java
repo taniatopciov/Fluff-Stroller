@@ -8,6 +8,7 @@ import com.example.fluffstroller.models.UserType;
 import com.example.fluffstroller.utils.observer.Subject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface ProfileService {
     Subject<Boolean> setCurrentDogWalk(DogWalk dogWalk);
@@ -20,7 +21,7 @@ public interface ProfileService {
 
     Subject<Boolean> updateReviewsArray(String id, ArrayList<Review> reviews);
 
-    Subject<Boolean> updateDogOwnerProfile(String id, ProfileData profileData);
+    public Subject<Boolean> updateDogOwnerProfile(String id, String name, String phoneNumber, List<Dog> dogs);
 
-    Subject<Boolean> updateDogStrollerProfile(String id, ProfileData profileData);
+    public Subject<Boolean> updateDogStrollerProfile(String id, String name, String phoneNumber, String description, List<Review> reviews);
 }

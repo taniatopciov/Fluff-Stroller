@@ -13,6 +13,7 @@ import com.example.fluffstroller.utils.observer.Subject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FirebaseProfileService implements ProfileService {
@@ -65,30 +66,23 @@ public class FirebaseProfileService implements ProfileService {
         return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + id, values);
     }
 
-    public Subject<Boolean> updateDogOwnerProfile(String id, ProfileData profileData) {
+    public Subject<Boolean> updateDogOwnerProfile(String id, String name, String phoneNumber, List<Dog> dogs) {
         Map<String, Object> values = new HashMap<>();
 
-        values.put("name", profileData.getName());
-        values.put("phoneNumber", profileData.getPhoneNumber());
-
-        if(profileData instanceof DogOwnerProfileData) {
-            values.put("dogs", ((DogOwnerProfileData) profileData).getDogs());
-        }
+        values.put("name", name);
+        values.put("phoneNumber", phoneNumber);
+        values.put("dogs", dogs);
 
         return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + id, values);
     }
 
-    public Subject<Boolean> updateDogStrollerProfile(String id, ProfileData profileData) {
+    public Subject<Boolean> updateDogStrollerProfile(String id, String name, String phoneNumber, String description, List<Review> reviews) {
         Map<String, Object> values = new HashMap<>();
 
-        values.put("name", profileData.getName());
-        values.put("phoneNumber", profileData.getPhoneNumber());
-
-        if(profileData instanceof StrollerProfileData) {
-            StrollerProfileData stroller = (StrollerProfileData) profileData;
-            values.put("description", stroller.getDescription());
-            values.put("reviews", stroller.getReviews());
-        }
+        values.put("name", name);
+        values.put("phoneNumber", phoneNumber);
+        values.put("description", description);
+        values.put("reviews", reviews);
 
         return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + id, values);
     }

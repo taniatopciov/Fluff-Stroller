@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.fluffstroller.models.Dog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DogOwnerProfileViewModel extends ViewModel {
@@ -51,5 +52,23 @@ public class DogOwnerProfileViewModel extends ViewModel {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber.postValue(phoneNumber);
+    }
+
+    public void clearData() {
+        dogs.postValue(new ArrayList<>());
+        name.postValue("");
+        email.postValue("");
+        phoneNumber.postValue("");
+    }
+
+    public void addDog(Dog addedDog) {
+        List<Dog> dogsList = dogs.getValue();
+
+        if (dogsList == null) {
+            dogsList = new ArrayList<>();
+        }
+
+        dogsList.add(addedDog);
+        dogs.postValue(dogsList);
     }
 }

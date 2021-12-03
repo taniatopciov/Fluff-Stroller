@@ -9,18 +9,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.fluffstroller.databinding.AddDogFragmentBinding;
+import com.example.fluffstroller.models.Dog;
 
 public class AddDogFragment extends Fragment {
 
     private AddDogViewModel mViewModel;
 
     private AddDogFragmentBinding binding;
-
-    public static AddDogFragment newInstance() {
-        return new AddDogFragment();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -29,8 +27,13 @@ public class AddDogFragment extends Fragment {
         binding = AddDogFragmentBinding.inflate(inflater, container, false);
 
         binding.saveButtonAddDogFragment.setOnClickListener(view -> {
-            Toast.makeText(this.getContext(), "save button",
-                    Toast.LENGTH_LONG).show();
+            String name = binding.nameTextWithLabelAddDogFragment.getText();
+            String breed = binding.breedTextWithLabelAddDogFragment.getText();
+            String description = binding.descriptionTextWithLabelAddDogFragment.getText();
+
+            Dog dog = new Dog(name, breed, description);
+            AddDogFragmentDirections.FromAddDogToEdit addDogToEdit = AddDogFragmentDirections.fromAddDogToEdit(dog);
+            Navigation.findNavController(view).navigate(addDogToEdit);
         });
 
         binding.uploadImageButtonAddDogFragment.setOnClickListener(view -> {

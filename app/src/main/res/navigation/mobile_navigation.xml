@@ -28,6 +28,13 @@
         <action
             android:id="@+id/action_nav_home_to_nav_stroller_home_walk_in_progress"
             app:destination="@id/nav_stroller_home_walk_in_progress" />
+        <action
+            android:id="@+id/nav_home_to_dog_owner_profile_navigation"
+            app:destination="@id/dog_owner_profile_navigation">
+            <argument
+                android:name="id"
+                app:argType="string" />
+        </action>
     </fragment>
 
     <fragment
@@ -113,5 +120,6 @@
         android:name="com.example.fluffstroller.pages.profile.dogowner.AddDogFragment"
         android:label="Add Dog"
         tools:layout="@layout/add_dog_fragment" />
+    <include app:graph="@navigation/dog_owner_profile_navigation" />
 
 </navigation>
