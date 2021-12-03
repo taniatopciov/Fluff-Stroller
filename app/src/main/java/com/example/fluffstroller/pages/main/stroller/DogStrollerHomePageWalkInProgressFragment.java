@@ -38,7 +38,6 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
         viewModel = new ViewModelProvider(this).get(DogStrollerHomePageWalkInProgressViewModel.class);
 
-        // todo add call button and phone number to includeAvailableWalkDetails
         binding.includeAvailableWalkDetails.dogNamesTextView.setVisibility(View.INVISIBLE);
         binding.includeAvailableWalkDetails.requestButton.setVisibility(View.INVISIBLE);
 

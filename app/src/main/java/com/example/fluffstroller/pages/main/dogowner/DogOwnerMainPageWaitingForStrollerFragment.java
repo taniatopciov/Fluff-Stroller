@@ -1,7 +1,6 @@
 package com.example.fluffstroller.pages.main.dogowner;
 
 import android.os.Bundle;
-import android.text.Spanned;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +21,9 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.text.HtmlCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 
 public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServices {
 
@@ -97,13 +94,12 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
                 }
             }
 
-            binding.dogsTextView.setText(formatCurrentDetail(R.string.dogs, concatenatedDogNames));
+            binding.dogsTextView.setText(concatenatedDogNames);
         });
 
-        // todo remove format current detail
-        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceTextView.setText(formatCurrentDetail(R.string.total_price_semicolon, totalPrice + " $")));
+        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceTextView.setText(totalPrice + " $"));
 
-        viewModel.getWalkTime().observe(getViewLifecycleOwner(), walkTime -> binding.initialWalkTimeTextView.setText(formatCurrentDetail(R.string.initial_walk_time, walkTime + " minutes")));
+        viewModel.getWalkTime().observe(getViewLifecycleOwner(), walkTime -> binding.initialWalkTimeTextView.setText(walkTime + " minutes"));
 
         String currentWalkId = loggedUserDataService.getLoggedUserCurrentWalkId();
 
@@ -135,12 +131,6 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         String text = String.format(Locale.getDefault(), "(%02d:%02d minutes remaining)", minutes, seconds);
         binding.waitingForStrollerTimeTextView.setText(text);
-    }
-
-
-    private Spanned formatCurrentDetail(int resourceId, String text) {
-        String result = "<b>" + getResources().getString(resourceId) + "</b> " + text;
-        return HtmlCompat.fromHtml(result, HtmlCompat.FROM_HTML_MODE_COMPACT);
     }
 
     private void handleRequestAccepted(Pair<WalkRequest, Integer> requestPair) {
