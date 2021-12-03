@@ -4,7 +4,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.example.fluffstroller.authentication.AuthenticationActivity;
 import com.example.fluffstroller.databinding.ActivityMainBinding;
@@ -13,24 +27,14 @@ import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.ProfileData;
 import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.services.AuthenticationService;
+import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.observer.Observer;
 import com.example.fluffstroller.utils.observer.Subject;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -138,6 +142,23 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+
+            LoggedUserDataService loggedUserDataService = ServiceLocator.getInstance().getService(LoggedUserDataService.class);
+            AuthenticationService authenticationService = ServiceLocator.getInstance().getService(AuthenticationService.class);
+
+            loggedUserDataService.setLoggedUserData(null);
+            authenticationService.logout();
+
+            startAuthenticationActivity();
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

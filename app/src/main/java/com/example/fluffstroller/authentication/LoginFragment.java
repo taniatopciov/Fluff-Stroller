@@ -1,8 +1,7 @@
-package com.example.fluffstroller.authentication.login;
+package com.example.fluffstroller.authentication;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +16,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.fluffstroller.BuildConfig;
 import com.example.fluffstroller.R;
-import com.example.fluffstroller.authentication.AuthenticationActivity;
 import com.example.fluffstroller.databinding.LoginFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.services.AuthenticationService;
@@ -34,7 +31,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 
 public class LoginFragment extends FragmentWithServices {
@@ -48,7 +44,6 @@ public class LoginFragment extends FragmentWithServices {
     @Injectable
     private LoggedUserDataService loggedUserDataService;
 
-    private LoginViewModel mViewModel;
     private LoginFragmentBinding binding;
 
     private GoogleSignInClient googleSignInClient;
@@ -82,7 +77,6 @@ public class LoginFragment extends FragmentWithServices {
                              @Nullable Bundle savedInstanceState) {
 
         binding = LoginFragmentBinding.inflate(inflater, container, false);
-        mViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
 
         binding.noAccountTextViewLoginFragment.setOnClickListener(view -> {
             Navigation.findNavController(view).navigate(LoginFragmentDirections.navLoginToRegister());

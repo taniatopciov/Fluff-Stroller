@@ -1,7 +1,6 @@
-package com.example.fluffstroller.authentication.register;
+package com.example.fluffstroller.authentication;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.fluffstroller.R;
@@ -40,7 +38,6 @@ public class RegisterFragment extends FragmentWithServices {
     @Injectable
     private LoggedUserDataService loggedUserDataService;
 
-    private RegisterViewModel mViewModel;
     private RegisterFragmentBinding binding;
 
     @Override
@@ -48,7 +45,6 @@ public class RegisterFragment extends FragmentWithServices {
                              @Nullable Bundle savedInstanceState) {
 
         binding = RegisterFragmentBinding.inflate(inflater, container, false);
-        mViewModel = new ViewModelProvider(requireActivity()).get(RegisterViewModel.class);
 
         Spinner userTypeSpinner = binding.userTypeSpinnerRegisterFragment;
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.user_types_array, android.R.layout.simple_spinner_item);
@@ -146,7 +142,7 @@ public class RegisterFragment extends FragmentWithServices {
 
     private void changeToastColors(Toast toast) {
         TextView text = (TextView) toast.getView().findViewById(android.R.id.message);
-        text.setTextColor(ContextCompat.getColor(getContext(),R.color.accent));
+        text.setTextColor(ContextCompat.getColor(getContext(), R.color.accent));
         text.setTextSize(16);
     }
 }
