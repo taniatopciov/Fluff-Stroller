@@ -108,5 +108,10 @@
         android:name="com.example.fluffstroller.pages.walkinprogress.WalkInProgressPage"
         android:label="@string/menu_gallery"
         tools:layout="@layout/walk_in_progress_fragment" />
+    <fragment
+        android:id="@+id/nav_add_dog"
+        android:name="com.example.fluffstroller.pages.profile.dogowner.AddDogFragment"
+        android:label="Add Dog"
+        tools:layout="@layout/add_dog_fragment" />
 
 </navigation>
