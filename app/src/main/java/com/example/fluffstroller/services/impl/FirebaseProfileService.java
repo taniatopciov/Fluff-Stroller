@@ -1,14 +1,17 @@
 package com.example.fluffstroller.services.impl;
 
+import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogOwnerProfileData;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.ProfileData;
+import com.example.fluffstroller.models.Review;
 import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.models.UserType;
 import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.observer.Subject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,5 +51,45 @@ public class FirebaseProfileService implements ProfileService {
         }
 
         return firebaseRepository.setDocument(PROFILES_COLLECTION_PATH, uid, profileData);
+    }
+
+    public Subject<Boolean> updateDogsArray(String id, ArrayList<Dog> dogs) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("dogs", dogs);
+        return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + id, values);
+    }
+
+    public Subject<Boolean> updateReviewsArray(String id, ArrayList<Review> reviews) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("reviews", reviews);
+        return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + id, values);
+    }
+
+    public Subject<Boolean> updateDogOwnerProfile(String id, ProfileData profileData) {
+        Map<String, Object> values = new HashMap<>();
+
+        values.put("name", profileData.getName());
+        values.put("phoneNumber", profileData.getPhoneNumber());
+
+        if(profileData instanceof DogOwnerProfileData) {
+            values.put("dogs", ((DogOwnerProfileData) profileData).getDogs());
+        }
+
+        return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + id, values);
+    }
+
+    public Subject<Boolean> updateDogStrollerProfile(String id, ProfileData profileData) {
+        Map<String, Object> values = new HashMap<>();
+
+        values.put("name", profileData.getName());
+        values.put("phoneNumber", profileData.getPhoneNumber());
+
+        if(profileData instanceof StrollerProfileData) {
+            StrollerProfileData stroller = (StrollerProfileData) profileData;
+            values.put("description", stroller.getDescription());
+            values.put("reviews", stroller.getReviews());
+        }
+
+        return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + id, values);
     }
 }
