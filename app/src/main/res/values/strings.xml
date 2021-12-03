@@ -73,7 +73,7 @@
     <string name="password_hint">************</string>
     <string name="forgot_password_click_here">Forgot your password? <font color='#F57F17'>Click here!</font></string>
     <string name="no_account_signup">You don\'t have an account? <font color='#F57F17'>Register now!</font></string>
-    <string name="already_registered">Already registered? <font color='#F57F17'>Log in!</font></string>
+    <string name="already_registered">Already registered? <font color='#F57F17'>Login!</font></string>
     <string name="title_authentication_activity">Authentication</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

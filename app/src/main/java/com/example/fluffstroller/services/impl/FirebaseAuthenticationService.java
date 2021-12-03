@@ -5,9 +5,11 @@ import androidx.annotation.NonNull;
 import com.example.fluffstroller.services.AuthenticationService;
 import com.example.fluffstroller.utils.observer.Subject;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class FirebaseAuthenticationService implements AuthenticationService {
 
@@ -26,8 +28,18 @@ public class FirebaseAuthenticationService implements AuthenticationService {
     }
 
     @Override
-    public void logout() {
+    public Subject<FirebaseUser> loginWithGoogle(String tokenId) {
+        Subject<FirebaseUser> subject = new Subject<>();
+        AuthCredential credential = GoogleAuthProvider.getCredential(tokenId, null);
 
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(getAuthResultOnCompleteListener(subject));
+        return subject;
+    }
+
+    @Override
+    public void logout() {
+        firebaseAuth.signOut();
     }
 
     @Override

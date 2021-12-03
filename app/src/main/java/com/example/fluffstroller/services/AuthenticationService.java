@@ -7,6 +7,8 @@ public interface AuthenticationService {
 
     Subject<FirebaseUser> loginWithEmailAndPassword(String email, String password);
 
+    Subject<FirebaseUser> loginWithGoogle(String tokenId);
+
     void logout();
 
     Subject<FirebaseUser> register( String email, String password);
