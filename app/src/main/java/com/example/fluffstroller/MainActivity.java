@@ -1,9 +1,12 @@
 package com.example.fluffstroller;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.example.fluffstroller.authentication.AuthenticationActivity;
 import com.example.fluffstroller.databinding.ActivityMainBinding;
 import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.models.Dog;
@@ -17,6 +20,10 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -33,6 +40,17 @@ public class MainActivity extends AppCompatActivity {
     private HomePageViewModel homeViewModel;
     private Observer<ProfileData> profileDataObserver;
     private Subject<ProfileData> loggedUserSubject;
+
+    private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Toast.makeText(getApplicationContext(), "Success",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
                 navController.navigate(R.id.nav_stroller_home_walk_in_progress);
             }
         });
+
+        startAuthenticationActivity();
     }
 
     @Override
@@ -137,5 +157,10 @@ public class MainActivity extends AppCompatActivity {
                 loggedUserSubject.unsubscribe(profileDataObserver);
             }
         }
+    }
+
+    private void startAuthenticationActivity() {
+        Intent intent = new Intent(this, AuthenticationActivity.class);
+        activityResultLauncher.launch(intent);
     }
 }

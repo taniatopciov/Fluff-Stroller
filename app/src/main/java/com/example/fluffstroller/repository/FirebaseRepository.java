@@ -127,7 +127,20 @@ public class FirebaseRepository {
         firestore.collection(pathToCollection)
                 .add(documentData)
                 .addOnSuccessListener(documentReference -> {
-                    documentData.id = documentReference.getId();
+                    documentData.setId(documentReference.getId());
+                    subject.notifyObservers(documentData);
+                })
+                .addOnFailureListener(subject::notifyObservers);
+        return subject;
+    }
+
+    public <T extends FirebaseDocument> Subject<T> setDocument(String pathToCollection, String documentId, T documentData) {
+        Subject<T> subject = new Subject<>();
+
+        firestore.collection(pathToCollection)
+                .document(documentId)
+                .set(documentData)
+                .addOnSuccessListener(documentReference -> {
                     subject.notifyObservers(documentData);
                 })
                 .addOnFailureListener(subject::notifyObservers);
