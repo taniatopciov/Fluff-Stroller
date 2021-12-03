@@ -35,6 +35,7 @@
     <string name="phone_number">Phone Number:</string>
     <string name="email_label">E-mail:</string>
     <string name="name_label">Name:</string>
+    <string name="description_label">Description:</string>
     <string name="rating">Rating:</string>
     <string name="empty_rating">(No Rating)</string>
     <string name="accept">Accept</string>
@@ -99,4 +100,6 @@
     <string name="text">Text</string>
     <string name="add_dog_fragment">Add Dog Fragment</string>
     <string name="my_dogs">My Dogs</string>
+    <string name="average_rating">Average Rating</string>
+    <string name="reviews">Reviews</string>
 </resources>
