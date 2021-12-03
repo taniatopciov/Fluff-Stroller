@@ -16,7 +16,7 @@ import com.example.fluffstroller.R;
 
 public class EditStrollerProfileFragment extends Fragment {
 
-    private EditStrollerProfileViewModel mViewModel;
+    private StrollerProfileViewModel mViewModel;
 
     public static EditStrollerProfileFragment newInstance() {
         return new EditStrollerProfileFragment();
@@ -27,12 +27,4 @@ public class EditStrollerProfileFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.edit_stroller_profile_fragment, container, false);
     }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(EditStrollerProfileViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
 }

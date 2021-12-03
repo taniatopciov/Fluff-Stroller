@@ -1,27 +1,16 @@
 package com.example.fluffstroller.pages.profile.dogowner;
 
-import androidx.lifecycle.ViewModelProvider;
-
-import android.app.Activity;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.fluffstroller.BuildConfig;
-import com.example.fluffstroller.R;
-import com.example.fluffstroller.authentication.LoginFragmentDirections;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.fluffstroller.databinding.AddDogFragmentBinding;
-import com.example.fluffstroller.databinding.LoginFragmentBinding;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 public class AddDogFragment extends Fragment {
 
@@ -57,5 +46,4 @@ public class AddDogFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
 }

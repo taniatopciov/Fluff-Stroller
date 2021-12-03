@@ -14,6 +14,7 @@ public class DogOwnerProfileData extends ProfileData {
         super(id, name, email, userType);
         dogs = new ArrayList<>();
     }
+
     public List<Dog> getDogs() {
         return dogs;
     }

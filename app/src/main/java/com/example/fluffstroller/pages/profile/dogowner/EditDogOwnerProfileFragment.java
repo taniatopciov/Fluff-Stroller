@@ -16,7 +16,7 @@ import com.example.fluffstroller.R;
 
 public class EditDogOwnerProfileFragment extends Fragment {
 
-    private EditDogOwnerProfileViewModel mViewModel;
+    private DogOwnerProfileViewModel mViewModel;
 
     public static EditDogOwnerProfileFragment newInstance() {
         return new EditDogOwnerProfileFragment();
@@ -27,12 +27,4 @@ public class EditDogOwnerProfileFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.edit_dog_owner_profile_fragment, container, false);
     }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(EditDogOwnerProfileViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
 }
