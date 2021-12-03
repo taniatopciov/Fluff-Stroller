@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.example.fluffstroller.databinding.ActivityMainBinding;
 import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.models.Dog;
-import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.ProfileData;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.services.ProfileService;
@@ -76,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
         loggedUserSubject.subscribe(profileDataObserver, false);
 
         homeViewModel.getDogOwnerProfileData().observe(this, dogOwnerProfileData -> {
-            DogWalk currentWalk = dogOwnerProfileData.getCurrentWalk();
+            DogWalkPreview walkPreview = dogOwnerProfileData.getCurrentWalkPreview();
 
-            if (currentWalk == null) {
+            if (walkPreview == null) {
                 List<Dog> dogs = dogOwnerProfileData.getDogs();
                 if (dogs == null || dogs.isEmpty()) {
                     navController.navigate(R.id.nav_dog_owner_home_no_dogs);
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     navController.navigate(R.id.nav_dog_owner_home);
                 }
             } else {
-                switch (currentWalk.getStatus()) {
+                switch (walkPreview.getStatus()) {
                     case PENDING:
                         navController.navigate(R.id.nav_dog_owner_home_waiting_for_stroller);
                         break;

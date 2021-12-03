@@ -11,8 +11,8 @@ public class DogWalk extends FirebaseDocument {
     private String ownerName;
     private Integer totalPrice;
     private Integer walkTime;
-    private List<WalkRequest> requests;
     private WalkStatus status;
+    private List<WalkRequest> requests; // todo convert to collection
 
     public DogWalk() {
     }
