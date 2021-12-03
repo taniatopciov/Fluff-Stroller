@@ -14,14 +14,18 @@ public class FirebaseRepository {
         Subject<T> subject = new Subject<>();
 
         firestore.document(pathToDocument)
-                .addSnapshotListener((value, error) -> {
+                .addSnapshotListener((documentReference, error) -> {
                     try {
                         if (error != null) {
                             subject.notifyObservers(error);
                             return;
                         }
-                        if (value != null && value.exists()) {
-                            subject.notifyObservers(value.toObject(tClass));
+                        if (documentReference != null && documentReference.exists()) {
+                            T object = documentReference.toObject(tClass);
+                            if (object != null) {
+                                object.setId(documentReference.getId());
+                            }
+                            subject.notifyObservers(object);
                         } else {
                             subject.notifyObservers((T) null);
                         }
@@ -37,15 +41,15 @@ public class FirebaseRepository {
         Subject<T> subject = new Subject<>();
 
         firestore.document(pathToDocument)
-                .addSnapshotListener((value, error) -> {
+                .addSnapshotListener((documentReference, error) -> {
                     try {
                         if (error != null) {
                             subject.notifyObservers(error);
                             return;
                         }
-                        if (value != null && value.exists()) {
+                        if (documentReference != null && documentReference.exists()) {
 
-                            Map<String, Object> data = value.getData();
+                            Map<String, Object> data = documentReference.getData();
                             if (data == null) {
                                 subject.notifyObservers((T) null);
                                 return;
@@ -54,7 +58,11 @@ public class FirebaseRepository {
                             String type = (String) data.get(typeNameField);
                             Class<? extends T> tClass = possibleTypes.get(type);
 
-                            subject.notifyObservers(value.toObject(tClass));
+                            T object = documentReference.toObject(tClass);
+                            if (object != null) {
+                                object.setId(documentReference.getId());
+                            }
+                            subject.notifyObservers(object);
 
                         } else {
                             subject.notifyObservers((T) null);
@@ -85,7 +93,11 @@ public class FirebaseRepository {
                             String type = (String) data.get(typeNameField);
                             Class<? extends T> tClass = possibleTypes.get(type);
 
-                            subject.notifyObservers(documentReference.toObject(tClass));
+                            T object = documentReference.toObject(tClass);
+                            if (object != null) {
+                                object.setId(documentReference.getId());
+                            }
+                            subject.notifyObservers(object);
 
                         } else {
                             subject.notifyObservers((T) null);
@@ -106,7 +118,11 @@ public class FirebaseRepository {
                 .addOnSuccessListener(documentReference -> {
                     try {
                         if (documentReference.exists()) {
-                            subject.notifyObservers(documentReference.toObject(tClass));
+                            T object = documentReference.toObject(tClass);
+                            if (object != null) {
+                                object.setId(documentReference.getId());
+                            }
+                            subject.notifyObservers(object);
                         } else {
                             subject.notifyObservers((T) null);
                         }
@@ -133,7 +149,13 @@ public class FirebaseRepository {
                             return;
                         }
 
-                        List<T> documents = value.getDocuments().stream().map(documentSnapshot -> documentSnapshot.toObject(tDocumentClass)).collect(Collectors.toList());
+                        List<T> documents = value.getDocuments().stream().map(documentSnapshot -> {
+                            T object = documentSnapshot.toObject(tDocumentClass);
+                            if (object != null) {
+                                object.setId(documentSnapshot.getId());
+                            }
+                            return object;
+                        }).collect(Collectors.toList());
 
                         subject.notifyObservers(documents);
                     } catch (Exception e) {
@@ -151,7 +173,13 @@ public class FirebaseRepository {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     try {
-                        List<T> documents = queryDocumentSnapshots.getDocuments().stream().map(documentSnapshot -> documentSnapshot.toObject(tClass)).collect(Collectors.toList());
+                        List<T> documents = queryDocumentSnapshots.getDocuments().stream().map(documentSnapshot -> {
+                            T object = documentSnapshot.toObject(tClass);
+                            if (object != null) {
+                                object.setId(documentSnapshot.getId());
+                            }
+                            return object;
+                        }).collect(Collectors.toList());
 
                         subject.notifyObservers(documents);
                     } catch (Exception e) {

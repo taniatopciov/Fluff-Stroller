@@ -15,7 +15,8 @@ public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
     private final MutableLiveData<Long> walkCreationTimeMillis;
 
     private final MutableLiveData<List<WalkRequest>> walkRequests;
-    private final MutableLiveData<Long> remainingWaitingForStrollerMills;
+    private final MutableLiveData<Void> timerExpired;
+    private final MutableLiveData<Long> currentTime;
 
     public DogOwnerMainPageWaitingForStrollerViewModel() {
         dogNames = new MutableLiveData<>();
@@ -23,7 +24,8 @@ public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
         totalPrice = new MutableLiveData<>();
         walkCreationTimeMillis = new MutableLiveData<>();
         walkRequests = new MutableLiveData<>();
-        remainingWaitingForStrollerMills = new MutableLiveData<>();
+        timerExpired = new MutableLiveData<>();
+        currentTime = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<String>> getDogNames() {
@@ -46,8 +48,12 @@ public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
         return walkRequests;
     }
 
-    public MutableLiveData<Long> getRemainingWaitingForStrollerMills() {
-        return remainingWaitingForStrollerMills;
+    public MutableLiveData<Void> getTimerExpired() {
+        return timerExpired;
+    }
+
+    public MutableLiveData<Long> getCurrentTime() {
+        return currentTime;
     }
 
     public void setCurrentDogWalkDetails(DogWalk dogWalk) {
@@ -58,7 +64,11 @@ public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
         this.walkRequests.postValue(dogWalk.getRequests());
     }
 
-    public void setRemainingWaitingForStrollerMills(Long remainingWaitingForStrollerMills) {
-        this.remainingWaitingForStrollerMills.postValue(remainingWaitingForStrollerMills);
+    public void setTimerExpired() {
+        this.timerExpired.postValue(null);
+    }
+
+    public void setCurrentTime(Long currentTime) {
+        this.currentTime.postValue(currentTime);
     }
 }

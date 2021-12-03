@@ -19,7 +19,6 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServices {
 
@@ -89,7 +88,6 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         Pair<String, WalkRequest> currentWalkRequestPair = loggedUserDataService.getLoggedUserCurrentWalkRequest();
 
         if (currentWalkRequestPair.first == null || currentWalkRequestPair.first.isEmpty() || currentWalkRequestPair.second == null) {
-            Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_stroller_home);
             return binding.getRoot();
         }
 

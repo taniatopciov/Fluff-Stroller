@@ -1,7 +1,7 @@
 package com.example.fluffstroller.repository;
 
 public abstract class FirebaseDocument {
-    private String id;
+    private transient String id;
 
     public FirebaseDocument() {
     }

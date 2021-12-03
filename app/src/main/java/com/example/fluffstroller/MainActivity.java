@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
 
+                        loggedUserDataService.setLoggedUserData(profileDataResponse.data);
                         homeViewModel.setProfileData(profileDataResponse.data);
                     };
 

@@ -22,6 +22,13 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
     }
 
     @Override
+    public void setDogWalkPreview(DogWalkPreview walkPreview) {
+        if (profileData != null && profileData instanceof DogOwnerProfileData) {
+            ((DogOwnerProfileData) profileData).setCurrentWalkPreview(walkPreview);
+        }
+    }
+
+    @Override
     public String getLoggedUserEmail() {
         if (profileData != null) {
             return profileData.getEmail();

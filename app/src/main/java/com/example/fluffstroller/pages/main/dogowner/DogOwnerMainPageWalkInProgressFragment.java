@@ -85,7 +85,6 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
         String currentWalkId = loggedUserDataService.getLoggedUserCurrentWalkId();
 
         if (currentWalkId.isEmpty()) {
-            Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_dog_owner_home);
             return binding.getRoot();
         }
 
