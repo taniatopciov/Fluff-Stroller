@@ -33,6 +33,8 @@
     <string name="stroller_name">John Doe</string>
     <string name="stroller">Stroller</string>
     <string name="phone_number">Phone Number:</string>
+    <string name="email_label">E-mail:</string>
+    <string name="name_label">Name:</string>
     <string name="rating">Rating:</string>
     <string name="empty_rating">(No Rating)</string>
     <string name="accept">Accept</string>
@@ -94,5 +96,7 @@
     <string name="description_hint">My dog enjoys walking in the park..</string>
     <string name="add_photo">Add Photo</string>
     <string name="save">Save</string>
+    <string name="text">Text</string>
     <string name="add_dog_fragment">Add Dog Fragment</string>
+    <string name="my_dogs">My Dogs</string>
 </resources>
