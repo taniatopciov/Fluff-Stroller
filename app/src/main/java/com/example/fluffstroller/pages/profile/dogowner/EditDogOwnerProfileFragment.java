@@ -56,12 +56,12 @@ public class EditDogOwnerProfileFragment extends FragmentWithServices {
                     return;
                 }
 
-                Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.fromEditToViewDogOwner(loggedUserDataService.getLoggedUserId()));
+                Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.fromEditOwnerProfileToViewProfile(loggedUserDataService.getLoggedUserId()));
             });
         });
 
         binding.addDogButtonEditDogOwnerProfile.setOnClickListener(view -> {
-            Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.fromEditToAddDog());
+            Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.fromEditOwnerProfileToAddDog());
         });
 
         viewModel.getName().observe(getViewLifecycleOwner(), name -> binding.nameTextViewWithLabelEditDogOwnerProfile.setText(name));

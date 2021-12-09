@@ -76,7 +76,7 @@ public class ViewDogOwnerProfileFragment extends FragmentWithServices {
                 viewModel.setPhoneNumber(loggedUserDataService.getLoggedUserPhoneNumber());
                 viewModel.setDogs(loggedUserDataService.getLoggedUserDogs());
 
-                Navigation.findNavController(view).navigate(ViewDogOwnerProfileFragmentDirections.fromViewToEditDogOwner(null));
+                Navigation.findNavController(view).navigate(ViewDogOwnerProfileFragmentDirections.fromViewOwnerProfileToEdit(null));
             });
         }
 

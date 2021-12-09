@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.fluffstroller.HomePageViewModel;
 import com.example.fluffstroller.R;
@@ -41,11 +42,27 @@ public class HomeFragment extends FragmentWithServices {
         binding.strollerHomeWalkInProgressButton.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_stroller_home_walk_in_progress));
 
         binding.walkInProgressButton.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_walk_in_progress));
+
         binding.addDogButton.setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("id", loggedUserDataService.getLoggedUserId());
-//            Navigation.findNavController(view).navigate(R.id.nav_view_dog_owner_profile_fragment, bundle);
+            String loggedUserId = loggedUserDataService.getLoggedUserId();
+            if(loggedUserId != null && !loggedUserId.isEmpty()) {
+                Bundle bundle = new Bundle();
+                bundle.putString("id", loggedUserId);
+                Navigation.findNavController(view).navigate(R.id.nav_view_dog_owner_profile, bundle);
+            } else {
+                Toast.makeText(this.getContext(), "Empty or null id",
+                        Toast.LENGTH_LONG).show();
+            }
         });
+
+//        binding.showOrganizerDetailsButtonEventDetailsPage.setOnClickListener(view -> {
+//            String organizerId = mViewModel.getEventOrganizerId().getValue();
+//            if (organizerId != null && !organizerId.isEmpty()) {
+//                Bundle bundle = new Bundle();
+//                bundle.putString("organizerId", organizerId);
+//                Navigation.findNavController(view).navigate(R.id.nav_organizerProfile, bundle);
+//            }
+//        });
 
         return binding.getRoot();
     }

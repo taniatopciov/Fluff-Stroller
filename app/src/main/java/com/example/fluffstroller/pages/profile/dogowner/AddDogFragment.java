@@ -32,7 +32,7 @@ public class AddDogFragment extends Fragment {
             String description = binding.descriptionTextWithLabelAddDogFragment.getText();
 
             Dog dog = new Dog(name, breed, description);
-            AddDogFragmentDirections.FromAddDogToEdit addDogToEdit = AddDogFragmentDirections.fromAddDogToEdit(dog);
+            AddDogFragmentDirections.FromAddDogToEditProfile addDogToEdit = AddDogFragmentDirections.fromAddDogToEditProfile(dog);
             Navigation.findNavController(view).navigate(addDogToEdit);
         });
 
