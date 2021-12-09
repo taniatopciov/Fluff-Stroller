@@ -43,7 +43,7 @@ public class StrollerProfileViewModel extends ViewModel {
         return description;
     }
 
-    public void setDogs(List<Review> reviewsList) {
+    public void setReviews(List<Review> reviewsList) {
         reviews.postValue(reviewsList);
     }
 

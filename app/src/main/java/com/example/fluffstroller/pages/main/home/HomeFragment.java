@@ -44,7 +44,7 @@ public class HomeFragment extends FragmentWithServices {
         binding.addDogButton.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
             bundle.putString("id", loggedUserDataService.getLoggedUserId());
-            Navigation.findNavController(view).navigate(R.id.dog_owner_profile_navigation, bundle);
+//            Navigation.findNavController(view).navigate(R.id.nav_view_dog_owner_profile_fragment, bundle);
         });
 
         return binding.getRoot();

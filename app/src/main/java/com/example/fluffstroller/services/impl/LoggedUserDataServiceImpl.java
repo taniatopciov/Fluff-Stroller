@@ -3,6 +3,8 @@ package com.example.fluffstroller.services.impl;
 import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogOwnerProfileData;
 import com.example.fluffstroller.models.ProfileData;
+import com.example.fluffstroller.models.Review;
+import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.services.LoggedUserDataService;
 
 import java.util.ArrayList;
@@ -53,9 +55,27 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
     }
 
     @Override
+    public String getLoggedUserDescription() {
+        if (profileData != null && profileData instanceof StrollerProfileData) {
+            return ((StrollerProfileData) profileData).getDescription();
+        }
+
+        return "";
+    }
+
+    @Override
     public List<Dog> getLoggedUserDogs() {
         if (profileData != null && profileData instanceof DogOwnerProfileData) {
             return ((DogOwnerProfileData) profileData).getDogs();
+        }
+
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Review> getLoggedUserReviews() {
+        if (profileData != null && profileData instanceof StrollerProfileData) {
+            return ((StrollerProfileData) profileData).getReviews();
         }
 
         return new ArrayList<>();
