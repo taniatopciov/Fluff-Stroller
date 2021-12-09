@@ -22,4 +22,8 @@ public class DogOwnerProfileData extends ProfileData {
     public DogWalkPreview getCurrentWalkPreview() {
         return currentWalkPreview;
     }
+
+    public void setCurrentWalkPreview(DogWalkPreview currentWalkPreview) {
+        this.currentWalkPreview = currentWalkPreview;
+    }
 }

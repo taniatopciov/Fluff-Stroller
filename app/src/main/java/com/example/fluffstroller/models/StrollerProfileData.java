@@ -8,6 +8,7 @@ public class StrollerProfileData extends ProfileData {
     private List<Review> reviews;
     private String description;
     private Double averageRating;
+    private String walkId;
 
     public StrollerProfileData() {
     }
@@ -35,5 +36,9 @@ public class StrollerProfileData extends ProfileData {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getWalkId() {
+        return walkId;
     }
 }

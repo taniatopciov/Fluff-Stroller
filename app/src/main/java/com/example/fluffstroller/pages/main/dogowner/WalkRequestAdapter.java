@@ -44,7 +44,6 @@ public class WalkRequestAdapter extends RecyclerView.Adapter<WalkRequestAdapter.
         WalkRequest request = walkRequests.get(position);
 
         holder.strollerNameTextView.setText(request.getStrollerName());
-        holder.strollerPhoneNumberTextView.setText(request.getStrollerPhoneNumber());
         holder.strollerRatingNumberTextView.setText(formatRating(request.getStrollerRating()));
 
         holder.acceptButton.setOnClickListener(view -> {
@@ -65,11 +64,16 @@ public class WalkRequestAdapter extends RecyclerView.Adapter<WalkRequestAdapter.
             }
         });
 
-        holder.callButton.setOnClickListener(view -> {
-            if (callButtonListener != null) {
-                callButtonListener.accept(new Pair<>(request, position));
-            }
-        });
+        if (request.getStrollerPhoneNumber() == null || request.getStrollerPhoneNumber().isEmpty()) {
+            holder.callButton.setVisibility(View.INVISIBLE);
+        } else {
+            holder.strollerPhoneNumberTextView.setText(request.getStrollerPhoneNumber());
+            holder.callButton.setOnClickListener(view -> {
+                if (callButtonListener != null) {
+                    callButtonListener.accept(new Pair<>(request, position));
+                }
+            });
+        }
     }
 
     @Override

@@ -5,22 +5,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWalkInProgressFragmentBinding;
+import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.utils.FragmentWithServices;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
-public class DogOwnerMainPageWalkInProgressFragment extends Fragment {
+public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices {
+
+    @Injectable
+    private LoggedUserDataService loggedUserDataService;
+
+    @Injectable
+    private DogWalksService dogWalksService;
 
     private DogOwnerMainPageWalkInProgressViewModel viewModel;
     private DogOwnerMainPageWalkInProgressFragmentBinding binding;
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,6 +37,7 @@ public class DogOwnerMainPageWalkInProgressFragment extends Fragment {
 
         binding.includeWalkRequestDetails.acceptButton.setVisibility(View.INVISIBLE);
         binding.includeWalkRequestDetails.rejectButton.setVisibility(View.INVISIBLE);
+
 
         binding.includeWalkRequestDetails.callImageButton.setOnClickListener(view -> {
             // todo implement call
@@ -64,24 +72,35 @@ public class DogOwnerMainPageWalkInProgressFragment extends Fragment {
 
         viewModel.getWalkRequest().observe(getViewLifecycleOwner(), walkRequest -> {
             binding.includeWalkRequestDetails.strollerNameTextView.setText(walkRequest.getStrollerName());
-            binding.includeWalkRequestDetails.strollerPhoneNumberTextView.setText(walkRequest.getStrollerPhoneNumber());
             binding.includeWalkRequestDetails.strollerRatingTextView.setText(formatRating(walkRequest.getStrollerRating()));
+
+            if (walkRequest.getStrollerPhoneNumber() == null || walkRequest.getStrollerPhoneNumber().isEmpty()) {
+                binding.includeWalkRequestDetails.callImageButton.setVisibility(View.INVISIBLE);
+            } else {
+                binding.includeWalkRequestDetails.strollerPhoneNumberTextView.setText(walkRequest.getStrollerPhoneNumber());
+            }
         });
 
 
-        // todo get data from database
-        viewModel.setTotalPrice(56);
-        List<String> dogNames = new ArrayList<>();
-        dogNames.add("John Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        dogNames.add("Jane Dog");
-        viewModel.setDogNames(dogNames);
+        String currentWalkId = loggedUserDataService.getLoggedUserCurrentWalkId();
+
+        if (currentWalkId.isEmpty()) {
+            return binding.getRoot();
+        }
+
+        dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
+            if (response.hasErrors() || response.data == null) {
+                return;
+            }
+
+            viewModel.setTotalPrice(response.data.getTotalPrice());
+            viewModel.setDogNames(response.data.getDogNames());
+
+            if (response.data.getRequests() != null && response.data.getRequests().size() == 1) {
+                viewModel.setWalkRequest(response.data.getRequests().get(0));
+            }
+        });
+
 
         return binding.getRoot();
     }

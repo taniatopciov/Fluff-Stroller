@@ -1,6 +1,6 @@
 package com.example.fluffstroller.pages.main.stroller;
 
-import com.example.fluffstroller.models.AvailableWalk;
+import com.example.fluffstroller.models.DogWalk;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class DogStrollerHomePageViewModel extends ViewModel {
-    private final MutableLiveData<List<AvailableWalk>> availableWalks;
+    private final MutableLiveData<List<DogWalk>> availableWalks;
     private final MutableLiveData<Integer> selectedRadius;
     private final MutableLiveData<Boolean> waitingForDogOwnerApproval;
 
@@ -18,7 +18,7 @@ public class DogStrollerHomePageViewModel extends ViewModel {
         waitingForDogOwnerApproval = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<AvailableWalk>> getAvailableWalks() {
+    public MutableLiveData<List<DogWalk>> getAvailableWalks() {
         return availableWalks;
     }
 
@@ -30,7 +30,7 @@ public class DogStrollerHomePageViewModel extends ViewModel {
         return waitingForDogOwnerApproval;
     }
 
-    public void setAvailableWalks(List<AvailableWalk> availableWalks) {
+    public void setAvailableWalks(List<DogWalk> availableWalks) {
         this.availableWalks.postValue(availableWalks);
     }
 

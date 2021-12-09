@@ -7,19 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.example.fluffstroller.authentication.AuthenticationActivity;
 import com.example.fluffstroller.databinding.ActivityMainBinding;
 import com.example.fluffstroller.di.ServiceLocator;
@@ -36,6 +23,17 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -45,14 +43,25 @@ public class MainActivity extends AppCompatActivity {
     private Observer<ProfileData> profileDataObserver;
     private Subject<ProfileData> loggedUserSubject;
 
-    private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Toast.makeText(getApplicationContext(), "Success",
-                                Toast.LENGTH_LONG).show();
-                    }
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    ServiceLocator serviceLocator = ServiceLocator.getInstance();
+                    ProfileService profileService = serviceLocator.getService(ProfileService.class);
+                    LoggedUserDataService loggedUserDataService = serviceLocator.getService(LoggedUserDataService.class);
+
+                    profileDataObserver = profileDataResponse -> {
+                        if (profileDataResponse.hasErrors()) {
+                            Toast.makeText(this, "Error while getting the profile", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        loggedUserDataService.setLoggedUserData(profileDataResponse.data);
+                        homeViewModel.setProfileData(profileDataResponse.data);
+                    };
+
+                    loggedUserSubject = profileService.listenForProfileData(loggedUserDataService.getLoggedUserId());
+                    loggedUserSubject.subscribe(profileDataObserver, false);
                 }
             });
 
@@ -80,22 +89,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-
-        ProfileService profileService = ServiceLocator.getInstance().getService(ProfileService.class);
-
-        profileDataObserver = profileDataResponse -> {
-            if (profileDataResponse.hasErrors()) {
-                Toast.makeText(this, "Error while getting the profile", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            homeViewModel.setProfileData(profileDataResponse.data);
-        };
-
-        // todo change with logged user id
-        loggedUserSubject = profileService.getProfileData("userId1");
-        loggedUserSubject.subscribe(profileDataObserver, false);
 
         homeViewModel.getDogOwnerProfileData().observe(this, dogOwnerProfileData -> {
             DogWalkPreview walkPreview = dogOwnerProfileData.getCurrentWalkPreview();
@@ -171,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ServiceLocator.getInstance().dispose();
+//        ServiceLocator.getInstance().dispose();
 
         if (loggedUserSubject != null) {
             if (profileDataObserver != null) {

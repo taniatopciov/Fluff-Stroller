@@ -71,6 +71,7 @@
                 android:minHeight="48dp"
                 card_view:layout_constraintBottom_toBottomOf="@+id/dogOwnerPhoneNumberTextView"
                 card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintHorizontal_bias="1.0"
                 card_view:layout_constraintStart_toEndOf="@+id/dogOwnerPhoneNumberTextView"
                 card_view:layout_constraintTop_toTopOf="@+id/dogOwnerPhoneNumberTextView"
                 card_view:srcCompat="@drawable/ic_baseline_phone_24" />

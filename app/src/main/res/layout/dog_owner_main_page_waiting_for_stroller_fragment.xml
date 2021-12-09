@@ -61,13 +61,12 @@
         android:id="@+id/dogsTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
         android:scrollHorizontally="false"
-        android:text="@string/dogs"
+        android:text="@string/dog_name"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="@+id/currentWalkDetailsTextView"
-        app:layout_constraintTop_toBottomOf="@+id/currentWalkDetailsTextView" />
+        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -80,19 +79,21 @@
         android:id="@+id/initialWalkTimeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/initial_walk_time"
-        app:layout_constraintStart_toStartOf="@+id/dogsTextView"
-        app:layout_constraintTop_toBottomOf="@+id/dogsTextView" />
+        android:layout_marginStart="8dp"
+        android:text="@string/_0_minutes"
+        app:layout_constraintBottom_toBottomOf="@+id/textView5"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toTopOf="@+id/textView5" />
 
     <TextView
         android:id="@+id/totalPriceTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/total_price_semicolon"
-        app:layout_constraintStart_toStartOf="@+id/initialWalkTimeTextView"
-        app:layout_constraintTop_toBottomOf="@+id/initialWalkTimeTextView" />
+        android:layout_marginStart="8dp"
+        android:text="@string/empty_price"
+        app:layout_constraintBottom_toBottomOf="@+id/textView6"
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toTopOf="@+id/textView6" />
 
     <TextView
         android:id="@+id/currentRequestsTextView"
@@ -126,5 +127,36 @@
         android:text="@string/no_requests"
         app:layout_constraintStart_toStartOf="@+id/currentRequestsTextView"
         app:layout_constraintTop_toBottomOf="@+id/currentRequestsTextView" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/dogs"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/currentWalkDetailsTextView"
+        app:layout_constraintTop_toBottomOf="@+id/currentWalkDetailsTextView" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/initial_walk_time"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/total_price_semicolon"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,7 @@ import java.util.Map;
 public class FirebaseDogWalksService implements DogWalksService {
 
     public static final String WALKS_PATH = "walks";
+
     private final FirebaseRepository firebaseRepository;
 
     public FirebaseDogWalksService(FirebaseRepository firebaseRepository) {
@@ -22,11 +23,28 @@ public class FirebaseDogWalksService implements DogWalksService {
         return firebaseRepository.addDocument(WALKS_PATH, dogWalk);
     }
 
+    @Override
+    public Subject<Boolean> updateDogWalk(DogWalk dogWalk) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("id", dogWalk.getId());
+        values.put("requests", dogWalk.getRequests());
+        values.put("status", dogWalk.getStatus());
+
+        return firebaseRepository.updateDocument(WALKS_PATH + "/" + dogWalk.getId(), values);
+    }
 
     @Override
-    public Subject<Boolean> updateDogWalkId(String walkId) {
-        Map<String, Object> values = new HashMap<>();
-        values.put("id", walkId);
-        return firebaseRepository.updateDocument(WALKS_PATH + "/" + walkId, values);
+    public Subject<DogWalk> getDogWalk(String id) {
+        return firebaseRepository.getDocument(WALKS_PATH + "/" + id, DogWalk.class);
+    }
+
+    @Override
+    public Subject<DogWalk> listenForDogWalkChanges(String walkId) {
+        return firebaseRepository.listenForDocumentChanges(WALKS_PATH + "/" + walkId, DogWalk.class);
+    }
+
+    @Override
+    public Subject<Boolean> removeCurrentWalk(String walkId) {
+        return firebaseRepository.deleteDocument(WALKS_PATH, walkId);
     }
 }
