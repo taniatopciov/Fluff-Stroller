@@ -9,7 +9,9 @@ import android.widget.Toast;
 
 import com.example.fluffstroller.databinding.DogOwnerMainPageWaitingForStrollerFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
@@ -25,6 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServices {
@@ -52,6 +55,25 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
         binding = DogOwnerMainPageWaitingForStrollerFragmentBinding.inflate(inflater, container, false);
 
         viewModel = new ViewModelProvider(this).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
+
+        DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
+
+        if (walkPreview == null) {
+            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHome());
+            return binding.getRoot();
+        }
+
+        if (walkPreview.getStatus() == WalkStatus.IN_PROGRESS) {
+            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHomeWalkInProgress());
+            return binding.getRoot();
+        }
+
+        String currentWalkId = walkPreview.getWalkId();
+
+        if (currentWalkId.isEmpty()) {
+            return binding.getRoot();
+        }
+
 
         if (timer != null) {
             timer.cancel();
@@ -139,12 +161,6 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         viewModel.getWalkTime().observe(getViewLifecycleOwner(), walkTime -> binding.initialWalkTimeTextView.setText(walkTime + " minutes"));
 
-        String currentWalkId = loggedUserDataService.getLoggedUserCurrentWalkId();
-
-        if (currentWalkId.isEmpty()) {
-            return binding.getRoot();
-        }
-
         registerSubject(dogWalksService.listenForDogWalkChanges(currentWalkId)).subscribe(response -> {
             if (response.hasErrors() || response.data == null) {
                 return;
@@ -166,7 +182,12 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
     }
 
     private void removeCurrentWalk() {
-        dogWalksService.removeCurrentWalk(loggedUserDataService.getLoggedUserCurrentWalkId()).subscribe(response -> {
+        DogWalkPreview preview = loggedUserDataService.getLoggedUserWalkPreview();
+        if (preview == null) {
+            return;
+        }
+
+        dogWalksService.removeCurrentWalk(preview.getWalkId()).subscribe(response -> {
             if (response.hasErrors()) {
                 Toast.makeText(getContext(), "Could not remove Walk", Toast.LENGTH_SHORT).show();
                 return;
@@ -183,6 +204,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
                 }
                 // todo cancel requests of strollers - iterate over all requests and remove them from their profiles -> maybe use firebase lambdas
                 loggedUserDataService.setDogWalkPreview(null);
+                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHome());
             });
         });
     }
@@ -199,7 +221,25 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
     }
 
     private void handleRequestAccepted(Pair<WalkRequest, Integer> requestPair) {
-        Toast.makeText(getContext(), "Accepted: " + requestPair.first.getStrollerName() + " " + requestPair.second, Toast.LENGTH_SHORT).show();
+        // todo clear all other stroller requests
+        dogWalksService.setWalkInProgress(requestPair.first.getWalkId()).subscribe(response -> {
+            if (response.hasErrors()) {
+                Toast.makeText(getContext(), "Could set walk in progress", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
+            walkPreview.setStatus(WalkStatus.IN_PROGRESS);
+            profileService.updateDogWalkPreview(loggedUserDataService.getLoggedUserId(), walkPreview).subscribe(response1 -> {
+                if (response1.hasErrors()) {
+                    Toast.makeText(getContext(), "Could set walk preview in progress", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                loggedUserDataService.setDogWalkPreview(walkPreview);
+                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHomeWalkInProgress());
+            });
+        });
     }
 
     private void handleRequestRejected(Pair<WalkRequest, Integer> requestPair) {

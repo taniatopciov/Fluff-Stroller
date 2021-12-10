@@ -11,7 +11,10 @@ import android.widget.Toast;
 import com.example.fluffstroller.databinding.DogStrollerHomePageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DogStrollerHomePageFragment extends FragmentWithServices implements OnMapReadyCallback {
@@ -32,6 +36,12 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
     @Injectable
     private DogWalksService dogWalksService;
+
+    @Injectable
+    private LoggedUserDataService loggedUserDataService;
+
+    @Injectable
+    private ProfileService profileService;
 
     private DogStrollerHomePageViewModel viewModel;
     private DogStrollerHomePageFragmentBinding binding;
@@ -89,6 +99,40 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
                 binding.availableWalksRecyclerView.setVisibility(View.VISIBLE);
             }
         });
+
+        WalkRequest walkRequest = loggedUserDataService.getLoggedUserCurrentWalkRequest();
+        if (walkRequest != null) {
+
+            switch (walkRequest.getStatus()) {
+                case PENDING: {
+                    viewModel.setWaitingForDogOwnerApproval(true);
+                }
+                break;
+
+                case ACCEPTED: {
+                    NavHostFragment.findNavController(this).navigate(DogStrollerHomePageFragmentDirections.actionNavStrollerHomeToNavStrollerHomeWalkInProgress());
+                    return binding.getRoot();
+                }
+
+                case REJECTED:
+                case CANCELED: {
+                    viewModel.setWaitingForDogOwnerApproval(false);
+                    // todo add notification for rejected or canceled walkRequest making
+
+                    profileService.updateCurrentRequest(loggedUserDataService.getLoggedUserId(), null).subscribe(response -> {
+                        if (response.hasErrors()) {
+                            return;
+                        }
+
+                        loggedUserDataService.setCurrentRequest(null);
+                        viewModel.setWaitingForDogOwnerApproval(false);
+                    });
+                }
+                break;
+            }
+        } else {
+            viewModel.setWaitingForDogOwnerApproval(false);
+        }
 
         // todo replace with database call - dogWalksService listen for nearby Walks
 

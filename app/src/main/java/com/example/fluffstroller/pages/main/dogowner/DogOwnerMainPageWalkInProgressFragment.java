@@ -5,9 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWalkInProgressFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.models.DogWalkPreview;
+import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.utils.FragmentWithServices;
@@ -16,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices {
 
@@ -34,6 +35,19 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
         binding = DogOwnerMainPageWalkInProgressFragmentBinding.inflate(inflater, container, false);
 
         viewModel = new ViewModelProvider(this).get(DogOwnerMainPageWalkInProgressViewModel.class);
+
+        DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
+
+        if (walkPreview == null || walkPreview.getStatus() != WalkStatus.IN_PROGRESS) {
+            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWalkInProgressFragmentDirections.actionNavDogOwnerHomeWalkInProgressToNavDogOwnerHome());
+            return binding.getRoot();
+        }
+
+        String currentWalkId = walkPreview.getWalkId();
+
+        if (currentWalkId.isEmpty()) {
+            return binding.getRoot();
+        }
 
         binding.includeWalkRequestDetails.acceptButton.setVisibility(View.INVISIBLE);
         binding.includeWalkRequestDetails.rejectButton.setVisibility(View.INVISIBLE);
@@ -80,13 +94,6 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
                 binding.includeWalkRequestDetails.strollerPhoneNumberTextView.setText(walkRequest.getStrollerPhoneNumber());
             }
         });
-
-
-        String currentWalkId = loggedUserDataService.getLoggedUserCurrentWalkId();
-
-        if (currentWalkId.isEmpty()) {
-            return binding.getRoot();
-        }
 
         dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
             if (response.hasErrors() || response.data == null) {

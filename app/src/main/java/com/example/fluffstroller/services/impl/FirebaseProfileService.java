@@ -5,6 +5,7 @@ import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.ProfileData;
 import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.models.UserType;
+import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.observer.Subject;
@@ -24,6 +25,13 @@ public class FirebaseProfileService implements ProfileService {
     public Subject<Boolean> updateDogWalkPreview(String userId, DogWalkPreview walkPreview) {
         Map<String, Object> values = new HashMap<>();
         values.put("currentWalkPreview", walkPreview);
+        return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + userId, values);
+    }
+
+    @Override
+    public Subject<Boolean> updateCurrentRequest(String userId, WalkRequest request) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("currentRequest", request);
         return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + userId, values);
     }
 

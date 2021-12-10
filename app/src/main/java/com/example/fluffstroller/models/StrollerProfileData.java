@@ -18,4 +18,8 @@ public class StrollerProfileData extends ProfileData {
     public String getWalkId() {
         return walkId;
     }
+
+    public void setCurrentRequest(WalkRequest currentRequest) {
+        this.currentRequest = currentRequest;
+    }
 }

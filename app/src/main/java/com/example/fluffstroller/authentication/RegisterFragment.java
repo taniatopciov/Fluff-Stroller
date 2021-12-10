@@ -1,6 +1,5 @@
 package com.example.fluffstroller.authentication;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,22 +9,29 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.navigation.Navigation;
-
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.RegisterFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.UserType;
+import com.example.fluffstroller.pages.main.home.HomeFragmentDirections;
+import com.example.fluffstroller.pages.main.home.HomeNavFragment;
+import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
 import com.example.fluffstroller.services.AuthenticationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.HideKeyboard;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class RegisterFragment extends FragmentWithServices {
 
@@ -111,8 +117,9 @@ public class RegisterFragment extends FragmentWithServices {
                     }
 
                     loggedUserDataService.setLoggedUserData(response2.data);
-                    requireActivity().setResult(Activity.RESULT_OK);
-                    requireActivity().finish();
+
+                    HideKeyboard.hide(requireActivity());
+                    NavHostFragment.findNavController(this).navigate(HomeNavFragmentDirections.actionGlobalNavHome());
                 });
             });
         });
@@ -128,6 +135,32 @@ public class RegisterFragment extends FragmentWithServices {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar supportActionBar = activity.getSupportActionBar();
+            if (supportActionBar != null) {
+                supportActionBar.hide();
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar supportActionBar = activity.getSupportActionBar();
+            if (supportActionBar != null) {
+                supportActionBar.show();
+            }
+        }
     }
 
     private boolean validateEmail(String email) {

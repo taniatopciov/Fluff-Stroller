@@ -1,7 +1,6 @@
 package com.example.fluffstroller.pages.main.stroller;
 
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServices {
 
@@ -37,6 +37,11 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
         viewModel = new ViewModelProvider(this).get(DogStrollerHomePageWalkInProgressViewModel.class);
 
+        if (loggedUserDataService.getLoggedUserCurrentWalkRequest() == null) {
+            NavHostFragment.findNavController(this).navigate(DogStrollerHomePageWalkInProgressFragmentDirections.actionNavStrollerHomeWalkInProgressToNavStrollerHome());
+            return binding.getRoot();
+        }
+
         binding.includeAvailableWalkDetails.dogNamesTextView.setVisibility(View.INVISIBLE);
         binding.includeAvailableWalkDetails.requestButton.setVisibility(View.INVISIBLE);
 
@@ -46,7 +51,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         });
 
         binding.goToMapPageButton.setOnClickListener(view -> {
-            Snackbar.make(view, "Go to map", Snackbar.LENGTH_SHORT).show();
+//            NavHostFragment.findNavController(this).navigate(HomeFragmentDirections.actionGlobalNavWalkInProgress());
         });
 
         binding.includeAvailableWalkDetails.visitProfileButton.setOnClickListener(view -> {
@@ -85,13 +90,13 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
             binding.includeAvailableWalkDetails.walkingTimeTextView.setText(dogWalk.getTotalPrice() + " $");
         });
 
-        Pair<String, WalkRequest> currentWalkRequestPair = loggedUserDataService.getLoggedUserCurrentWalkRequest();
+        WalkRequest currentWalkRequest = loggedUserDataService.getLoggedUserCurrentWalkRequest();
 
-        if (currentWalkRequestPair.first == null || currentWalkRequestPair.first.isEmpty() || currentWalkRequestPair.second == null) {
+        if (currentWalkRequest == null) {
             return binding.getRoot();
         }
 
-        dogWalksService.getDogWalk(currentWalkRequestPair.first).subscribe(response -> {
+        dogWalksService.getDogWalk(currentWalkRequest.getWalkId()).subscribe(response -> {
             if (response.hasErrors() || response.data == null) {
                 return;
             }

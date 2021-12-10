@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.services.DogWalksService;
@@ -29,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,6 +56,32 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
         viewModel = new ViewModelProvider(this).get(DogOwnerMainPageViewModel.class);
 
         binding = DogOwnerMainPageFragmentBinding.inflate(inflater, container, false);
+
+        List<Dog> loggedUserDogs = loggedUserDataService.getLoggedUserDogs();
+        if (loggedUserDogs == null || loggedUserDogs.isEmpty()) {
+            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeNoDogs());
+
+            return binding.getRoot();
+        }
+
+        DogWalkPreview currentWalkPreview = loggedUserDataService.getLoggedUserWalkPreview();
+        if (currentWalkPreview != null) {
+
+            switch (currentWalkPreview.getStatus()) {
+                case PENDING: {
+                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWaitingForStroller());
+                }
+                break;
+
+                case IN_PROGRESS: {
+                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWalkInProgress());
+                }
+                break;
+            }
+
+
+            return binding.getRoot();
+        }
 
         final RecyclerView selectedDogsRecyclerView = binding.selectedDogsRecyclerView;
 
@@ -112,6 +140,9 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
                         res1.exception.printStackTrace();
                         Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
                     }
+
+                    loggedUserDataService.setDogWalkPreview(walkPreview);
+                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWaitingForStroller());
                 });
             });
         });
@@ -144,7 +175,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
             viewModel.setTotalPrice(totalPrice);
         });
 
-        viewModel.setDogNames(loggedUserDataService.getLoggedUserDogs().stream().map(dog -> dog.getName()).collect(Collectors.toList()));
+        viewModel.setDogNames(loggedUserDogs.stream().map(dog -> dog.getName()).collect(Collectors.toList()));
 
         viewModel.setFees(feesService.getDogWalkFees());
 

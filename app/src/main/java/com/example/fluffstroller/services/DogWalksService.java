@@ -13,4 +13,6 @@ public interface DogWalksService {
     Subject<DogWalk> listenForDogWalkChanges(String walkId);
 
     Subject<Boolean> removeCurrentWalk(String walkId);
+
+    Subject<Boolean> setWalkInProgress(String walkId);
 }

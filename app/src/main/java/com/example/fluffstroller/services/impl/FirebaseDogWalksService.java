@@ -1,6 +1,7 @@
 package com.example.fluffstroller.services.impl;
 
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.utils.observer.Subject;
@@ -46,5 +47,13 @@ public class FirebaseDogWalksService implements DogWalksService {
     @Override
     public Subject<Boolean> removeCurrentWalk(String walkId) {
         return firebaseRepository.deleteDocument(WALKS_PATH, walkId);
+    }
+
+    @Override
+    public Subject<Boolean> setWalkInProgress(String walkId) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("status", WalkStatus.IN_PROGRESS);
+
+        return firebaseRepository.updateDocument(WALKS_PATH + "/" + walkId, values);
     }
 }
