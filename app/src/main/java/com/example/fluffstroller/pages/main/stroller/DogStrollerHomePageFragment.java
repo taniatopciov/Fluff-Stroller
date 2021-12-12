@@ -134,7 +134,14 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
             viewModel.setWaitingForDogOwnerApproval(false);
         }
 
-        // todo replace with database call - dogWalksService listen for nearby Walks
+        // todo replace with listen for dog walks
+        dogWalksService.getAvailableDogWalks().subscribe(response -> {
+            if (response.hasErrors()) {
+                return;
+            }
+
+            viewModel.setAvailableWalks(response.data);
+        });
 
         return binding.getRoot();
     }
@@ -164,7 +171,19 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
     }
 
     private void handleRequestWalk(Pair<DogWalk, Integer> pair) {
-        Toast.makeText(getContext(), "Request: " + pair.first.getOwnerName() + " " + pair.second, Toast.LENGTH_SHORT).show();
+        DogWalk dogWalk = pair.first;
+        String strollerId = loggedUserDataService.getLoggedUserId();
+        String strollerName = loggedUserDataService.getLoggedUserName();
+        String strollerPhoneNumber = loggedUserDataService.getLoggedUserPhoneNumber();
+        Double strollerRating = loggedUserDataService.getLoggedUserRating();
+        WalkRequest walkRequest = new WalkRequest(dogWalk.getId(), strollerId, strollerName, strollerPhoneNumber, strollerRating);
+
+        dogWalksService.requestWalk(walkRequest).subscribe(response -> {
+            if (response.hasErrors()) {
+                return;
+            }
+            viewModel.setWaitingForDogOwnerApproval(true);
+        });
     }
 
     private void handleViewProfile(Pair<DogWalk, Integer> pair) {

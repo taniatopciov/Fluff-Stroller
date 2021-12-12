@@ -33,4 +33,6 @@ public interface LoggedUserDataService {
     DogWalkPreview getLoggedUserWalkPreview();
 
     UserType getLogUserType();
+
+    Double getLoggedUserRating();
 }

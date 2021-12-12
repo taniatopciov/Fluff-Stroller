@@ -15,6 +15,7 @@ import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
+import com.example.fluffstroller.services.RemoveDogWalkService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.components.InfoPopupDialog;
 
@@ -43,6 +44,9 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
     @Injectable
     private ProfileService profileService;
+
+    @Injectable
+    private RemoveDogWalkService removeDogWalkService;
 
     private final AtomicLong remainingTimeAtomic = new AtomicLong();
 
@@ -187,25 +191,17 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
             return;
         }
 
-        dogWalksService.removeCurrentWalk(preview.getWalkId()).subscribe(response -> {
+        removeDogWalkService.removeCurrentWalk(preview.getWalkId(), loggedUserDataService.getLoggedUserId()).subscribe(response -> {
             if (response.hasErrors()) {
                 Toast.makeText(getContext(), "Could not remove Walk", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (timer != null) {
+                timer.cancel();
+            }
 
-            profileService.updateDogWalkPreview(loggedUserDataService.getLoggedUserId(), null).subscribe(response1 -> {
-                if (response1.hasErrors()) {
-                    Toast.makeText(getContext(), "Could not remove Walk from profile", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (timer != null) {
-                    timer.cancel();
-                }
-                // todo cancel requests of strollers - iterate over all requests and remove them from their profiles -> maybe use firebase lambdas
-                loggedUserDataService.setDogWalkPreview(null);
-                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHome());
-            });
+            loggedUserDataService.setDogWalkPreview(null);
+            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHome());
         });
     }
 

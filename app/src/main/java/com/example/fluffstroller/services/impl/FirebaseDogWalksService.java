@@ -1,13 +1,16 @@
 package com.example.fluffstroller.services.impl;
 
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.utils.observer.Subject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FirebaseDogWalksService implements DogWalksService {
 
@@ -45,15 +48,38 @@ public class FirebaseDogWalksService implements DogWalksService {
     }
 
     @Override
-    public Subject<Boolean> removeCurrentWalk(String walkId) {
-        return firebaseRepository.deleteDocument(WALKS_PATH, walkId);
-    }
-
-    @Override
     public Subject<Boolean> setWalkInProgress(String walkId) {
         Map<String, Object> values = new HashMap<>();
         values.put("status", WalkStatus.IN_PROGRESS);
 
         return firebaseRepository.updateDocument(WALKS_PATH + "/" + walkId, values);
+    }
+
+    @Override
+    public Subject<Boolean> removeWalk(String walkId) {
+        return firebaseRepository.deleteDocument(WALKS_PATH, walkId);
+    }
+
+    @Override
+    public Subject<List<DogWalk>> getAvailableDogWalks() {
+        Subject<List<DogWalk>> subject = new Subject<>();
+
+        firebaseRepository.getAllDocuments(WALKS_PATH, DogWalk.class).subscribe(response -> {
+            if (response.hasErrors() || response.data == null) {
+                subject.notifyObservers(response.exception);
+                return;
+            }
+
+            subject.notifyObservers(response.data.stream()
+                    .filter(dogWalk -> dogWalk.getStatus() == WalkStatus.PENDING)
+                    .collect(Collectors.toList()));
+        });
+
+        return subject;
+    }
+
+    @Override
+    public Subject<Boolean> requestWalk(WalkRequest walkRequest) {
+        return firebaseRepository.addItemToArray(WALKS_PATH + "/" + walkRequest.getWalkId(), "requests", walkRequest);
     }
 }

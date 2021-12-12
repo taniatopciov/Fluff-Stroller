@@ -2,21 +2,28 @@ package com.example.fluffstroller.models;
 
 public class StrollerProfileData extends ProfileData {
     private WalkRequest currentRequest;
-    private String walkId;
+    private Double rating;
+    private Integer reviewCount;
 
     public StrollerProfileData() {
     }
 
     public StrollerProfileData(String id, String name, String email, UserType userType) {
         super(id, name, email, userType);
+        rating = 0.0;
+        reviewCount = 0;
     }
 
     public WalkRequest getCurrentRequest() {
         return currentRequest;
     }
 
-    public String getWalkId() {
-        return walkId;
+    public Double getRating() {
+        return rating;
+    }
+
+    public Integer getReviewCount() {
+        return reviewCount;
     }
 
     public void setCurrentRequest(WalkRequest currentRequest) {

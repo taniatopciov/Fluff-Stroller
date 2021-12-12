@@ -108,4 +108,14 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
         }
         return null;
     }
+
+    @Override
+    public Double getLoggedUserRating() {
+        if (profileData != null && profileData instanceof StrollerProfileData) {
+            Double rating = ((StrollerProfileData) profileData).getRating();
+            return rating == null ? 0.0 : rating;
+        }
+
+        return 0.0;
+    }
 }

@@ -45,4 +45,8 @@ public class WalkRequest extends FirebaseDocument {
     public WalkRequestStatus getStatus() {
         return status;
     }
+
+    public void setStatus(WalkRequestStatus status) {
+        this.status = status;
+    }
 }

@@ -1,7 +1,10 @@
 package com.example.fluffstroller.services;
 
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.utils.observer.Subject;
+
+import java.util.List;
 
 public interface DogWalksService {
     Subject<DogWalk> createDogWalk(DogWalk dogWalk);
@@ -12,7 +15,11 @@ public interface DogWalksService {
 
     Subject<DogWalk> listenForDogWalkChanges(String walkId);
 
-    Subject<Boolean> removeCurrentWalk(String walkId);
-
     Subject<Boolean> setWalkInProgress(String walkId);
+
+    Subject<Boolean> removeWalk(String walkId);
+
+    Subject<List<DogWalk>> getAvailableDogWalks();
+
+    Subject<Boolean> requestWalk(WalkRequest walkReques);
 }
