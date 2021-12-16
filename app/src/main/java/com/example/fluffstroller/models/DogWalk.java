@@ -15,17 +15,19 @@ public class DogWalk extends FirebaseDocument {
     private WalkStatus status;
     private List<WalkRequest> requests;
     private Long creationTimeMillis;
+    private Location location;
 
     public DogWalk() {
     }
 
-    public DogWalk(List<String> dogNames, String ownerId, String ownerName, String ownerPhoneNumber, Integer totalPrice, Integer walkTime) {
+    public DogWalk(List<String> dogNames, String ownerId, String ownerName, String ownerPhoneNumber, Integer totalPrice, Integer walkTime, Location location) {
         this.dogNames = dogNames;
         this.ownerId = ownerId;
         this.ownerName = ownerName;
         this.ownerPhoneNumber = ownerPhoneNumber;
         this.totalPrice = totalPrice;
         this.walkTime = walkTime;
+        this.location = location;
         this.requests = new ArrayList<>();
         this.status = WalkStatus.PENDING;
         this.creationTimeMillis = System.currentTimeMillis();
@@ -65,5 +67,9 @@ public class DogWalk extends FirebaseDocument {
 
     public Long getCreationTimeMillis() {
         return creationTimeMillis;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

@@ -12,11 +12,14 @@ import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.DogWalkPreview;
+import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.FeesService;
+import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.EnableLocationPopupDialog;
 import com.example.fluffstroller.utils.components.TextWithLabel;
 import com.example.fluffstroller.utils.formatting.CurrencyIntegerTextWatcher;
 import com.example.fluffstroller.utils.formatting.TimeIntegerTextWatcher;
@@ -34,7 +37,10 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 public class DogOwnerMainPageFragment extends FragmentWithServices {
+
+    private static final String DOG_OWNER_MAIN_PAGE_FRAGMENT = "DOG_OWNER_MAIN_PAGE_FRAGMENT";
 
     @Injectable
     private FeesService feesService;
@@ -47,6 +53,9 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
 
     @Injectable
     private LoggedUserDataService loggedUserDataService;
+
+    @Injectable
+    private LocationService locationService;
 
     private DogOwnerMainPageViewModel viewModel;
     private DogOwnerMainPageFragmentBinding binding;
@@ -114,36 +123,18 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
                 return;
             }
 
-            Integer walkTime = viewModel.getWalkTime().getValue();
-            Integer totalPrice = viewModel.getTotalPrice().getValue();
-
-            String userId = loggedUserDataService.getLoggedUserId();
-            String userName = loggedUserDataService.getLoggedUserName();
-            String userPhoneNumber = loggedUserDataService.getLoggedUserPhoneNumber();
-
-            dogWalksService.createDogWalk(new DogWalk(checkedDogs, userId, userName, userPhoneNumber, totalPrice, walkTime)).subscribe(response -> {
+            locationService.getCurrentLocation().subscribe(response -> {
                 if (response.hasErrors()) {
-                    response.exception.printStackTrace();
-                    Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, "Could not get current location", Snackbar.LENGTH_SHORT).show();
                     return;
                 }
 
-                DogWalk dogWalk = response.data;
-                if (dogWalk == null) {
-                    Toast.makeText(getContext(), "Create empty walk", Toast.LENGTH_SHORT).show();
+                if (response.data == null) {
+                    new EnableLocationPopupDialog().show(getChildFragmentManager(), DOG_OWNER_MAIN_PAGE_FRAGMENT);
                     return;
                 }
 
-                DogWalkPreview walkPreview = new DogWalkPreview(dogWalk.getId(), dogWalk.getStatus());
-                profileService.updateDogWalkPreview(userId, walkPreview).subscribe(res1 -> {
-                    if (res1.hasErrors()) {
-                        res1.exception.printStackTrace();
-                        Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
-                    }
-
-                    loggedUserDataService.setDogWalkPreview(walkPreview);
-                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWaitingForStroller());
-                });
+                createDogWalkForDogs(checkedDogs, response.data);
             });
         });
 
@@ -175,7 +166,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
             viewModel.setTotalPrice(totalPrice);
         });
 
-        viewModel.setDogNames(loggedUserDogs.stream().map(dog -> dog.getName()).collect(Collectors.toList()));
+        viewModel.setDogNames(loggedUserDogs.stream().map(Dog::getName).collect(Collectors.toList()));
 
         viewModel.setFees(feesService.getDogWalkFees());
 
@@ -187,6 +178,41 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
         super.onDestroyView();
         binding = null;
     }
+
+    private void createDogWalkForDogs(List<String> checkedDogs, Location location) {
+        Integer walkTime = viewModel.getWalkTime().getValue();
+        Integer totalPrice = viewModel.getTotalPrice().getValue();
+
+        String userId = loggedUserDataService.getLoggedUserId();
+        String userName = loggedUserDataService.getLoggedUserName();
+        String userPhoneNumber = loggedUserDataService.getLoggedUserPhoneNumber();
+
+        dogWalksService.createDogWalk(new DogWalk(checkedDogs, userId, userName, userPhoneNumber, totalPrice, walkTime, location)).subscribe(response -> {
+            if (response.hasErrors()) {
+                response.exception.printStackTrace();
+                Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            DogWalk dogWalk = response.data;
+            if (dogWalk == null) {
+                Toast.makeText(getContext(), "Create empty walk", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            DogWalkPreview walkPreview = new DogWalkPreview(dogWalk.getId(), dogWalk.getStatus());
+            profileService.updateDogWalkPreview(userId, walkPreview).subscribe(res1 -> {
+                if (res1.hasErrors()) {
+                    res1.exception.printStackTrace();
+                    Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                }
+
+                loggedUserDataService.setDogWalkPreview(walkPreview);
+                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWaitingForStroller());
+            });
+        });
+    }
+
 
     private boolean validateInputs() {
         return validateEditText(binding.walkPriceTextWithLabel) && validateEditText(binding.walkTimeTextWithLabel)
