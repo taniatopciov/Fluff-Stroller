@@ -3,8 +3,10 @@ import dotenv from "dotenv";
 import { createClient } from 'redis';
 import admin, { ServiceAccount } from 'firebase-admin';
 import { Paths } from "./Paths";
-import { AddWalkRequest } from "./types/AddWalk";
 import serviceAccount from '../ServiceAcountKey.json';
+import { DogWalk } from "./types/DogWalk";
+import { NearbyWalkRequestData } from "./request/NearbyWalkRequestData";
+import { GeoReplyWith } from "@node-redis/client/dist/lib/commands/generic-transformers";
 
 dotenv.config();
 
@@ -49,17 +51,21 @@ firestore.collection(Paths.FIRESTORE_WALKS_COLLECTION).onSnapshot(snapshot => {
         const id = dc.doc.id;
 
         if (dc.type === "added") {
-            const {longitude, latitude} = dc.doc.data();
+            const data = dc.doc.data() as DogWalk;
 
-            if (longitude && latitude) {
-                promises.push(redisClient.geoAdd('walks', {
-                    member: id,
-                    longitude: longitude,
-                    latitude: latitude
-                }));
+            if (data.location) {
+                const {longitude, latitude} = data.location;
+
+                if (longitude && latitude) {
+                    promises.push(redisClient.geoAdd(Paths.REDIS_WALKS_KEY, {
+                        member: id,
+                        longitude: longitude,
+                        latitude: latitude
+                    }));
+                }
             }
         } else if (dc.type === "removed") {
-            promises.push(redisClient.zRem('walks', id));
+            promises.push(redisClient.zRem(Paths.REDIS_WALKS_KEY, id));
         }
     });
 
@@ -75,8 +81,33 @@ app.get('/', (req, res) => {
     res.send('Hello, Fluff Stroller!')
 });
 
-app.get('/nearby-walks', (req, res) => {
-    res.send([])
+app.get('/nearby-walks', async (req, res) => {
+
+    const {id, location, radius}: NearbyWalkRequestData = req.body;
+
+    if (!id) {
+        res.status(400).send('No Id');
+        return;
+    }
+
+    if (!location || !location.longitude || !location.latitude) {
+        res.status(400).send('No Location');
+        return;
+    }
+
+    if (!radius || Number(radius) !== radius) {
+        res.status(400).send('No Radius');
+        return;
+    }
+    const result = await redisClient.geoSearchWith(Paths.REDIS_WALKS_KEY, {
+        latitude: location.latitude,
+        longitude: location.longitude
+    }, {
+        radius: radius,
+        unit: 'km'
+    }, [GeoReplyWith.COORDINATES, GeoReplyWith.HASH]);
+
+    res.send(result);
 });
 
 app.get('/walk/:id', async (req, res) => {
@@ -87,21 +118,6 @@ app.get('/walk/:id', async (req, res) => {
         positions: data,
     });
 });
-
-app.post('/walk', async (req, res) => {
-
-    const {id, lng, lat}: AddWalkRequest = req.body;
-
-    await redisClient.geoAdd('walks', {
-        member: `walk-${id}`,
-        longitude: lng,
-        latitude: lat
-    });
-
-    res.send({
-        success: true,
-    });
-})
 
 app.listen(process.env.PORT, () => {
     console.log(`App Started at ${process.env.PORT}`);
