@@ -34,10 +34,6 @@ redisClient.on('error', err => {
     console.error('Error ' + err);
 });
 
-redisClient.on('connection', () => {
-    console.info('Redis connected!');
-});
-
 process.on("exit", () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     redisClient.quit().then(() => {
