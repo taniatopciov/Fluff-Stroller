@@ -13,9 +13,11 @@ import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.EnableLocationPopupDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -33,6 +35,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 public class DogStrollerHomePageFragment extends FragmentWithServices implements OnMapReadyCallback {
 
     private final static int[] AREA_RADIUS_STEPS = {1, 2, 5, 10, 15};
+    private static final String STROLLER_MAIN_PAGE_FRAGMENT = "STROLLER_MAIN_PAGE_FRAGMENT";
 
     @Injectable
     private DogWalksService dogWalksService;
@@ -42,6 +45,9 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
     @Injectable
     private ProfileService profileService;
+
+    @Injectable
+    private LocationService locationService;
 
     private DogStrollerHomePageViewModel viewModel;
     private DogStrollerHomePageFragmentBinding binding;
@@ -65,6 +71,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 viewModel.setSelectedRadius(AREA_RADIUS_STEPS[progress]);
+                getAvailableDogWalks();
             }
 
             @Override
@@ -134,16 +141,39 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
             viewModel.setWaitingForDogOwnerApproval(false);
         }
 
-        // todo replace with listen for dog walks
-        dogWalksService.getAvailableDogWalks().subscribe(response -> {
-            if (response.hasErrors()) {
+        getAvailableDogWalks();
+
+        return binding.getRoot();
+    }
+
+    private void getAvailableDogWalks() {
+        locationService.getCurrentLocation().subscribe(locationResponse -> {
+            if (locationResponse.hasErrors()) {
+                Toast.makeText(requireContext(), "Could not get current location", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            viewModel.setAvailableWalks(response.data);
-        });
+            if (locationResponse.data == null) {
+                new EnableLocationPopupDialog().show(getChildFragmentManager(), STROLLER_MAIN_PAGE_FRAGMENT);
+                return;
+            }
 
-        return binding.getRoot();
+            String id = loggedUserDataService.getLoggedUserId();
+            Integer value = viewModel.getSelectedRadius().getValue();
+            if (value == null) {
+                value = AREA_RADIUS_STEPS[0];
+            }
+            Double radius = Double.valueOf(value);
+
+            dogWalksService.getNearbyAvailableDogWalks(id, locationResponse.data, radius).subscribe(response -> {
+                if (response.hasErrors() || response.data == null) {
+                    Toast.makeText(requireContext(), "Could not get nearby walks", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                viewModel.setAvailableWalks(response.data);
+            });
+        });
     }
 
     @Override

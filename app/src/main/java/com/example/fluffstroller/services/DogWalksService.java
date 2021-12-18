@@ -1,6 +1,7 @@
 package com.example.fluffstroller.services;
 
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.utils.observer.Subject;
 
@@ -19,7 +20,7 @@ public interface DogWalksService {
 
     Subject<Boolean> removeWalk(String walkId);
 
-    Subject<List<DogWalk>> getAvailableDogWalks();
+    Subject<List<DogWalk>> getNearbyAvailableDogWalks(String id, Location currentLocation, Double radius);
 
     Subject<Boolean> requestWalk(WalkRequest walkReques);
 }

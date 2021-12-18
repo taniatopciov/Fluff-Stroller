@@ -5,8 +5,8 @@ import admin, { ServiceAccount } from 'firebase-admin';
 import { Paths } from "./Paths";
 import serviceAccount from '../ServiceAcountKey.json';
 import { DogWalk } from "./types/DogWalk";
-import { NearbyWalkRequestData } from "./request/NearbyWalkRequestData";
 import { GeoReplyWith } from "@node-redis/client/dist/lib/commands/generic-transformers";
+import { WalkStatus } from "./types/WalkStatus";
 
 dotenv.config();
 
@@ -45,23 +45,24 @@ firestore.collection(Paths.FIRESTORE_WALKS_COLLECTION).onSnapshot(snapshot => {
     const promises: Promise<number>[] = [];
     snapshot.docChanges().forEach(dc => {
         const id = dc.doc.id;
+        const data = dc.doc.data() as DogWalk;
 
-        if (dc.type === "added") {
-            const data = dc.doc.data() as DogWalk;
-
+        if (data.status === WalkStatus.PENDING && (dc.type === "added" || dc.type === "modified")) {
             if (data.location) {
                 const {longitude, latitude} = data.location;
 
                 if (longitude && latitude) {
-                    promises.push(redisClient.geoAdd(Paths.REDIS_WALKS_KEY, {
+                    promises.push(redisClient.geoAdd(Paths.REDIS_WALKS_LOCATION_KEY, {
                         member: id,
                         longitude: longitude,
                         latitude: latitude
                     }));
+                    promises.push(redisClient.hSet(Paths.REDIS_WALKS_DATA_KEY, id, JSON.stringify(data)));
                 }
             }
-        } else if (dc.type === "removed") {
-            promises.push(redisClient.zRem(Paths.REDIS_WALKS_KEY, id));
+        } else if (data.status !== WalkStatus.PENDING || dc.type === "removed") {
+            promises.push(redisClient.zRem(Paths.REDIS_WALKS_LOCATION_KEY, id));
+            promises.push(redisClient.hDel(Paths.REDIS_WALKS_DATA_KEY, id));
         }
     });
 
@@ -79,31 +80,43 @@ app.get('/', (req, res) => {
 
 app.get('/nearby-walks', async (req, res) => {
 
-    const {id, location, radius}: NearbyWalkRequestData = req.body;
+    const id = req.query.id;
+    const longitude = Number(req.query.longitude);
+    const latitude = Number(req.query.latitude);
+    const radius = Number(req.query.radius);
 
     if (!id) {
         res.status(400).send('No Id');
         return;
     }
 
-    if (!location || !location.longitude || !location.latitude) {
+    if (!longitude || Number.isNaN(longitude) || !latitude || Number.isNaN(latitude)) {
         res.status(400).send('No Location');
         return;
     }
 
-    if (!radius || Number(radius) !== radius) {
+    if (!radius || Number.isNaN(radius)) {
         res.status(400).send('No Radius');
         return;
     }
-    const result = await redisClient.geoSearchWith(Paths.REDIS_WALKS_KEY, {
-        latitude: location.latitude,
-        longitude: location.longitude
+    const locations = await redisClient.geoSearchWith(Paths.REDIS_WALKS_LOCATION_KEY, {
+        latitude: latitude,
+        longitude: longitude
     }, {
         radius: radius,
         unit: 'km'
-    }, [GeoReplyWith.COORDINATES, GeoReplyWith.HASH]);
+    }, [GeoReplyWith.COORDINATES]);
 
-    res.send(result);
+    const promises: Promise<string | undefined>[] = [];
+    locations.forEach(location => {
+        promises.push(redisClient.hGet(Paths.REDIS_WALKS_DATA_KEY, location.member));
+    })
+
+    const result = await Promise.all(promises);
+    const parsedResult = result
+        .map(r => JSON.parse(r ?? "{}"));
+
+    res.send(parsedResult);
 });
 
 app.get('/walk/:id', async (req, res) => {
