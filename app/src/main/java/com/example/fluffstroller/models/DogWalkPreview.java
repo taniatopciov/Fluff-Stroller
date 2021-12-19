@@ -19,4 +19,8 @@ public class DogWalkPreview {
     public WalkStatus getStatus() {
         return status;
     }
+
+    public void setStatus(WalkStatus status) {
+        this.status = status;
+    }
 }

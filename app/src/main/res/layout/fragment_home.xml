@@ -4,89 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pages.main.home.HomeFragment">
+    tools:context=".pages.main.home.HomeNavFragment">
 
-    <Button
-        android:id="@+id/ownerHomeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Owner Home"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment_home"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/ownerHomeWaitingButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Owner Home Waiting"
-        app:layout_constraintEnd_toEndOf="@+id/ownerHomeButton"
-        app:layout_constraintStart_toStartOf="@+id/ownerHomeButton"
-        app:layout_constraintTop_toBottomOf="@+id/ownerHomeButton" />
-
-    <Button
-        android:id="@+id/ownerHomeNoDogsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Owner Home No Dogs"
-        app:layout_constraintEnd_toEndOf="@+id/ownerHomeButton"
-        app:layout_constraintHorizontal_bias="0.514"
-        app:layout_constraintStart_toStartOf="@+id/ownerHomeButton"
-        app:layout_constraintTop_toBottomOf="@+id/ownerHomeWaitingButton" />
-
-    <Button
-        android:id="@+id/ownerHomWalkInProgressButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Owner Walk In Progress"
-        app:layout_constraintEnd_toEndOf="@+id/ownerHomeNoDogsButton"
-        app:layout_constraintStart_toStartOf="@+id/ownerHomeNoDogsButton"
-        app:layout_constraintTop_toBottomOf="@+id/ownerHomeNoDogsButton" />
-
-    <Button
-        android:id="@+id/strollerHomeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Stroller Home"
-        app:layout_constraintEnd_toEndOf="@+id/ownerHomWalkInProgressButton"
-        app:layout_constraintStart_toStartOf="@+id/ownerHomWalkInProgressButton"
-        app:layout_constraintTop_toBottomOf="@+id/ownerHomWalkInProgressButton" />
-
-    <Button
-        android:id="@+id/walkInProgressButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/walk_in_progress"
-        app:layout_constraintEnd_toEndOf="@+id/strollerHomeButton"
-        app:layout_constraintStart_toStartOf="@+id/strollerHomeButton"
-        app:layout_constraintTop_toBottomOf="@+id/strollerHomeButton" />
-
-    <Button
-        android:id="@+id/strollerHomeWalkInProgressButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Stroller Walk in Progress"
-        app:layout_constraintEnd_toEndOf="@+id/walkInProgressButton"
-        app:layout_constraintStart_toStartOf="@+id/walkInProgressButton"
-        app:layout_constraintTop_toBottomOf="@+id/walkInProgressButton" />
-
-    <Button
-        android:id="@+id/addDogButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/add_dog_fragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/strollerHomeWalkInProgressButton" />
-
+        app:navGraph="@navigation/home_page_navigation" />
 </androidx.constraintlayout.widget.ConstraintLayout>

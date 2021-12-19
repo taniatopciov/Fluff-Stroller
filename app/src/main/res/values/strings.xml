@@ -106,4 +106,8 @@
     <string name="view_profile">View Profile</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="ok">OK</string>
+    <string name="fluff_stroller">Fluff Stroller</string>
+    <string name="gps_enable_message">Your GPS seems to be disabled, do you want to enable it?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

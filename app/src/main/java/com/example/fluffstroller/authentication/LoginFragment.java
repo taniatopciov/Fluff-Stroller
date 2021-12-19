@@ -1,6 +1,5 @@
 package com.example.fluffstroller.authentication;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,29 +8,35 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.navigation.Navigation;
-
 import com.example.fluffstroller.BuildConfig;
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.LoginFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.pages.main.home.HomeFragmentDirections;
+import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
 import com.example.fluffstroller.services.AuthenticationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.HideKeyboard;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class LoginFragment extends FragmentWithServices {
 
@@ -112,8 +117,9 @@ public class LoginFragment extends FragmentWithServices {
                         return;
                     }
                     loggedUserDataService.setLoggedUserData(response2.data);
-                    requireActivity().setResult(Activity.RESULT_OK);
-                    requireActivity().finish();
+
+                    HideKeyboard.hide(requireActivity());
+                    NavHostFragment.findNavController(this).navigate(HomeNavFragmentDirections.actionGlobalNavHome());
                 });
             });
         });
@@ -136,6 +142,32 @@ public class LoginFragment extends FragmentWithServices {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar supportActionBar = activity.getSupportActionBar();
+            if (supportActionBar != null) {
+                supportActionBar.hide();
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar supportActionBar = activity.getSupportActionBar();
+            if (supportActionBar != null) {
+                supportActionBar.show();
+            }
+        }
     }
 
     private void changeToastColors(Toast toast) {

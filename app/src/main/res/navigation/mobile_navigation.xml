@@ -6,41 +6,18 @@
     app:startDestination="@+id/nav_home">
 
     <fragment
+        android:id="@+id/nav_walk_in_progress"
+        android:name="com.example.fluffstroller.pages.walkinprogress.WalkInProgressPage"
+        android:label="@string/menu_gallery"
+        tools:layout="@layout/walk_in_progress_fragment" />
+    <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.fluffstroller.pages.main.home.HomeFragment"
+        android:name="com.example.fluffstroller.pages.main.home.HomeNavFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_nav_home_to_nav_dog_owner_home"
-            app:destination="@id/nav_dog_owner_home" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_dog_owner_home_no_dogs"
-            app:destination="@id/nav_dog_owner_home_no_dogs" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_dog_owner_home_waiting_for_stroller"
-            app:destination="@id/nav_dog_owner_home_waiting_for_stroller" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_dog_owner_home_walk_in_progress"
-            app:destination="@id/nav_dog_owner_home_walk_in_progress" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_stroller_home"
-            app:destination="@id/nav_stroller_home" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_stroller_home_walk_in_progress"
-            app:destination="@id/nav_stroller_home_walk_in_progress" />
-        <action
-            android:id="@+id/nav_home_to_dog_owner_profile_navigation"
-            app:destination="@id/dog_owner_profile_navigation">
-            <argument
-                android:name="id"
-                app:argType="string" />
-        </action>
-        <action
-            android:id="@+id/action_nav_home_to_nav_view_dog_owner_profile"
-            app:destination="@id/nav_view_dog_owner_profile" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_view_stroller_profile"
-            app:destination="@id/nav_view_stroller_profile" />
+            android:id="@+id/action_nav_home_to_authentication_navigation"
+            app:destination="@id/authentication_navigation" />
     </fragment>
 
     <fragment
@@ -55,130 +32,12 @@
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
 
-    <fragment
-        android:id="@+id/nav_dog_owner_home"
-        android:name="com.example.fluffstroller.pages.main.dogowner.DogOwnerMainPageFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/dog_owner_main_page_fragment">
-        <action
-            android:id="@+id/action_nav_dog_owner_home_to_nav_dog_owner_home_waiting_for_stroller"
-            app:destination="@id/nav_dog_owner_home_waiting_for_stroller" />
-    </fragment>
+    <action
+        android:id="@+id/action_global_nav_walk_in_progress"
+        app:destination="@id/nav_walk_in_progress" />
+    <include app:graph="@navigation/authentication_navigation" />
 
-    <fragment
-        android:id="@+id/nav_dog_owner_home_no_dogs"
-        android:name="com.example.fluffstroller.pages.main.dogowner.DogOwnerWithNoDogsMainPageFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/dog_owner_with_no_dogs_main_page_fragment" />
-
-    <fragment
-        android:id="@+id/nav_dog_owner_home_waiting_for_stroller"
-        android:name="com.example.fluffstroller.pages.main.dogowner.DogOwnerMainPageWaitingForStrollerFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/dog_owner_main_page_waiting_for_stroller_fragment">
-        <action
-            android:id="@+id/action_nav_dog_owner_home_waiting_for_stroller_to_nav_dog_owner_home_walk_in_progress"
-            app:destination="@id/nav_dog_owner_home_walk_in_progress" />
-        <action
-            android:id="@+id/action_nav_dog_owner_home_waiting_for_stroller_to_nav_dog_owner_home"
-            app:destination="@id/nav_dog_owner_home"
-            app:popUpTo="@id/nav_dog_owner_home" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_dog_owner_home_walk_in_progress"
-        android:name="com.example.fluffstroller.pages.main.dogowner.DogOwnerMainPageWalkInProgressFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/dog_owner_main_page_walk_in_progress_fragment">
-        <action
-            android:id="@+id/action_nav_dog_owner_home_walk_in_progress_to_nav_walk_in_progress"
-            app:destination="@id/nav_walk_in_progress" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_stroller_home"
-        android:name="com.example.fluffstroller.pages.main.stroller.DogStrollerHomePageFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/dog_stroller_home_page_fragment">
-        <action
-            android:id="@+id/action_nav_stroller_home_to_nav_stroller_home_walk_in_progress"
-            app:destination="@id/nav_stroller_home_walk_in_progress" />
-    </fragment>
-
-
-    <fragment
-        android:id="@+id/nav_stroller_home_walk_in_progress"
-        android:name="com.example.fluffstroller.pages.main.stroller.DogStrollerHomePageWalkInProgressFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/dog_stroller_home_page_walk_in_progress_fragment">
-        <action
-            android:id="@+id/action_nav_stroller_home_walk_in_progress_to_nav_walk_in_progress"
-            app:destination="@id/nav_walk_in_progress" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_walk_in_progress"
-        android:name="com.example.fluffstroller.pages.walkinprogress.WalkInProgressPage"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/walk_in_progress_fragment" />
-
-    <fragment
-        android:id="@+id/nav_add_dog"
-        android:name="com.example.fluffstroller.pages.profile.dogowner.AddDogFragment"
-        android:label="Add Dog"
-        tools:layout="@layout/add_dog_fragment" >
-        <action
-            android:id="@+id/from_add_dog_to_edit_profile"
-            app:destination="@id/nav_edit_dog_owner_profile" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_view_dog_owner_profile"
-        android:name="com.example.fluffstroller.pages.profile.dogowner.ViewDogOwnerProfileFragment"
-        android:label="Dog Owner Profile"
-        tools:layout="@layout/view_dog_owner_profile_fragment" >
-        <action
-            android:id="@+id/from_view_owner_profile_to_edit"
-            app:destination="@id/nav_edit_dog_owner_profile" />
-        <argument
-            android:name="id"
-            app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_view_stroller_profile"
-        android:name="com.example.fluffstroller.pages.profile.dogstroller.ViewStrollerProfileFragment"
-        android:label="Stroller Profile"
-        tools:layout="@layout/view_stroller_profile_fragment" >
-        <action
-            android:id="@+id/from_stroller_profile_to_edit"
-            app:destination="@id/nav_edit_stroller_profile" />
-        <argument
-            android:name="id"
-            app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_edit_dog_owner_profile"
-        android:name="com.example.fluffstroller.pages.profile.dogowner.EditDogOwnerProfileFragment"
-        android:label="Dog Owner Profile - Edit"
-        tools:layout="@layout/edit_dog_owner_profile_fragment" >
-        <action
-            android:id="@+id/from_edit_owner_profile_to_add_dog"
-            app:destination="@id/nav_add_dog" />
-        <action
-            android:id="@+id/from_edit_owner_profile_to_view_profile"
-            app:destination="@id/nav_view_dog_owner_profile" />
-        <argument
-            android:name="dog"
-            app:argType="com.example.fluffstroller.models.Dog"
-            app:nullable="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_edit_stroller_profile"
-        android:name="com.example.fluffstroller.pages.profile.dogstroller.EditStrollerProfileFragment"
-        android:label="Stroller Profile - Edit"
-        tools:layout="@layout/edit_stroller_profile_fragment" >
-        <action
-            android:id="@+id/from_edit_stroller_profile_to_view_profile"
-            app:destination="@id/nav_view_stroller_profile" />
-    </fragment>
-
+    <action
+        android:id="@+id/action_global_nav_home"
+        app:destination="@id/nav_home" />
 </navigation>

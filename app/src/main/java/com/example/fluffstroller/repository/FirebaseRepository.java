@@ -1,6 +1,7 @@
 package com.example.fluffstroller.repository;
 
 import com.example.fluffstroller.utils.observer.Subject;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -237,6 +238,17 @@ public class FirebaseRepository {
         firestore.collection(pathToCollection)
                 .document(documentId)
                 .delete()
+                .addOnSuccessListener(e -> subject.notifyObservers(true))
+                .addOnFailureListener(subject::notifyObservers);
+
+        return subject;
+    }
+
+    public Subject<Boolean> addItemToArray(String pathToDocument, String arrayFieldName, Object arrayItem) {
+        Subject<Boolean> subject = new Subject<>();
+
+        firestore.document(pathToDocument)
+                .update(arrayFieldName, FieldValue.arrayUnion(arrayItem))
                 .addOnSuccessListener(e -> subject.notifyObservers(true))
                 .addOnFailureListener(subject::notifyObservers);
 

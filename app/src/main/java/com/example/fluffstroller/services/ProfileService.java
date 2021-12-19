@@ -6,6 +6,7 @@ import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.ProfileData;
 import com.example.fluffstroller.models.Review;
 import com.example.fluffstroller.models.UserType;
+import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.utils.observer.Subject;
 
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import java.util.List;
 
 public interface ProfileService {
     Subject<Boolean> updateDogWalkPreview(String userId, DogWalkPreview walkPreview);
+
+    Subject<Boolean> updateCurrentRequest(String userId, WalkRequest request);
 
     Subject<ProfileData> getProfileData(String userId);
 
