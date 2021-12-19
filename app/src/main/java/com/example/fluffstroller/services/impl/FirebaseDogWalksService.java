@@ -1,25 +1,36 @@
 package com.example.fluffstroller.services.impl;
 
+import com.example.fluffstroller.BuildConfig;
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.utils.observer.Subject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class FirebaseDogWalksService implements DogWalksService {
 
     public static final String WALKS_PATH = "walks";
 
     private final FirebaseRepository firebaseRepository;
+    private final OkHttpClient client;
+    private final Gson gson;
 
     public FirebaseDogWalksService(FirebaseRepository firebaseRepository) {
         this.firebaseRepository = firebaseRepository;
+        client = new OkHttpClient();
+        gson = new Gson();
     }
 
     @Override
@@ -61,19 +72,34 @@ public class FirebaseDogWalksService implements DogWalksService {
     }
 
     @Override
-    public Subject<List<DogWalk>> getAvailableDogWalks() {
+    public Subject<List<DogWalk>> getNearbyAvailableDogWalks(String id, Location currentLocation, Double radius) {
         Subject<List<DogWalk>> subject = new Subject<>();
 
-        firebaseRepository.getAllDocuments(WALKS_PATH, DogWalk.class).subscribe(response -> {
-            if (response.hasErrors() || response.data == null) {
-                subject.notifyObservers(response.exception);
-                return;
-            }
+        new Thread(() -> {
+            try {
+                HttpUrl.Builder httpUrlBuilder = HttpUrl.parse(BuildConfig.NEARBY_WALKS_SERVICE_URL).newBuilder()
+                        .addQueryParameter("id", id)
+                        .addQueryParameter("latitude", String.valueOf(currentLocation.latitude))
+                        .addQueryParameter("longitude", String.valueOf(currentLocation.longitude))
+                        .addQueryParameter("radius", String.valueOf(radius));
 
-            subject.notifyObservers(response.data.stream()
-                    .filter(dogWalk -> dogWalk.getStatus() == WalkStatus.PENDING)
-                    .collect(Collectors.toList()));
-        });
+                Request request = new Request.Builder()
+                        .url(httpUrlBuilder.build())
+                        .get()
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                String responseString = response.body().string();
+
+                List<DogWalk> data = gson.fromJson(responseString, new TypeToken<List<DogWalk>>() {
+                }.getType());
+
+                subject.notifyObservers(data);
+
+            } catch (Exception e) {
+                subject.notifyObservers(e);
+            }
+        }).start();
 
         return subject;
     }

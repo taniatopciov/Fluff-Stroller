@@ -44,6 +44,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.3.5'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
 
+    implementation 'com.google.code.gson:gson:2.8.9'
+
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
 
@@ -58,6 +60,7 @@ dependencies {
     // Maps
     implementation 'com.google.android.gms:play-services-maps:18.0.1'
     implementation 'com.google.android.gms:play-services-auth:20.0.0'
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:29.0.0')
