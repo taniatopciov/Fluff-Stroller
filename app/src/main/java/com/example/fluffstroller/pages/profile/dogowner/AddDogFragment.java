@@ -13,32 +13,27 @@ import androidx.navigation.Navigation;
 
 import com.example.fluffstroller.databinding.AddDogFragmentBinding;
 import com.example.fluffstroller.models.Dog;
+import com.example.fluffstroller.utils.formatting.TimeIntegerTextWatcher;
 
 public class AddDogFragment extends Fragment {
-
-    private AddDogViewModel mViewModel;
 
     private AddDogFragmentBinding binding;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = AddDogFragmentBinding.inflate(inflater, container, false);
+        binding.ageTextWithLabelAddDogFragment.addTextChangedListener(new TimeIntegerTextWatcher(binding.ageTextWithLabelAddDogFragment.editText, "years"));
 
         binding.saveButtonAddDogFragment.setOnClickListener(view -> {
             String name = binding.nameTextWithLabelAddDogFragment.getText();
             String breed = binding.breedTextWithLabelAddDogFragment.getText();
+            int age = extractInteger(binding.ageTextWithLabelAddDogFragment.getText());
             String description = binding.descriptionTextWithLabelAddDogFragment.getText();
 
-            Dog dog = new Dog(name, breed, description);
-            AddDogFragmentDirections.FromAddDogToEditProfile addDogToEdit = AddDogFragmentDirections.fromAddDogToEditProfile(dog);
+            Dog dog = new Dog(name, breed, age, description);
+            AddDogFragmentDirections.ActionFromAddDogToEditOwnerProfile addDogToEdit = AddDogFragmentDirections.actionFromAddDogToEditOwnerProfile(dog);
             Navigation.findNavController(view).navigate(addDogToEdit);
-        });
-
-        binding.uploadImageButtonAddDogFragment.setOnClickListener(view -> {
-            Toast.makeText(this.getContext(), "upload image button",
-                    Toast.LENGTH_LONG).show();
         });
 
         return binding.getRoot();
@@ -48,5 +43,23 @@ public class AddDogFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private int extractInteger(String input) {
+        if (input == null || input.isEmpty()) {
+            return 0;
+        }
+
+        try {
+            String[] parts = input.split(" ");
+            if (parts.length == 2) {
+                return Integer.parseInt(parts[0]);
+            }
+
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+
+        return 0;
     }
 }

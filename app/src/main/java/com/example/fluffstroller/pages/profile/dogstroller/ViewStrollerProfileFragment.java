@@ -8,20 +8,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.fluffstroller.databinding.ViewDogOwnerProfileFragmentBinding;
 import com.example.fluffstroller.databinding.ViewStrollerProfileFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
-import com.example.fluffstroller.models.DogOwnerProfileData;
 import com.example.fluffstroller.models.StrollerProfileData;
-import com.example.fluffstroller.pages.profile.dogowner.DogOwnerProfileViewModel;
-import com.example.fluffstroller.pages.profile.dogowner.DogsAdapter;
-import com.example.fluffstroller.pages.profile.dogowner.ViewDogOwnerProfileFragmentArgs;
-import com.example.fluffstroller.pages.profile.dogowner.ViewDogOwnerProfileFragmentDirections;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
@@ -39,8 +32,7 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
     private LoggedUserDataService loggedUserDataService;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = ViewStrollerProfileFragmentBinding.inflate(inflater, container, false);
 
@@ -49,13 +41,19 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
         viewModel.getName().observe(getViewLifecycleOwner(), name -> binding.nameTextViewViewStrollerProfile.setText(name));
         viewModel.getEmail().observe(getViewLifecycleOwner(), email -> binding.emailTextViewViewStrollerProfile.setText(email));
         viewModel.getPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber -> binding.phoneNumberTextViewViewStrollerProfile.setText(phoneNumber));
+        viewModel.getDescription().observe(getViewLifecycleOwner(), description -> binding.descriptionTextViewStrollerProfile.setText(description));
+        viewModel.getRating().observe(getViewLifecycleOwner(), rating -> {
+            binding.averageRatingViewStrollerProfile.setText(rating + "");
+            binding.ratingBarViewStrollerProfile.setRating(Float.parseFloat(rating + ""));
+        });
 
         ReviewsAdapter reviewsAdapter = new ReviewsAdapter();
         binding.reviewsRecyclerViewStrollerViewProfile.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.reviewsRecyclerViewStrollerViewProfile.setAdapter(reviewsAdapter);
         viewModel.getReviews().observe(getViewLifecycleOwner(), reviewsAdapter::setReviews);
 
-        String profileId = "";
+        String profileId = ViewStrollerProfileFragmentArgs.fromBundle(getArguments()).getStrollerId();
+
         if (!profileId.equals(loggedUserDataService.getLoggedUserId())) {
             binding.editProfileButtonViewStrollerProfile.setVisibility(View.INVISIBLE);
 
@@ -71,19 +69,22 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
                 viewModel.setPhoneNumber(response.data.getPhoneNumber());
 
                 if (response.data instanceof StrollerProfileData) {
-                    viewModel.setReviews(((StrollerProfileData) response.data).getReviews());
+                    StrollerProfileData strollerProfileData = (StrollerProfileData) response.data;
+                    viewModel.setDescription(strollerProfileData.getDescription());
+                    viewModel.setReviews(strollerProfileData.getReviews());
+                    viewModel.setRating(strollerProfileData.getRating());
                 }
             });
-
         } else {
-            binding.editProfileButtonViewStrollerProfile.setOnClickListener(view -> {
-                viewModel.setName(loggedUserDataService.getLoggedUserName());
-                viewModel.setEmail(loggedUserDataService.getLoggedUserEmail());
-                viewModel.setPhoneNumber(loggedUserDataService.getLoggedUserPhoneNumber());
-                viewModel.setDescription(loggedUserDataService.getLoggedUserDescription());
-                viewModel.setReviews(loggedUserDataService.getLoggedUserReviews());
+            viewModel.setName(loggedUserDataService.getLoggedUserName());
+            viewModel.setEmail(loggedUserDataService.getLoggedUserEmail());
+            viewModel.setPhoneNumber(loggedUserDataService.getLoggedUserPhoneNumber());
+            viewModel.setDescription(loggedUserDataService.getLoggedUserDescription());
+            viewModel.setReviews(loggedUserDataService.getLoggedUserReviews());
+            viewModel.setRating(loggedUserDataService.getLoggedUserRating());
 
-//                Navigation.findNavController(view).navigate(ViewS.fromViewToEditDogOwner(null));
+            binding.editProfileButtonViewStrollerProfile.setOnClickListener(view -> {
+                Navigation.findNavController(view).navigate(ViewStrollerProfileFragmentDirections.actionNavViewStrollerProfileToEditStrollerProfileFragment());
             });
         }
 

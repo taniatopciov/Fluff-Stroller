@@ -14,6 +14,7 @@ public class StrollerProfileViewModel extends ViewModel {
     private final MutableLiveData<String> email;
     private final MutableLiveData<String> phoneNumber;
     private final MutableLiveData<String> description;
+    private final MutableLiveData<Double> rating;
 
     public StrollerProfileViewModel() {
         reviews = new MutableLiveData<>();
@@ -21,6 +22,7 @@ public class StrollerProfileViewModel extends ViewModel {
         email = new MutableLiveData<>();
         phoneNumber = new MutableLiveData<>();
         description = new MutableLiveData<>();
+        rating = new MutableLiveData<>();
     }
 
     public LiveData<List<Review>> getReviews() {
@@ -43,6 +45,10 @@ public class StrollerProfileViewModel extends ViewModel {
         return description;
     }
 
+    public MutableLiveData<Double> getRating() {
+        return rating;
+    }
+
     public void setReviews(List<Review> reviewsList) {
         reviews.postValue(reviewsList);
     }
@@ -61,5 +67,9 @@ public class StrollerProfileViewModel extends ViewModel {
 
     public void setDescription(String description) {
         this.description.postValue(description);
+    }
+
+    public void setRating(Double rating) {
+        this.rating.postValue(rating);
     }
 }

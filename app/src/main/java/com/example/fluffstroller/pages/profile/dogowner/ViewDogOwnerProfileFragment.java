@@ -38,6 +38,8 @@ public class ViewDogOwnerProfileFragment extends FragmentWithServices {
         binding = ViewDogOwnerProfileFragmentBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(requireActivity()).get(DogOwnerProfileViewModel.class);
 
+        viewModel.clearData();
+
         viewModel.getName().observe(getViewLifecycleOwner(), name -> binding.nameTextViewViewOwnerProfile.setText(name));
         viewModel.getEmail().observe(getViewLifecycleOwner(), email -> binding.emailTextViewViewOwnerProfile.setText(email));
         viewModel.getPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber -> binding.phoneNumberTextViewViewOwnerProfile.setText(phoneNumber));
@@ -47,9 +49,7 @@ public class ViewDogOwnerProfileFragment extends FragmentWithServices {
         binding.recyclerViewDogsViewDogOwnerProfile.setAdapter(dogsAdapter);
         viewModel.getDogs().observe(getViewLifecycleOwner(), dogsAdapter::setDogs);
 
-        viewModel.clearData();
-
-        String profileId = ViewDogOwnerProfileFragmentArgs.fromBundle(getArguments()).getId();
+        String profileId = ViewDogOwnerProfileFragmentArgs.fromBundle(getArguments()).getOwnerId();
         if (!profileId.equals(loggedUserDataService.getLoggedUserId())) {
             binding.editProfileButtonViewDogOwnerProfile.setVisibility(View.INVISIBLE);
 
@@ -70,13 +70,14 @@ public class ViewDogOwnerProfileFragment extends FragmentWithServices {
             });
 
         } else {
-            binding.editProfileButtonViewDogOwnerProfile.setOnClickListener(view -> {
-                viewModel.setName(loggedUserDataService.getLoggedUserName());
-                viewModel.setEmail(loggedUserDataService.getLoggedUserEmail());
-                viewModel.setPhoneNumber(loggedUserDataService.getLoggedUserPhoneNumber());
-                viewModel.setDogs(loggedUserDataService.getLoggedUserDogs());
+            viewModel.setName(loggedUserDataService.getLoggedUserName());
+            viewModel.setEmail(loggedUserDataService.getLoggedUserEmail());
+            viewModel.setPhoneNumber(loggedUserDataService.getLoggedUserPhoneNumber());
+            viewModel.setDogs(loggedUserDataService.getLoggedUserDogs());
 
-                Navigation.findNavController(view).navigate(ViewDogOwnerProfileFragmentDirections.fromViewOwnerProfileToEdit(null));
+            binding.editProfileButtonViewDogOwnerProfile.setOnClickListener(view -> {
+
+                Navigation.findNavController(view).navigate(ViewDogOwnerProfileFragmentDirections.actionFromViewOwnerProfileToEditOwnerProfile(null));
             });
         }
 

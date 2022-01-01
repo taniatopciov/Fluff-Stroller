@@ -4,8 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +14,6 @@ import com.example.fluffstroller.models.Dog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class DogsAdapter extends RecyclerView.Adapter<DogsAdapter.ViewHolder> {
 
@@ -38,12 +36,12 @@ public class DogsAdapter extends RecyclerView.Adapter<DogsAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Dog dog = dogs.get(position);
 
-        holder.getDogName().setText(dog.getName());
-        holder.getBreed().setText(dog.getBreed());
-        holder.getDescription().setText(dog.getDescription());
-        //todo add photo
+        holder.dogName.setText(dog.getName());
+        holder.breed.setText(dog.getBreed());
+        holder.age.setText(dog.getAge() + "");
+        holder.description.setText(dog.getDescription());
 
-        if(canRemove) {
+        if (canRemove) {
             holder.removeButton.setOnClickListener(view -> {
                 dogs.remove(position);
                 notifyItemRemoved(position);
@@ -68,10 +66,10 @@ public class DogsAdapter extends RecyclerView.Adapter<DogsAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final EditText dogName;
-        private final EditText breed;
-        private final EditText description;
-        private final ImageView image;
+        private final TextView dogName;
+        private final TextView breed;
+        private final TextView age;
+        private final TextView description;
         private final Button removeButton;
 
         public ViewHolder(View view) {
@@ -79,28 +77,8 @@ public class DogsAdapter extends RecyclerView.Adapter<DogsAdapter.ViewHolder> {
             dogName = view.findViewById(R.id.dogNameTextViewDogCard);
             breed = view.findViewById(R.id.breedTextViewDogCard);
             description = view.findViewById(R.id.descriptionTextViewDogCard);
-            image = view.findViewById(R.id.imageDogCard);
+            age = view.findViewById(R.id.ageTextViewDogDetailsCard);
             removeButton = view.findViewById(R.id.removeButtonDogCard);
-        }
-
-        public EditText getDogName() {
-            return dogName;
-        }
-
-        public EditText getBreed() {
-            return breed;
-        }
-
-        public EditText getDescription() {
-            return description;
-        }
-
-        public ImageView getImage() {
-            return image;
-        }
-
-        public Button getRemoveButton() {
-            return removeButton;
         }
     }
 }

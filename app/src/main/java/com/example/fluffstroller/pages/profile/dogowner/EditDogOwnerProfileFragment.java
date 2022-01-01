@@ -34,15 +34,20 @@ public class EditDogOwnerProfileFragment extends FragmentWithServices {
     private LoggedUserDataService loggedUserDataService;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = EditDogOwnerProfileFragmentBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(requireActivity()).get(DogOwnerProfileViewModel.class);
 
         DogsAdapter dogsAdapter = new DogsAdapter(true);
 
-        //todo add arguments for navigation between fragments
+        viewModel.getName().observe(getViewLifecycleOwner(), name -> binding.nameTextViewWithLabelEditDogOwnerProfile.setText(name));
+        viewModel.getPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber -> binding.phoneNumberTextViewWithLabelEditDogOwnerProfile.setText(phoneNumber));
+
+        binding.recyclerViewDogsEditDogOwnerProfile.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerViewDogsEditDogOwnerProfile.setAdapter(dogsAdapter);
+
+        viewModel.getDogs().observe(getViewLifecycleOwner(), dogsAdapter::setDogs);
 
         binding.saveButtonEditDogOwnerProfile.setOnClickListener(view -> {
             String name = binding.nameTextViewWithLabelEditDogOwnerProfile.getText();
@@ -56,24 +61,17 @@ public class EditDogOwnerProfileFragment extends FragmentWithServices {
                     return;
                 }
 
-                Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.fromEditOwnerProfileToViewProfile(loggedUserDataService.getLoggedUserId()));
+                loggedUserDataService.updateDogOwnerData(name, phoneNumber, dogs);
+                Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.actionFromEditOwnerProfileToViewOwnerProfile(loggedUserDataService.getLoggedUserId()));
             });
         });
 
         binding.addDogButtonEditDogOwnerProfile.setOnClickListener(view -> {
-            Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.fromEditOwnerProfileToAddDog());
+            Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.actionFromEditOwnerProfileToAddDog());
         });
 
-        viewModel.getName().observe(getViewLifecycleOwner(), name -> binding.nameTextViewWithLabelEditDogOwnerProfile.setText(name));
-        viewModel.getEmail().observe(getViewLifecycleOwner(), email -> binding.emailTextViewWithLabelEditDogOwnerProfile.setText(email));
-        viewModel.getPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber -> binding.phoneNumberTextViewWithLabelEditDogOwnerProfile.setText(phoneNumber));
-
-        binding.recyclerViewDogsEditDogOwnerProfile.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recyclerViewDogsEditDogOwnerProfile.setAdapter(dogsAdapter);
-        viewModel.getDogs().observe(getViewLifecycleOwner(), dogsAdapter::setDogs);
-
         Dog addedDog = EditDogOwnerProfileFragmentArgs.fromBundle(getArguments()).getDog();
-        if(addedDog != null) {
+        if (addedDog != null) {
             viewModel.addDog(addedDog);
         }
 

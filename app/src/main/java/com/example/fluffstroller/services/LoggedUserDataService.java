@@ -13,6 +13,10 @@ public interface LoggedUserDataService {
 
     boolean isUserLogged();
 
+    void updateStrollerData(String name, String phoneNumber, String description);
+
+    void updateDogOwnerData(String name, String phoneNumber, List<Dog> dogs);
+
     void setLoggedUserData(ProfileData profileData);
 
     void setDogWalkPreview(DogWalkPreview walkPreview);
@@ -33,7 +37,6 @@ public interface LoggedUserDataService {
 
     List<Review> getLoggedUserReviews();
 
-    String getLoggedUserCurrentWalkId();
     WalkRequest getLoggedUserCurrentWalkRequest();
 
     DogWalkPreview getLoggedUserWalkPreview();

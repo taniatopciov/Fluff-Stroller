@@ -1,7 +1,6 @@
 package com.example.fluffstroller.services;
 
 import com.example.fluffstroller.models.Dog;
-import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.ProfileData;
 import com.example.fluffstroller.models.Review;
@@ -29,5 +28,5 @@ public interface ProfileService {
 
     public Subject<Boolean> updateDogOwnerProfile(String id, String name, String phoneNumber, List<Dog> dogs);
 
-    public Subject<Boolean> updateDogStrollerProfile(String id, String name, String phoneNumber, String description, List<Review> reviews);
+    public Subject<Boolean> updateDogStrollerProfile(String id, String name, String phoneNumber, String description);
 }

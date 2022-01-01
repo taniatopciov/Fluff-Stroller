@@ -83,22 +83,6 @@
                     android:layout_height="@dimen/vertical_linear_layout_spacing" />
 
                 <com.example.fluffstroller.utils.components.TextWithLabel
-                    android:id="@+id/walkTimeTextWithLabelAddDogFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="45 minutes"
-                    android:importantForAutofill="no"
-                    android:inputType="number"
-                    android:minHeight="48dp"
-                    app:label="@string/walk_time" />
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/vertical_linear_layout_spacing" />
-
-                <com.example.fluffstroller.utils.components.TextWithLabel
                     android:id="@+id/descriptionTextWithLabelAddDogFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -122,7 +106,8 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                tools:visibility="gone" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -132,7 +117,8 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/add_photo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                tools:visibility="gone" />
 
             <ImageView
                 android:id="@+id/dogImageAddDogFragment"
@@ -144,7 +130,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/saveButtonAddDogFragment"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                tools:visibility="gone" />
 
             <Button
                 android:id="@+id/saveButtonAddDogFragment"
@@ -155,22 +142,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/uploadImageButtonAddDogFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="48dp"
-                android:clickable="true"
-                android:src="@android:drawable/stat_sys_upload_done"
-                app:backgroundTint="@color/accent"
-                app:fabSize="mini"
-                app:layout_constraintBottom_toBottomOf="@+id/textView5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/textView5"
-                app:layout_constraintTop_toTopOf="@+id/textView5"
-                app:tint="@color/white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

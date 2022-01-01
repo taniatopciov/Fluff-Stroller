@@ -4,11 +4,10 @@ import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogOwnerProfileData;
 import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.ProfileData;
+import com.example.fluffstroller.models.Review;
 import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.models.UserType;
 import com.example.fluffstroller.models.WalkRequest;
-import com.example.fluffstroller.models.Review;
-import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.services.LoggedUserDataService;
 
 import java.util.ArrayList;
@@ -20,6 +19,26 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
     @Override
     public boolean isUserLogged() {
         return profileData != null;
+    }
+
+    @Override
+    public void updateStrollerData(String name, String phoneNumber, String description) {
+        if (profileData != null && profileData instanceof StrollerProfileData) {
+            StrollerProfileData strollerProfileData = (StrollerProfileData) this.profileData;
+            strollerProfileData.setName(name);
+            strollerProfileData.setPhoneNumber(phoneNumber);
+            strollerProfileData.setDescription(description);
+        }
+    }
+
+    @Override
+    public void updateDogOwnerData(String name, String phoneNumber, List<Dog> dogs) {
+        if (profileData != null && profileData instanceof DogOwnerProfileData) {
+            DogOwnerProfileData dogOwnerProfileData = (DogOwnerProfileData) this.profileData;
+            dogOwnerProfileData.setName(name);
+            dogOwnerProfileData.setPhoneNumber(phoneNumber);
+            dogOwnerProfileData.setDogs(dogs);
+        }
     }
 
     @Override
