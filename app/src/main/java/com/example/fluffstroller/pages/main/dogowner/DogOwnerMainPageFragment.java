@@ -82,6 +82,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
                 }
                 break;
 
+                case WAITING_FOR_START:
                 case IN_PROGRESS: {
                     NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWalkInProgress());
                 }

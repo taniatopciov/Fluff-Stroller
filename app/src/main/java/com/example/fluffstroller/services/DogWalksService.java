@@ -16,11 +16,9 @@ public interface DogWalksService {
 
     Subject<DogWalk> listenForDogWalkChanges(String walkId);
 
-    Subject<Boolean> setWalkInProgress(String walkId);
-
     Subject<Boolean> removeWalk(String walkId);
 
     Subject<List<DogWalk>> getNearbyAvailableDogWalks(String id, Location currentLocation, Double radius);
 
-    Subject<Boolean> requestWalk(WalkRequest walkReques);
+    Subject<Boolean> requestWalk(WalkRequest walkRequest);
 }

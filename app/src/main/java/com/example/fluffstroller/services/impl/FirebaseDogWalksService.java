@@ -4,7 +4,6 @@ import com.example.fluffstroller.BuildConfig;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.models.WalkRequest;
-import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.utils.observer.Subject;
@@ -56,14 +55,6 @@ public class FirebaseDogWalksService implements DogWalksService {
     @Override
     public Subject<DogWalk> listenForDogWalkChanges(String walkId) {
         return firebaseRepository.listenForDocumentChanges(WALKS_PATH + "/" + walkId, DogWalk.class);
-    }
-
-    @Override
-    public Subject<Boolean> setWalkInProgress(String walkId) {
-        Map<String, Object> values = new HashMap<>();
-        values.put("status", WalkStatus.IN_PROGRESS);
-
-        return firebaseRepository.updateDocument(WALKS_PATH + "/" + walkId, values);
     }
 
     @Override

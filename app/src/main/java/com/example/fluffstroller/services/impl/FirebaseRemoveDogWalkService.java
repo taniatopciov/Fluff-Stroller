@@ -57,7 +57,7 @@ public class FirebaseRemoveDogWalkService implements RemoveDogWalkService {
         if (requests != null) {
             for (WalkRequest request : requests) {
                 if (request.getStatus() == WalkRequestStatus.PENDING) {
-                    request.setStatus(WalkRequestStatus.REJECTED);
+                    request.setStatus(WalkRequestStatus.CANCELED);
                     profileService.updateCurrentRequest(request.getStrollerId(), request).subscribe(response -> {
                     });
                 }

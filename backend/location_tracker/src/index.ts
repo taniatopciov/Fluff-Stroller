@@ -46,6 +46,7 @@ firestore.collection(Paths.FIRESTORE_WALKS_COLLECTION).onSnapshot(snapshot => {
     snapshot.docChanges().forEach(dc => {
         const id = dc.doc.id;
         const data = dc.doc.data() as DogWalk;
+        data.id = id;
 
         if (data.status === WalkStatus.PENDING && (dc.type === "added" || dc.type === "modified")) {
             if (data.location) {

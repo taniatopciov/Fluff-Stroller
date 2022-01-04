@@ -226,7 +226,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
             dogWalksService.getNearbyAvailableDogWalks(id, locationResponse.data, radius).subscribe(response -> {
                 if (response.hasErrors() || response.data == null) {
-                    Toast.makeText(requireContext(), "Could not get nearby walks", Toast.LENGTH_SHORT).show();
+                    requireActivity().runOnUiThread(() -> Toast.makeText(requireActivity(), "Could not get nearby walks", Toast.LENGTH_SHORT).show());
                     return;
                 }
 
@@ -288,8 +288,11 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
         Double strollerRating = loggedUserDataService.getLoggedUserRating();
         WalkRequest walkRequest = new WalkRequest(dogWalk.getId(), strollerId, strollerName, strollerPhoneNumber, strollerRating);
 
+        System.out.println(dogWalk.getId());
+
         dogWalksService.requestWalk(walkRequest).subscribe(response -> {
             if (response.hasErrors()) {
+                response.exception.printStackTrace();
                 return;
             }
             viewModel.setWaitingForDogOwnerApproval(true);
