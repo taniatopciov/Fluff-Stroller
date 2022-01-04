@@ -6,11 +6,6 @@
     app:startDestination="@+id/nav_home">
 
     <fragment
-        android:id="@+id/nav_walk_in_progress"
-        android:name="com.example.fluffstroller.pages.walkinprogress.WalkInProgressPage"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/walk_in_progress_fragment" />
-    <fragment
         android:id="@+id/nav_home"
         android:name="com.example.fluffstroller.pages.main.home.HomeNavFragment"
         android:label="@string/menu_home"
@@ -21,23 +16,34 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.fluffstroller.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_walk_in_progress"
+        android:name="com.example.fluffstroller.pages.walkinprogress.WalkInProgressPage"
+        android:label="@string/menu_walk_in_progress"
+        tools:layout="@layout/walk_in_progress_fragment" />
 
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.fluffstroller.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+    <include app:graph="@navigation/authentication_navigation" />
 
     <action
         android:id="@+id/action_global_nav_walk_in_progress"
         app:destination="@id/nav_walk_in_progress" />
-    <include app:graph="@navigation/authentication_navigation" />
 
     <action
         android:id="@+id/action_global_nav_home"
         app:destination="@id/nav_home" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.example.fluffstroller.pages.profile.userprofile.ProfileNavFragment"
+        android:label="Profile"
+        tools:layout="@layout/user_profile">
+        <argument
+            android:name="id"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="userType"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>

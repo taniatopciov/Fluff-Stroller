@@ -10,9 +10,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.fluffstroller.R;
-
 import androidx.annotation.Nullable;
+
+import com.example.fluffstroller.R;
 
 public class TextWithLabel extends LinearLayout {
 
@@ -48,5 +48,9 @@ public class TextWithLabel extends LinearLayout {
 
     public void setText(String string) {
         editText.setText(string);
+    }
+
+    public String getText() {
+        return editText.getText().toString();
     }
 }

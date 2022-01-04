@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout10"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.profile.dogstroller.ViewStrollerProfileFragment">
+
+    <TextView
+        android:id="@+id/nameLabelViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="48dp"
+        android:text="@string/name_label"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/emailLabelViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/email_label"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameLabelViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/phoneNumberLabelViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/phone_number"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailLabelViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/nameTextViewViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/nameLabelViewStrollerProfile"
+        app:layout_constraintStart_toEndOf="@+id/nameLabelViewStrollerProfile"
+        app:layout_constraintTop_toTopOf="@+id/nameLabelViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/emailTextViewViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/emailLabelViewStrollerProfile"
+        app:layout_constraintStart_toEndOf="@+id/emailLabelViewStrollerProfile"
+        app:layout_constraintTop_toTopOf="@+id/emailLabelViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/phoneNumberTextViewViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/phoneNumberLabelViewStrollerProfile"
+        app:layout_constraintStart_toEndOf="@+id/phoneNumberLabelViewStrollerProfile"
+        app:layout_constraintTop_toTopOf="@+id/phoneNumberLabelViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/descriptionLabelViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/description_label"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberLabelViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/descriptionTextViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/descriptionLabelViewStrollerProfile"
+        app:layout_constraintStart_toEndOf="@+id/descriptionLabelViewStrollerProfile"
+        app:layout_constraintTop_toTopOf="@+id/descriptionLabelViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/averageRatingLabelViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/average_rating"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionLabelViewStrollerProfile" />
+
+    <RatingBar
+        android:id="@+id/ratingBarViewStrollerProfile"
+        style="@style/Widget.AppCompat.RatingBar.Indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="16dp"
+        android:numStars="5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/averageRatingLabelViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/averageRatingViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/text"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/ratingBarViewStrollerProfile"
+        app:layout_constraintStart_toEndOf="@+id/ratingBarViewStrollerProfile"
+        app:layout_constraintTop_toTopOf="@+id/ratingBarViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/reviewsLabelViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/reviews"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBarViewStrollerProfile" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reviewsRecyclerViewStrollerViewProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reviewsLabelViewStrollerProfile"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/editProfileButtonViewStrollerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_edit_24"
+        app:backgroundTint="@color/accent"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/nameLabelViewStrollerProfile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/nameTextViewViewStrollerProfile"
+        app:layout_constraintTop_toTopOf="@+id/nameLabelViewStrollerProfile"
+        app:tint="@color/white" />
+</androidx.constraintlayout.widget.ConstraintLayout>
