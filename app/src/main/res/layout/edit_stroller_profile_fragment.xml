@@ -61,6 +61,7 @@
             android:ems="10"
             android:importantForAutofill="no"
             android:inputType="textMultiLine"
+            android:maxLength="128"
             android:minHeight="48dp"
             app:label="@string/description" />
     </LinearLayout>

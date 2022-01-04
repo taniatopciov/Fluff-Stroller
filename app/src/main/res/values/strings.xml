@@ -117,4 +117,5 @@
     <string name="edit_button">Edit Button</string>
     <string name="dash">-</string>
     <string name="years">years</string>
+    <string name="remove_dog">Remove Dog</string>
 </resources>
