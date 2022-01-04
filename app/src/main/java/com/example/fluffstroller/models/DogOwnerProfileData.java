@@ -8,6 +8,7 @@ public class DogOwnerProfileData extends ProfileData {
     private DogWalkPreview currentWalkPreview;
 
     public DogOwnerProfileData() {
+        dogs = new ArrayList<>();
     }
 
     public DogOwnerProfileData(String id, String name, String email, UserType userType) {
@@ -17,6 +18,10 @@ public class DogOwnerProfileData extends ProfileData {
 
     public List<Dog> getDogs() {
         return dogs;
+    }
+
+    public void setDogs(List<Dog> dogs) {
+        this.dogs = dogs;
     }
 
     public DogWalkPreview getCurrentWalkPreview() {

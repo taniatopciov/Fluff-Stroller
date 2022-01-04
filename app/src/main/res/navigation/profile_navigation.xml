@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_navigation"
+    app:startDestination="@id/startProfile">
+
+    <fragment
+        android:id="@+id/startProfile"
+        android:name="com.example.fluffstroller.pages.profile.userprofile.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/splash_screen">
+        <action
+            android:id="@+id/action_startProfile_to_viewDogOwnerProfile"
+            app:destination="@id/nav_view_dog_owner_profile" />
+        <action
+            android:id="@+id/action_startProfile_to_viewStrollerProfile"
+            app:destination="@id/nav_view_stroller_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_view_dog_owner_profile"
+        android:name="com.example.fluffstroller.pages.profile.dogowner.ViewDogOwnerProfileFragment"
+        android:label="Dog Owner Profile"
+        tools:layout="@layout/view_dog_owner_profile_fragment" >
+        <action
+            android:id="@+id/action_from_view_owner_profile_to_edit_owner_profile"
+            app:destination="@id/nav_edit_dog_owner_profile" />
+        <argument
+            android:name="ownerId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_edit_dog_owner_profile"
+        android:name="com.example.fluffstroller.pages.profile.dogowner.EditDogOwnerProfileFragment"
+        android:label="Dog Owner Profile - Edit"
+        tools:layout="@layout/edit_dog_owner_profile_fragment" >
+        <action
+            android:id="@+id/action_from_edit_owner_profile_to_add_dog"
+            app:destination="@id/nav_add_dog" />
+        <action
+            android:id="@+id/action_from_edit_owner_profile_to_view_owner_profile"
+            app:destination="@id/nav_view_dog_owner_profile" />
+        <argument
+            android:name="dog"
+            app:argType="com.example.fluffstroller.models.Dog"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_dog"
+        android:name="com.example.fluffstroller.pages.profile.dogowner.AddDogFragment"
+        android:label="Add Dog"
+        tools:layout="@layout/add_dog_fragment" >
+        <action
+            android:id="@+id/action_from_add_dog_to_edit_owner_profile"
+            app:destination="@id/nav_edit_dog_owner_profile" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_view_stroller_profile"
+        android:name="com.example.fluffstroller.pages.profile.dogstroller.ViewStrollerProfileFragment"
+        android:label="view_stroller_profile_fragment"
+        tools:layout="@layout/view_stroller_profile_fragment" >
+        <action
+            android:id="@+id/action_nav_view_stroller_profile_to_editStrollerProfileFragment"
+            app:destination="@id/editStrollerProfileFragment" />
+        <argument
+            android:name="strollerId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/editStrollerProfileFragment"
+        android:name="com.example.fluffstroller.pages.profile.dogstroller.EditStrollerProfileFragment"
+        android:label="edit_stroller_profile_fragment"
+        tools:layout="@layout/edit_stroller_profile_fragment" >
+        <action
+            android:id="@+id/action_editStrollerProfileFragment_to_nav_view_stroller_profile"
+            app:destination="@id/nav_view_stroller_profile" />
+    </fragment>
+
+</navigation>
