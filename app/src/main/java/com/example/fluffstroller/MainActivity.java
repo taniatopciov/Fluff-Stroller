@@ -1,5 +1,6 @@
 package com.example.fluffstroller;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,21 +10,29 @@ import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
 import com.example.fluffstroller.services.AuthenticationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.PermissionsService;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PermissionsService {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private NavController navController;
+
+    private int currentPermissionRequestCode = 0;
+    private Consumer<Boolean> onPermissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,5 +94,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 //        ServiceLocator.getInstance().dispose();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (onPermissionGranted != null) {
+            if (requestCode == currentPermissionRequestCode && grantResults.length > 0) {
+                onPermissionGranted.accept(grantResults[0] == PackageManager.PERMISSION_GRANTED);
+            }
+        }
+        onPermissionGranted = null;
+    }
+
+    @Override
+    public void checkPermission(String permission, Consumer<Boolean> onPermissionGranted) {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+            this.onPermissionGranted = onPermissionGranted;
+            currentPermissionRequestCode++;
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, currentPermissionRequestCode);
+        } else {
+            onPermissionGranted.accept(true);
+        }
     }
 }

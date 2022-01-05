@@ -4,32 +4,55 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.fluffstroller.databinding.WalkInProgressFragmentBinding;
+import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.models.UserType;
+import com.example.fluffstroller.services.LocationService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.EnableLocationPopupDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-public class WalkInProgressPage extends Fragment implements OnMapReadyCallback {
+public class WalkInProgressPage extends FragmentWithServices implements OnMapReadyCallback {
+    private static final String WALK_IN_PROGRESS_PAGE = "WALK_IN_PROGRESS_PAGE";
+
+    @Injectable
+    private LoggedUserDataService loggedUserDataService;
+
+    @Injectable
+    private LocationService locationService;
+
     private WalkInProgressFragmentBinding binding;
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
+    private WalkInProgressViewModel viewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = WalkInProgressFragmentBinding.inflate(inflater, container, false);
 
-        WalkInProgressViewModel viewModel = new ViewModelProvider(this).get(WalkInProgressViewModel.class);
+        viewModel = new ViewModelProvider(this).get(WalkInProgressViewModel.class);
 
-        binding.finishWalkButton.setOnClickListener(view -> {
-            Snackbar.make(view, "Finish Walk", Snackbar.LENGTH_SHORT).show();
+        if (loggedUserDataService.getLogUserType().equals(UserType.DOG_OWNER)) {
+            binding.finishWalkButton.setVisibility(View.GONE);
+        } else {
+            binding.finishWalkButton.setOnClickListener(view -> {
+                Snackbar.make(view, "Finish Walk", Snackbar.LENGTH_SHORT).show();
+                locationService.stopRealTimeLocationTracking(getActivity());
+            });
+        }
+
+        viewModel.getLocations().observe(getViewLifecycleOwner(), locations -> {
+
         });
 
         viewModel.getDistanceInMeters().observe(getViewLifecycleOwner(), distance -> {
@@ -61,12 +84,22 @@ public class WalkInProgressPage extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        this.googleMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
+            if (locationResponse.hasErrors()) {
+                Toast.makeText(requireContext(), "Could not get current location", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (locationResponse.data == null) {
+                new EnableLocationPopupDialog().show(getChildFragmentManager(), WALK_IN_PROGRESS_PAGE);
+                return;
+            }
+
+            LatLng latLng = new LatLng(locationResponse.data.latitude, locationResponse.data.longitude);
+            this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        });
     }
 }

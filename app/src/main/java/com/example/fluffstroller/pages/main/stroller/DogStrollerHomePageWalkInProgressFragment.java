@@ -1,5 +1,6 @@
 package com.example.fluffstroller.pages.main.stroller;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,11 @@ import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.PermissionsService;
 import com.example.fluffstroller.services.ProfileService;
+import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -33,7 +37,16 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
     private DogWalksService dogWalksService;
 
     @Injectable
+    private WalkInProgressService walkInProgressService;
+
+    @Injectable
     private ProfileService profileService;
+
+    @Injectable
+    private PermissionsService permissionsService;
+
+    @Injectable
+    private LocationService locationService;
 
     private DogStrollerHomePageWalkInProgressViewModel viewModel;
     private DogStrollerHomePageWalkInProgressFragmentBinding binding;
@@ -52,26 +65,36 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         binding.includeAvailableWalkDetails.dogNamesTextView.setVisibility(View.INVISIBLE);
         binding.includeAvailableWalkDetails.requestButton.setVisibility(View.INVISIBLE);
 
+
         binding.startWalkButton.setOnClickListener(view -> {
-            DogWalk dogWalk = viewModel.getDogWalk().getValue();
-            if (dogWalk == null) {
-                return;
-            }
-            dogWalk.setStatus(WalkStatus.IN_PROGRESS);
-            dogWalksService.updateDogWalk(dogWalk).subscribe(response -> {
-                if (response.hasErrors()) {
-                    requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in progress", Toast.LENGTH_SHORT).show());
+            permissionsService.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, permissionGranted -> {
+                if (!permissionGranted) {
+                    requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_SHORT).show());
                     return;
                 }
 
-                DogWalkPreview walkPreview = new DogWalkPreview(dogWalk.getId(), WalkStatus.IN_PROGRESS);
-                profileService.updateDogWalkPreview(dogWalk.getOwnerId(), walkPreview).subscribe(response1 -> {
-                    if (response1.hasErrors()) {
-                        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk preview in progress", Toast.LENGTH_SHORT).show());
+                DogWalk dogWalk = viewModel.getDogWalk().getValue();
+                if (dogWalk == null) {
+                    return;
+                }
+                dogWalk.setStatus(WalkStatus.IN_PROGRESS);
+                dogWalksService.updateDogWalk(dogWalk).subscribe(response -> {
+                    if (response.hasErrors()) {
+                        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in progress", Toast.LENGTH_SHORT).show());
                         return;
                     }
 
-                    setControlsForWalkInProgress();
+                    DogWalkPreview walkPreview = new DogWalkPreview(dogWalk.getId(), WalkStatus.IN_PROGRESS);
+                    profileService.updateDogWalkPreview(dogWalk.getOwnerId(), walkPreview).subscribe(response1 -> {
+                        if (response1.hasErrors()) {
+                            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk preview in progress", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
+
+                        walkInProgressService.startWalk(dogWalk, loggedUserDataService.getLoggedUserId());
+                        setControlsForWalkInProgress();
+                        locationService.startRealTimeLocationTracking(getActivity());
+                    });
                 });
             });
         });
