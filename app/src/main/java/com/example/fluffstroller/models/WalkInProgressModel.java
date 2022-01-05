@@ -1,15 +1,17 @@
 package com.example.fluffstroller.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WalkInProgressModel {
     private String walkId;
     private String ownerId;
     private String strollerId;
     private Long creationTimeMillis;
-    private List<Double> latitude;
-    private List<Double> longitude;
+    private Map<String, Double> latitude;
+    private Map<String, Double> longitude;
 
     public WalkInProgressModel() {
     }
@@ -19,8 +21,8 @@ public class WalkInProgressModel {
         this.ownerId = ownerId;
         this.strollerId = strollerId;
         this.creationTimeMillis = creationTimeMillis;
-        latitude = new ArrayList<>();
-        longitude = new ArrayList<>();
+        latitude = new HashMap<>();
+        longitude = new HashMap<>();
     }
 
     public String getWalkId() {
@@ -40,10 +42,10 @@ public class WalkInProgressModel {
     }
 
     public List<Double> getLatitude() {
-        return latitude;
+        return new ArrayList<>(latitude.values());
     }
 
     public List<Double> getLongitude() {
-        return longitude;
+        return new ArrayList<>(longitude.values());
     }
 }

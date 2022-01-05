@@ -157,4 +157,25 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
 
         return 0.0;
     }
+
+    @Override
+    public String getCurrentWalkId() {
+        if (profileData == null) {
+            return "";
+        }
+
+        if (profileData instanceof StrollerProfileData) {
+            StrollerProfileData strollerProfileData = (StrollerProfileData) profileData;
+            if (strollerProfileData.getCurrentRequest() != null) {
+                return strollerProfileData.getCurrentRequest().getWalkId();
+            }
+        } else if (profileData instanceof DogOwnerProfileData) {
+            DogOwnerProfileData dogOwnerProfileData = (DogOwnerProfileData) profileData;
+            if (dogOwnerProfileData.getCurrentWalkPreview() != null) {
+                return dogOwnerProfileData.getCurrentWalkPreview().getWalkId();
+            }
+        }
+
+        return "";
+    }
 }

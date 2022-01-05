@@ -6,7 +6,7 @@ import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.utils.observer.Subject;
 
 public interface LocationService {
-    void startRealTimeLocationTracking(Activity activity);
+    void startRealTimeLocationTracking(Activity activity, String walkId);
 
     void stopRealTimeLocationTracking(Activity activity);
 

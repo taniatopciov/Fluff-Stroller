@@ -44,4 +44,6 @@ public interface LoggedUserDataService {
     UserType getLogUserType();
 
     Double getLoggedUserRating();
+
+    String getCurrentWalkId();
 }

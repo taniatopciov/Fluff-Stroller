@@ -93,7 +93,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
                         walkInProgressService.startWalk(dogWalk, loggedUserDataService.getLoggedUserId());
                         setControlsForWalkInProgress();
-                        locationService.startRealTimeLocationTracking(getActivity());
+                        locationService.startRealTimeLocationTracking(getActivity(), dogWalk.getId());
                     });
                 });
             });

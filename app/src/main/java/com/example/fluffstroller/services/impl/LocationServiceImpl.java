@@ -12,8 +12,11 @@ import android.os.Looper;
 
 import com.example.fluffstroller.MainActivity;
 import com.example.fluffstroller.R;
+import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.services.LocationService;
+import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.observer.Subject;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -28,12 +31,24 @@ import static com.example.fluffstroller.App.LOCATION_SERVICE_CHANNEL_ID;
 
 
 public class LocationServiceImpl extends Service implements LocationService {
-    private static final int RT_LOCATION_REQUEST_INTERVAL = 4000; // real-time location interval
-    private static final int RT_FASTEST_LOCATION_REQUEST_INTERVAL = 2000; // real-time location interval if available sooner
+    private static final int RT_LOCATION_REQUEST_INTERVAL = 10_000; // real-time location interval
+    private static final int RT_FASTEST_LOCATION_REQUEST_INTERVAL = 5_000; // real-time location interval if available sooner
     private static final int LOCATION_SERVICE_ID = 175;
+    private static final String WALK_ID_EXTRA = "walkId";
     private final String ACTION_START_LOCATION_SERVICE = "startLocationService";
     private final String ACTION_STOP_LOCATION_SERVICE = "stopLocationService";
 
+    @Injectable
+    private WalkInProgressService walkInProgressService;
+
+    private String currentWalkId;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        ServiceLocator.getInstance().inject(this);
+    }
 
     private final LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -44,7 +59,7 @@ public class LocationServiceImpl extends Service implements LocationService {
                 double latitude = locationResult.getLastLocation().getLatitude();
                 double longitude = locationResult.getLastLocation().getLongitude();
 
-                System.out.println(latitude + " " + longitude);
+                walkInProgressService.addLocation(currentWalkId, latitude, longitude);
             }
         }
     };
@@ -61,7 +76,7 @@ public class LocationServiceImpl extends Service implements LocationService {
             String action = intent.getAction();
             if (action != null) {
                 if (action.equals(ACTION_START_LOCATION_SERVICE)) {
-                    startRealTimeLocationService();
+                    startRealTimeLocationService(intent.getStringExtra(WALK_ID_EXTRA));
                 } else if (action.equals(ACTION_STOP_LOCATION_SERVICE)) {
                     stopRealTimeLocationService();
                 }
@@ -72,10 +87,11 @@ public class LocationServiceImpl extends Service implements LocationService {
     }
 
     @Override
-    public void startRealTimeLocationTracking(Activity activity) {
+    public void startRealTimeLocationTracking(Activity activity, String walkId) {
         if (!isRealTimeLocationRunning(activity)) {
             Intent intent = new Intent(activity, getClass());
             intent.setAction(ACTION_START_LOCATION_SERVICE);
+            intent.putExtra(WALK_ID_EXTRA, walkId);
             activity.startService(intent);
         }
     }
@@ -125,7 +141,9 @@ public class LocationServiceImpl extends Service implements LocationService {
     }
 
 
-    private void startRealTimeLocationService() {
+    private void startRealTimeLocationService(String walkId) {
+        currentWalkId = walkId;
+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
