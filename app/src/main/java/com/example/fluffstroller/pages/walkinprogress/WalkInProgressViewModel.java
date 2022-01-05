@@ -1,7 +1,6 @@
 package com.example.fluffstroller.pages.walkinprogress;
 
 import com.example.fluffstroller.models.Location;
-import com.example.fluffstroller.models.WalkInProgressModel;
 
 import java.util.List;
 
@@ -9,23 +8,21 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class WalkInProgressViewModel extends ViewModel {
-    private final MutableLiveData<Integer> elapsedSeconds;
-    private final MutableLiveData<Integer> distanceInMeters;
+    private final MutableLiveData<Long> elapsedSeconds;
+    private final MutableLiveData<Float> distanceInMeters;
     private final MutableLiveData<List<Location>> locations;
-    private final MutableLiveData<WalkInProgressModel> walkInProgressModel;
 
     public WalkInProgressViewModel() {
         elapsedSeconds = new MutableLiveData<>();
         distanceInMeters = new MutableLiveData<>();
         locations = new MutableLiveData<>();
-        walkInProgressModel = new MutableLiveData<>();
     }
 
-    public MutableLiveData<Integer> getElapsedSeconds() {
+    public MutableLiveData<Long> getElapsedSeconds() {
         return elapsedSeconds;
     }
 
-    public MutableLiveData<Integer> getDistanceInMeters() {
+    public MutableLiveData<Float> getDistanceInMeters() {
         return distanceInMeters;
     }
 
@@ -33,15 +30,11 @@ public class WalkInProgressViewModel extends ViewModel {
         return locations;
     }
 
-    public MutableLiveData<WalkInProgressModel> getWalkInProgressModel() {
-        return walkInProgressModel;
-    }
-
-    public void setElapsedSeconds(Integer elapsedSeconds) {
+    public void setElapsedSeconds(Long elapsedSeconds) {
         this.elapsedSeconds.postValue(elapsedSeconds);
     }
 
-    public void setDistanceInMeters(Integer distanceInMeters) {
+    public void setDistanceInMeters(Float distanceInMeters) {
         this.distanceInMeters.postValue(distanceInMeters);
     }
 
@@ -49,7 +42,10 @@ public class WalkInProgressViewModel extends ViewModel {
         this.locations.postValue(locations);
     }
 
-    public void setWalkInProgressModel(WalkInProgressModel walkInProgressModel) {
-        this.walkInProgressModel.postValue(walkInProgressModel);
+    public void increaseElapsedSeconds(long amount) {
+        Long value = this.elapsedSeconds.getValue();
+        if (value != null) {
+            this.elapsedSeconds.postValue(value + amount);
+        }
     }
 }
