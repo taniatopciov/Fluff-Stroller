@@ -4,13 +4,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.fluffstroller.databinding.ActivityMainBinding;
-import com.example.fluffstroller.di.ServiceLocator;
-import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
-import com.example.fluffstroller.services.AuthenticationService;
-import com.example.fluffstroller.services.LoggedUserDataService;
-import com.google.android.material.navigation.NavigationView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -18,6 +11,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import com.example.fluffstroller.databinding.ActivityMainBinding;
+import com.example.fluffstroller.di.ServiceLocator;
+import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
+import com.example.fluffstroller.services.AuthenticationService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 

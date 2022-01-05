@@ -9,6 +9,7 @@ import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.models.UserType;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.repository.FirebaseRepository;
+import com.example.fluffstroller.services.PhotoService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.observer.Subject;
 
@@ -16,13 +17,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FirebaseProfileService implements ProfileService {
     private final FirebaseRepository firebaseRepository;
+    private final PhotoService photoService;
+
     private static final String PROFILES_COLLECTION_PATH = "profiles";
 
-    public FirebaseProfileService(FirebaseRepository firebaseRepository) {
+    public FirebaseProfileService(FirebaseRepository firebaseRepository, PhotoService photoService) {
         this.firebaseRepository = firebaseRepository;
+        this.photoService = photoService;
     }
 
     @Override
@@ -45,7 +50,51 @@ public class FirebaseProfileService implements ProfileService {
         possibleTypes.put(UserType.STROLLER.toString(), StrollerProfileData.class);
         possibleTypes.put(UserType.DOG_OWNER.toString(), DogOwnerProfileData.class);
 
-        return firebaseRepository.getDocument(PROFILES_COLLECTION_PATH + "/" + userId, "userType", possibleTypes);
+        Subject<ProfileData> subject = new Subject<>();
+
+        firebaseRepository.getDocument(PROFILES_COLLECTION_PATH + "/" + userId, "userType", possibleTypes)
+                .subscribe(response -> {
+                    if (response.hasErrors()) {
+                        subject.notifyObservers(response.exception);
+                        return;
+                    }
+
+                    if (response.data == null) {
+                        subject.notifyObservers(response.data);
+                        return;
+                    }
+
+                    if (!(response.data instanceof DogOwnerProfileData)) {
+                        subject.notifyObservers(response.data);
+                        return;
+                    }
+
+                    DogOwnerProfileData dogOwnerProfileData = (DogOwnerProfileData) response.data;
+
+                    if (dogOwnerProfileData.getDogs() == null || dogOwnerProfileData.getDogs().isEmpty()) {
+                        subject.notifyObservers(response.data);
+                        return;
+                    }
+
+                    AtomicInteger atomicInteger = new AtomicInteger(0);
+
+                    for (Dog dog : dogOwnerProfileData.getDogs()) {
+                        if (dog.getImageURL() == null || dog.getImageURL().isEmpty()) {
+                            if (atomicInteger.incrementAndGet() == dogOwnerProfileData.getDogs().size()) {
+                                subject.notifyObservers(dogOwnerProfileData);
+                            }
+                        } else {
+                            photoService.getPhoto(dog.getImageURL(), bitmap -> {
+                                dog.bitmap = bitmap;
+                                if (atomicInteger.incrementAndGet() == dogOwnerProfileData.getDogs().size()) {
+                                    subject.notifyObservers(dogOwnerProfileData);
+                                }
+                            });
+                        }
+                    }
+                });
+
+        return subject;
     }
 
     @Override

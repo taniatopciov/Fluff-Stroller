@@ -9,6 +9,7 @@ import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.FeesService;
 import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.PhotoService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.services.RemoveDogWalkService;
 import com.example.fluffstroller.services.impl.FirebaseAuthenticationService;
@@ -17,6 +18,7 @@ import com.example.fluffstroller.services.impl.FirebaseProfileService;
 import com.example.fluffstroller.services.impl.FirebaseRemoveDogWalkService;
 import com.example.fluffstroller.services.impl.LocationServiceImpl;
 import com.example.fluffstroller.services.impl.LoggedUserDataServiceImpl;
+import com.example.fluffstroller.services.impl.PhotoServiceFirestorage;
 
 public class ServicesRegistration {
     private final static ServicesRegistration instance = new ServicesRegistration();
@@ -36,8 +38,9 @@ public class ServicesRegistration {
         servicesRegistered = true;
 
         FirebaseRepository firebaseRepository = new FirebaseRepository();
+        PhotoService photoService = new PhotoServiceFirestorage();
 
-        FirebaseProfileService firebaseProfileService = new FirebaseProfileService(firebaseRepository);
+        FirebaseProfileService firebaseProfileService = new FirebaseProfileService(firebaseRepository, photoService);
         FirebaseDogWalksService firebaseDogWalksService = new FirebaseDogWalksService(firebaseRepository);
 
         ServiceLocator serviceLocator = ServiceLocator.getInstance();
@@ -48,5 +51,6 @@ public class ServicesRegistration {
         serviceLocator.register(AuthenticationService.class, new FirebaseAuthenticationService());
         serviceLocator.register(LoggedUserDataService.class, new LoggedUserDataServiceImpl());
         serviceLocator.register(LocationService.class, new LocationServiceImpl(activity));
+        serviceLocator.register(PhotoService.class, photoService);
     }
 }

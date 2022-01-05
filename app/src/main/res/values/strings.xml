@@ -118,4 +118,8 @@
     <string name="dash">-</string>
     <string name="years">years</string>
     <string name="remove_dog">Remove Dog</string>
+    <string name="from_camera">From Camera</string>
+    <string name="from_gallery">From Gallery</string>
+    <string name="add_dog">Add Dog</string>
+    <string name="dog_image">Dog Image</string>
 </resources>
