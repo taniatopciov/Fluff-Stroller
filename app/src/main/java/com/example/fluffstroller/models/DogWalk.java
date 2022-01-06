@@ -72,4 +72,12 @@ public class DogWalk extends FirebaseDocument {
     public Location getLocation() {
         return location;
     }
+
+    public void setStatus(WalkStatus status) {
+        this.status = status;
+    }
+
+    public void setRequests(List<WalkRequest> requests) {
+        this.requests = requests;
+    }
 }

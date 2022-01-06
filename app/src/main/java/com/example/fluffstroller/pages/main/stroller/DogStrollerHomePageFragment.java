@@ -139,7 +139,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
                 return;
             }
 
-            locationService.getCurrentLocation().subscribe(locationResponse -> {
+            locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
                 if (locationResponse.hasErrors()) {
                     CustomToast.show(requireActivity(), "Could not get current location",
                             Toast.LENGTH_LONG);
@@ -208,7 +208,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
     }
 
     private void getAvailableDogWalks() {
-        locationService.getCurrentLocation().subscribe(locationResponse -> {
+        locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
             if (locationResponse.hasErrors()) {
                 CustomToast.show(requireActivity(), "Could not get current location",
                         Toast.LENGTH_LONG);
@@ -257,7 +257,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        locationService.getCurrentLocation().subscribe(locationResponse -> {
+        locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
             if (locationResponse.hasErrors()) {
                 CustomToast.show(requireActivity(), "Could not get current location",
                         Toast.LENGTH_LONG);
@@ -295,6 +295,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
         dogWalksService.requestWalk(walkRequest).subscribe(response -> {
             if (response.hasErrors()) {
+                response.exception.printStackTrace();
                 return;
             }
             viewModel.setWaitingForDogOwnerApproval(true);

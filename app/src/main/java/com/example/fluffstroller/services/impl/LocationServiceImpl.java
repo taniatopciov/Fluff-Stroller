@@ -1,25 +1,132 @@
 package com.example.fluffstroller.services.impl;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.os.IBinder;
+import android.os.Looper;
 
+import com.example.fluffstroller.MainActivity;
+import com.example.fluffstroller.R;
+import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.services.LocationService;
+import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.observer.Subject;
-import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
-public class LocationServiceImpl implements LocationService {
-    private final FusedLocationProviderClient fusedLocationClient;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
-    public LocationServiceImpl(Activity activity) {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
+import static com.example.fluffstroller.App.LOCATION_SERVICE_CHANNEL_ID;
+
+
+public class LocationServiceImpl extends Service implements LocationService {
+    private static final int RT_LOCATION_REQUEST_INTERVAL = 10_000; // real-time location interval
+    private static final int RT_FASTEST_LOCATION_REQUEST_INTERVAL = 5_000; // real-time location interval if available sooner
+    private static final int LOCATION_SERVICE_ID = 175;
+    private static final String WALK_ID_EXTRA = "walkId";
+    private final String ACTION_START_LOCATION_SERVICE = "startLocationService";
+    private final String ACTION_STOP_LOCATION_SERVICE = "stopLocationService";
+
+    @Injectable
+    private WalkInProgressService walkInProgressService;
+
+    private String currentWalkId;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        ServiceLocator.getInstance().inject(this);
+    }
+
+    private final LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(@NonNull LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+
+            if (locationResult != null && locationResult.getLastLocation() != null) {
+                double latitude = locationResult.getLastLocation().getLatitude();
+                double longitude = locationResult.getLastLocation().getLongitude();
+
+                walkInProgressService.addLocation(currentWalkId, latitude, longitude);
+            }
+        }
+    };
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override
-    public Subject<Location> getCurrentLocation() {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            String action = intent.getAction();
+            if (action != null) {
+                if (action.equals(ACTION_START_LOCATION_SERVICE)) {
+                    startRealTimeLocationService(intent.getStringExtra(WALK_ID_EXTRA));
+                } else if (action.equals(ACTION_STOP_LOCATION_SERVICE)) {
+                    stopRealTimeLocationService();
+                }
+            }
+        }
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void startRealTimeLocationTracking(Activity activity, String walkId) {
+        if (!isRealTimeLocationRunning(activity)) {
+            Intent intent = new Intent(activity, getClass());
+            intent.setAction(ACTION_START_LOCATION_SERVICE);
+            intent.putExtra(WALK_ID_EXTRA, walkId);
+            activity.startService(intent);
+        }
+    }
+
+    @Override
+    public void stopRealTimeLocationTracking(Activity activity) {
+        if (isRealTimeLocationRunning(activity)) {
+            Intent intent = new Intent(activity, getClass());
+            intent.setAction(ACTION_STOP_LOCATION_SERVICE);
+            activity.startService(intent);
+        }
+    }
+
+    @Override
+    public boolean isRealTimeLocationRunning(Activity activity) {
+        ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+                if (getClass().getName().equals(serviceInfo.service.getClassName())) {
+                    if (serviceInfo.foreground) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public Subject<Location> getCurrentLocation(Activity activity) {
         Subject<Location> subject = new Subject<>();
 
-        fusedLocationClient.getLastLocation()
+        LocationServices.getFusedLocationProviderClient(activity)
+                .getLastLocation()
                 .addOnSuccessListener(location -> {
                     if (location == null) {
                         // if is null, the Location is turned off
@@ -31,5 +138,40 @@ public class LocationServiceImpl implements LocationService {
                 .addOnFailureListener(subject::notifyObservers);
 
         return subject;
+    }
+
+
+    private void startRealTimeLocationService(String walkId) {
+        currentWalkId = walkId;
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification notification = new NotificationCompat.Builder(this, LOCATION_SERVICE_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_baseline_map_24)
+                .setContentTitle("Walk in Progress")
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setContentText("Running")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(false)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .build();
+
+        startForeground(LOCATION_SERVICE_ID, notification);
+
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(RT_LOCATION_REQUEST_INTERVAL);
+        locationRequest.setFastestInterval(RT_FASTEST_LOCATION_REQUEST_INTERVAL);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationServices.getFusedLocationProviderClient(this)
+                .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    private void stopRealTimeLocationService() {
+        LocationServices.getFusedLocationProviderClient(this)
+                .removeLocationUpdates(locationCallback);
+        stopForeground(true);
+        stopSelf();
     }
 }
