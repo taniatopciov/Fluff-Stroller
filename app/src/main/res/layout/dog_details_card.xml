@@ -8,10 +8,10 @@
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:cardBackgroundColor="#FFFEFE"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
@@ -28,56 +28,47 @@
                 android:id="@+id/dogNameTextViewDogCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
                 android:text="@string/text"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/linearLayoutDogCard"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/breedTextViewDogCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/text"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/dogNameTextViewDogCard"
                 app:layout_constraintTop_toBottomOf="@+id/dogNameTextViewDogCard" />
 
             <TextView
                 android:id="@+id/descriptionTextViewDogCard"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="140dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="24dp"
+                android:inputType="textMultiLine"
+                android:justificationMode="inter_word"
+                android:maxLines="5"
                 android:text="@string/text"
-                app:layout_constraintEnd_toStartOf="@+id/imageView3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ageTextViewDogDetailsCard" />
-
-            <Button
-                android:id="@+id/removeButtonDogCard"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/accent"
-                android:text="@string/remove"
-                android:textColor="@color/white"
+                android:textAlignment="viewStart"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/descriptionTextViewDogCard" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/ageTextViewDogDetailsCard"
+                app:layout_constraintTop_toBottomOf="@+id/ageTextViewDogDetailsCard"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/ageTextViewDogDetailsCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/text"
                 app:layout_constraintStart_toStartOf="@+id/breedTextViewDogCard"
                 app:layout_constraintTop_toBottomOf="@+id/breedTextViewDogCard" />
@@ -92,17 +83,42 @@
                 app:layout_constraintStart_toEndOf="@+id/ageTextViewDogDetailsCard"
                 app:layout_constraintTop_toTopOf="@+id/ageTextViewDogDetailsCard" />
 
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/removeButtonDogCard"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.75"
-                app:layout_constraintStart_toEndOf="@+id/textView10"
-                app:layout_constraintTop_toTopOf="@+id/dogNameTextViewDogCard"
-                app:srcCompat="@drawable/empty_image" />
+            <LinearLayout
+                android:id="@+id/linearLayoutDogCard"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/dogImageDogDetailsCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/dog_image"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/empty_image" />
+
+                <Button
+                    android:id="@+id/removeButtonDogCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/accent"
+                    android:text="@string/remove"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayoutDogCard"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayoutDogCard"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayoutDogCard"
+                    tools:visibility="visible" />
+            </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

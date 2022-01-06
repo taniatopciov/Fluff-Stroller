@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/email_label"
         android:textColor="@color/primary"
         android:textSize="16sp"
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/phone_number"
         android:textColor="@color/primary"
         android:textSize="16sp"
@@ -84,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/description_label"
         android:textColor="@color/primary"
         android:textSize="16sp"
@@ -94,14 +94,20 @@
 
     <TextView
         android:id="@+id/descriptionTextViewStrollerProfile"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:inputType="textMultiLine"
+        android:justificationMode="inter_word"
+        android:maxLines="5"
         android:text="@string/text"
+        android:textAlignment="viewStart"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/descriptionLabelViewStrollerProfile"
-        app:layout_constraintStart_toEndOf="@+id/descriptionLabelViewStrollerProfile"
-        app:layout_constraintTop_toTopOf="@+id/descriptionLabelViewStrollerProfile" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionLabelViewStrollerProfile" />
 
     <TextView
         android:id="@+id/averageRatingLabelViewStrollerProfile"
@@ -114,7 +120,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionLabelViewStrollerProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/descriptionTextViewStrollerProfile" />
 
     <RatingBar
         android:id="@+id/ratingBarViewStrollerProfile"
@@ -154,11 +160,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reviewsRecyclerViewStrollerViewProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

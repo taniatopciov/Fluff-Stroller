@@ -15,17 +15,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.fluffstroller.databinding.EditDogOwnerProfileFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.Dog;
+import com.example.fluffstroller.services.PhotoService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 
 import java.util.List;
+import java.util.UUID;
 
 public class EditDogOwnerProfileFragment extends FragmentWithServices {
 
     private DogOwnerProfileViewModel viewModel;
-
     private EditDogOwnerProfileFragmentBinding binding;
+
+    private static final String PROFILES_STORAGE_FOLDER_PATH = "profiles";
+
+    @Injectable
+    private PhotoService photoService;
 
     @Injectable
     private ProfileService profileService;
@@ -53,6 +59,16 @@ public class EditDogOwnerProfileFragment extends FragmentWithServices {
             String name = binding.nameTextViewWithLabelEditDogOwnerProfile.getText();
             String phoneNumber = binding.phoneNumberTextViewWithLabelEditDogOwnerProfile.getText();
             List<Dog> dogs = dogsAdapter.getDogs();
+
+            for (Dog dog : dogs) {
+                if (dog.bitmap != null) {
+                    String uniqueID = UUID.randomUUID().toString();
+                    String photoPath = PROFILES_STORAGE_FOLDER_PATH + "/" + loggedUserDataService.getLoggedUserId() + "/" + uniqueID;
+                    dog.setImageURL(photoPath);
+                    photoService.updatePhoto(photoPath, dog.bitmap, v -> {
+                    });
+                }
+            }
 
             profileService.updateDogOwnerProfile(loggedUserDataService.getLoggedUserId(), name, phoneNumber, dogs).subscribe(response -> {
                 if (response.hasErrors()) {

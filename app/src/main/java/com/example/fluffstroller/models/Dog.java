@@ -1,5 +1,7 @@
 package com.example.fluffstroller.models;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 public class Dog implements Serializable {
@@ -8,6 +10,7 @@ public class Dog implements Serializable {
     private int age;
     private String description;
     private String imageURL;
+    public transient Bitmap bitmap;
 
     public Dog() {
     }
@@ -19,12 +22,12 @@ public class Dog implements Serializable {
         this.description = description;
     }
 
-    public Dog(String name, String breed, int age, String description, String imageURL) {
+    public Dog(String name, String breed, int age, String description, Bitmap bitmap) {
         this.name = name;
         this.breed = breed;
         this.age = age;
         this.description = description;
-        this.imageURL = imageURL;
+        this.bitmap = bitmap;
     }
 
     public String getName() {
@@ -43,6 +46,10 @@ public class Dog implements Serializable {
         return age;
     }
 
+    public String getImageURL() {
+        return imageURL;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -55,15 +62,11 @@ public class Dog implements Serializable {
         this.age = age;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

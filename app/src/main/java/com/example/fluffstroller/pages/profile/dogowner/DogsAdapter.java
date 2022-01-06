@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,10 @@ public class DogsAdapter extends RecyclerView.Adapter<DogsAdapter.ViewHolder> {
         holder.age.setText(dog.getAge() + "");
         holder.description.setText(dog.getDescription());
 
+        if (dog.bitmap != null) {
+            holder.image.setImageBitmap(dog.bitmap);
+        }
+
         if (canRemove) {
             holder.removeButton.setOnClickListener(view -> {
                 dogs.remove(position);
@@ -70,6 +75,7 @@ public class DogsAdapter extends RecyclerView.Adapter<DogsAdapter.ViewHolder> {
         private final TextView breed;
         private final TextView age;
         private final TextView description;
+        private final ImageView image;
         private final Button removeButton;
 
         public ViewHolder(View view) {
@@ -78,6 +84,7 @@ public class DogsAdapter extends RecyclerView.Adapter<DogsAdapter.ViewHolder> {
             breed = view.findViewById(R.id.breedTextViewDogCard);
             description = view.findViewById(R.id.descriptionTextViewDogCard);
             age = view.findViewById(R.id.ageTextViewDogDetailsCard);
+            image = view.findViewById(R.id.dogImageDogDetailsCard);
             removeButton = view.findViewById(R.id.removeButtonDogCard);
         }
     }

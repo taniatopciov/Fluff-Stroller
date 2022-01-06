@@ -25,7 +25,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity implements PermissionsService {
+import com.example.fluffstroller.databinding.ActivityMainBinding;
+import com.example.fluffstroller.di.ServiceLocator;
+import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
+import com.example.fluffstroller.services.AuthenticationService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.google.android.material.navigation.NavigationView;
+
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
