@@ -82,6 +82,7 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
                         return;
                     }
 
+                    loggedUserDataService.setDogWalkPreview(response.data);
                     binding.finishWalkButton.setEnabled(false);
                     CustomToast.show(requireActivity(), "Walk Finished",
                             Toast.LENGTH_LONG);

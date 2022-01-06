@@ -5,16 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.fluffstroller.databinding.ActivityMainBinding;
-import com.example.fluffstroller.di.ServiceLocator;
-import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
-import com.example.fluffstroller.services.AuthenticationService;
-import com.example.fluffstroller.services.LoggedUserDataService;
-import com.example.fluffstroller.services.PermissionsService;
-import com.google.android.material.navigation.NavigationView;
-
-import java.util.function.Consumer;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -24,6 +14,19 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import com.example.fluffstroller.databinding.ActivityMainBinding;
+import com.example.fluffstroller.di.ServiceLocator;
+import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
+import com.example.fluffstroller.services.AuthenticationService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.PermissionsService;
+import com.google.android.material.navigation.NavigationView;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity implements PermissionsService {
 
@@ -115,6 +118,30 @@ public class MainActivity extends AppCompatActivity implements PermissionsServic
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, currentPermissionRequestCode);
         } else {
             onPermissionGranted.accept(true);
+        }
+    }
+
+    @Override
+    public void checkPermissions(List<String> permissions, Consumer<Boolean> onPermissionsGranted) {
+        AtomicInteger permissionsNumber = new AtomicInteger(0);
+        AtomicBoolean permissionNotGranted = new AtomicBoolean(false);
+
+        for (String permission : permissions) {
+            checkPermission(permission, granted -> {
+                int count = permissionsNumber.incrementAndGet();
+                if (!granted) {
+                    permissionNotGranted.set(true);
+                    if (onPermissionsGranted != null) {
+                        onPermissionsGranted.accept(false);
+                    }
+                } else {
+                    if (!permissionNotGranted.get() && count == permissions.size()) {
+                        if (onPermissionsGranted != null) {
+                            onPermissionsGranted.accept(true);
+                        }
+                    }
+                }
+            });
         }
     }
 }

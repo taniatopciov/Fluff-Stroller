@@ -101,8 +101,6 @@ public class RegisterFragment extends FragmentWithServices {
                         return;
                     }
 
-                    loggedUserDataService.setLoggedUserData(response2.data);
-
                     HideKeyboard.hide(requireActivity());
                     NavHostFragment.findNavController(this).navigate(HomeNavFragmentDirections.actionGlobalNavHome());
                 });

@@ -78,7 +78,6 @@ public class EditDogOwnerProfileFragment extends FragmentWithServices {
                     return;
                 }
 
-                loggedUserDataService.updateDogOwnerData(name, phoneNumber, dogs);
                 Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.actionFromEditOwnerProfileToViewOwnerProfile(loggedUserDataService.getLoggedUserId()));
             });
         });

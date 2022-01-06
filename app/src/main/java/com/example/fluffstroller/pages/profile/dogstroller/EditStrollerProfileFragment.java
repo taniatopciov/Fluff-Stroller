@@ -52,7 +52,6 @@ public class EditStrollerProfileFragment extends FragmentWithServices {
                     return;
                 }
 
-                loggedUserDataService.updateStrollerData(name, phoneNumber, description);
                 Navigation.findNavController(view).navigate(EditStrollerProfileFragmentDirections.actionEditStrollerProfileFragmentToNavViewStrollerProfile(loggedUserDataService.getLoggedUserId()));
             });
         });

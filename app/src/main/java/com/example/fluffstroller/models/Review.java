@@ -4,9 +4,15 @@ public class Review {
 
     private final String reviewerName;
     private final String reviewText;
-    private final Integer givenStars;
+    private final Double givenStars;
 
-    public Review(String reviewerName, String reviewText, Integer givenStars) {
+    public Review() {
+        reviewerName = "";
+        reviewText = "";
+        givenStars = 0.0;
+    }
+
+    public Review(String reviewerName, String reviewText, Double givenStars) {
         this.reviewerName = reviewerName;
         this.reviewText = reviewText;
         this.givenStars = givenStars;
@@ -20,7 +26,7 @@ public class Review {
         return reviewText;
     }
 
-    public Integer getGivenStars() {
+    public Double getGivenStars() {
         return givenStars;
     }
 }

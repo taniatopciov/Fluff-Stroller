@@ -1,5 +1,7 @@
 package com.example.fluffstroller.services.impl;
 
+import static com.example.fluffstroller.App.LOCATION_SERVICE_CHANNEL_ID;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Notification;
@@ -9,6 +11,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Looper;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.example.fluffstroller.MainActivity;
 import com.example.fluffstroller.R;
@@ -22,12 +28,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-
-import static com.example.fluffstroller.App.LOCATION_SERVICE_CHANNEL_ID;
+import com.google.android.gms.tasks.CancellationTokenSource;
 
 
 public class LocationServiceImpl extends Service implements LocationService {
@@ -126,7 +127,7 @@ public class LocationServiceImpl extends Service implements LocationService {
         Subject<Location> subject = new Subject<>();
 
         LocationServices.getFusedLocationProviderClient(activity)
-                .getLastLocation()
+                .getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationTokenSource().getToken())
                 .addOnSuccessListener(location -> {
                     if (location == null) {
                         // if is null, the Location is turned off

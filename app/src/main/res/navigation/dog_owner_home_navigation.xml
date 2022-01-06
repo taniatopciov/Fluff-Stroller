@@ -61,5 +61,8 @@
         <argument
             android:name="strollerId"
             app:argType="string" />
+        <argument
+            android:name="strollerName"
+            app:argType="string" />
     </fragment>
 </navigation>
