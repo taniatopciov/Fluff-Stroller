@@ -2,10 +2,14 @@ package com.example.fluffstroller.services.impl;
 
 import com.example.fluffstroller.BuildConfig;
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.services.ProfileService;
+import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.observer.Subject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -23,11 +27,13 @@ public class FirebaseDogWalksService implements DogWalksService {
     public static final String WALKS_PATH = "walks";
 
     private final FirebaseRepository firebaseRepository;
+    private final ProfileService profileService;
     private final OkHttpClient client;
     private final Gson gson;
 
-    public FirebaseDogWalksService(FirebaseRepository firebaseRepository) {
+    public FirebaseDogWalksService(FirebaseRepository firebaseRepository, ProfileService profileService) {
         this.firebaseRepository = firebaseRepository;
+        this.profileService = profileService;
         client = new OkHttpClient();
         gson = new Gson();
     }
@@ -38,13 +44,32 @@ public class FirebaseDogWalksService implements DogWalksService {
     }
 
     @Override
-    public Subject<Boolean> updateDogWalk(DogWalk dogWalk) {
+    public Subject<DogWalkPreview> updateDogWalk(String ownerId, String walkId, WalkStatus walkStatus, List<WalkRequest> requests) {
+        Subject<DogWalkPreview> subject = new Subject<>();
         Map<String, Object> values = new HashMap<>();
-        values.put("id", dogWalk.getId());
-        values.put("requests", dogWalk.getRequests());
-        values.put("status", dogWalk.getStatus());
+        values.put("id", walkId);
+        values.put("status", walkStatus);
+        if (requests != null) {
+            values.put("requests", requests);
+        }
 
-        return firebaseRepository.updateDocument(WALKS_PATH + "/" + dogWalk.getId(), values);
+        firebaseRepository.updateDocument(WALKS_PATH + "/" + walkId, values).subscribe(response -> {
+            if (response.hasErrors()) {
+                subject.notifyObservers(response.exception);
+                return;
+            }
+
+            DogWalkPreview walkPreview = new DogWalkPreview(walkId, walkStatus);
+            profileService.updateDogWalkPreview(ownerId, walkPreview).subscribe(response1 -> {
+                if (response1.hasErrors()) {
+                    subject.notifyObservers(response1.exception);
+                } else {
+                    subject.notifyObservers(walkPreview);
+                }
+            });
+        });
+
+        return subject;
     }
 
     @Override

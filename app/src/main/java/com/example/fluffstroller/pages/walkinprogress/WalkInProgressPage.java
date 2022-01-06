@@ -10,8 +10,11 @@ import android.widget.Toast;
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.WalkInProgressFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.UserType;
 import com.example.fluffstroller.models.WalkInProgressModel;
+import com.example.fluffstroller.models.WalkStatus;
+import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.WalkInProgressService;
@@ -21,13 +24,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,10 +50,14 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
     @Injectable
     private WalkInProgressService walkInProgressService;
 
+    @Injectable
+    private DogWalksService dogWalksService;
+
     private WalkInProgressFragmentBinding binding;
     private GoogleMap googleMap;
     private WalkInProgressViewModel viewModel;
     private Timer timer;
+    private Polyline polyline;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,16 +69,28 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
             binding.finishWalkButton.setVisibility(View.GONE);
         } else {
             binding.finishWalkButton.setOnClickListener(view -> {
-                Snackbar.make(view, "Finish Walk", Snackbar.LENGTH_SHORT).show();
                 locationService.stopRealTimeLocationTracking(getActivity());
                 if (timer != null) {
                     timer.cancel();
                 }
+
+                String walkId = viewModel.getWalkId().getValue();
+                String dogOwnerId = viewModel.getDogOwnerId().getValue();
+                dogWalksService.updateDogWalk(dogOwnerId, walkId, WalkStatus.ADD_REVIEW, null).subscribe(response -> {
+                    if (response.hasErrors()) {
+                        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in add review", Toast.LENGTH_SHORT).show());
+                        return;
+                    }
+
+                    binding.finishWalkButton.setEnabled(false);
+                    Snackbar.make(view, "Walk Finished", Snackbar.LENGTH_SHORT).show();
+                });
             });
         }
 
         viewModel.getLocations().observe(getViewLifecycleOwner(), locations -> {
-
+            List<LatLng> path = drawCurrentPath(googleMap, locations);
+            viewModel.setDistanceInMeters(calculateTotalDistanceInMeters(path));
         });
 
         viewModel.getDistanceInMeters().observe(getViewLifecycleOwner(), distance -> {
@@ -127,50 +147,76 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
 
         String walkId = loggedUserDataService.getCurrentWalkId();
         if (!walkId.isEmpty()) {
-            walkInProgressService.getWalkInProgressModel(walkId).subscribe(response -> {
-                if (response.hasErrors() || response.data == null) {
+
+            dogWalksService.getDogWalk(walkId).subscribe(res -> {
+                if (res.hasErrors() || res.data == null) {
                     return;
                 }
-                WalkInProgressModel walkInProgressModel = response.data;
+                DogWalk dogWalk = res.data;
 
-                List<Double> latitudes = walkInProgressModel.getLatitude();
-                List<Double> longitudes = walkInProgressModel.getLongitude();
-
-                List<LatLng> points = new ArrayList<>();
-
-                for (int i = 0; i < latitudes.size(); i++) {
-                    Double latitude = latitudes.get(i);
-                    Double longitude = longitudes.get(i);
-
-                    LatLng latLng = new LatLng(latitude, longitude);
-
-                    points.add(latLng);
-                }
-
-                if (points.size() > 0) {
-                    PolylineOptions opts = new PolylineOptions()
-                            .addAll(points)
-                            .color(ContextCompat.getColor(requireContext(), R.color.accent))
-                            .width(10);
-                    googleMap.addPolyline(opts);
-                }
-
-                viewModel.setDistanceInMeters(calculateTotalDistanceInMeters(points));
-
-                long elapsedMillis = System.currentTimeMillis() - walkInProgressModel.getCreationTimeMillis();
-                viewModel.setElapsedSeconds(elapsedMillis / 1000L);
-                if (timer != null) {
-                    timer.cancel();
-                }
-                timer = new Timer();
-                timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        viewModel.increaseElapsedSeconds(1L);
+                walkInProgressService.getWalkInProgressModel(walkId).subscribe(response -> {
+                    if (response.hasErrors() || response.data == null) {
+                        return;
                     }
-                }, 0, 1000);
+                    WalkInProgressModel walkInProgressModel = response.data;
+
+                    viewModel.setWalkId(walkInProgressModel.getWalkId());
+                    viewModel.setDogOwnerId(dogWalk.getOwnerId());
+                    viewModel.setLocations(walkInProgressModel.getCoordinates());
+                    if (dogWalk.getCreationTimeMillis() != null) {
+                        long elapsedMillis = System.currentTimeMillis() - dogWalk.getCreationTimeMillis();
+                        viewModel.setElapsedSeconds(elapsedMillis / 1000L);
+                    }
+
+                    if (dogWalk.getStatus().equals(WalkStatus.IN_PROGRESS)) {
+                        startElapsedSecondsTimer();
+
+                        registerSubject(walkInProgressService.getLocationsInRealTime(walkId)).subscribe(response1 -> {
+                            if (response1.hasErrors() || response1.data == null) {
+                                return;
+                            }
+                            viewModel.setLocations(response1.data);
+                        }, false);
+                    } else {
+                        binding.finishWalkButton.setEnabled(false);
+                    }
+                });
             });
         }
+    }
+
+    private void startElapsedSecondsTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                viewModel.increaseElapsedSeconds(1L);
+            }
+        }, 0, 1000);
+    }
+
+    @NonNull
+    private List<LatLng> drawCurrentPath(@NonNull GoogleMap googleMap, List<com.example.fluffstroller.models.Location> coordinates) {
+        List<LatLng> points = coordinates.stream()
+                .map(location -> new LatLng(location.latitude, location.longitude))
+                .collect(Collectors.toList());
+
+        if (points.size() > 0) {
+            if (polyline != null) {
+                polyline.remove();
+            }
+
+            PolylineOptions opts = new PolylineOptions()
+                    .addAll(points)
+                    .color(ContextCompat.getColor(requireContext(), R.color.accent))
+                    .width(10);
+            polyline = googleMap.addPolyline(opts);
+        }
+
+        return points;
     }
 
     private float calculateTotalDistanceInMeters(List<LatLng> points) {

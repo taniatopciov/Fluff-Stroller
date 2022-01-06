@@ -7,45 +7,22 @@ import java.util.Map;
 
 public class WalkInProgressModel {
     private String walkId;
-    private String ownerId;
-    private String strollerId;
-    private Long creationTimeMillis;
-    private Map<String, Double> latitude;
-    private Map<String, Double> longitude;
+    private Map<String, Location> coordinates;
 
     public WalkInProgressModel() {
     }
 
-    public WalkInProgressModel(String walkId, String ownerId, String strollerId, Long creationTimeMillis) {
+    public WalkInProgressModel(String walkId, Location location) {
         this.walkId = walkId;
-        this.ownerId = ownerId;
-        this.strollerId = strollerId;
-        this.creationTimeMillis = creationTimeMillis;
-        latitude = new HashMap<>();
-        longitude = new HashMap<>();
+        coordinates = new HashMap<>();
+        coordinates.put("start", location);
     }
 
     public String getWalkId() {
         return walkId;
     }
 
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-    public String getStrollerId() {
-        return strollerId;
-    }
-
-    public Long getCreationTimeMillis() {
-        return creationTimeMillis;
-    }
-
-    public List<Double> getLatitude() {
-        return new ArrayList<>(latitude.values());
-    }
-
-    public List<Double> getLongitude() {
-        return new ArrayList<>(longitude.values());
+    public List<Location> getCoordinates() {
+        return new ArrayList<>(coordinates.values());
     }
 }

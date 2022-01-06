@@ -11,14 +11,12 @@ import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogStrollerHomePageWalkInProgressFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
-import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.PermissionsService;
-import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.google.android.material.snackbar.Snackbar;
@@ -38,9 +36,6 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
     @Injectable
     private WalkInProgressService walkInProgressService;
-
-    @Injectable
-    private ProfileService profileService;
 
     @Injectable
     private PermissionsService permissionsService;
@@ -77,24 +72,16 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
                 if (dogWalk == null) {
                     return;
                 }
-                dogWalk.setStatus(WalkStatus.IN_PROGRESS);
-                dogWalksService.updateDogWalk(dogWalk).subscribe(response -> {
+
+                dogWalksService.updateDogWalk(dogWalk.getOwnerId(), dogWalk.getId(), WalkStatus.IN_PROGRESS, dogWalk.getRequests()).subscribe(response -> {
                     if (response.hasErrors()) {
                         requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in progress", Toast.LENGTH_SHORT).show());
                         return;
                     }
 
-                    DogWalkPreview walkPreview = new DogWalkPreview(dogWalk.getId(), WalkStatus.IN_PROGRESS);
-                    profileService.updateDogWalkPreview(dogWalk.getOwnerId(), walkPreview).subscribe(response1 -> {
-                        if (response1.hasErrors()) {
-                            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk preview in progress", Toast.LENGTH_SHORT).show());
-                            return;
-                        }
-
-                        walkInProgressService.startWalk(dogWalk, loggedUserDataService.getLoggedUserId());
-                        setControlsForWalkInProgress();
-                        locationService.startRealTimeLocationTracking(getActivity(), dogWalk.getId());
-                    });
+                    walkInProgressService.startWalk(dogWalk, loggedUserDataService.getLoggedUserId());
+                    setControlsForWalkInProgress();
+                    locationService.startRealTimeLocationTracking(getActivity(), dogWalk.getId());
                 });
             });
         });
@@ -115,8 +102,12 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         });
 
         viewModel.getDogWalk().observe(getViewLifecycleOwner(), dogWalk -> {
-            if (dogWalk.getStatus().equals(WalkStatus.IN_PROGRESS)) {
+            if (dogWalk.getStatus().equals(WalkStatus.WAITING_PAYMENT) || dogWalk.getStatus().equals(WalkStatus.ADD_REVIEW) || dogWalk.getStatus().equals(WalkStatus.PAYMENT_DENIED)) {
+                binding.startWalkButton.setVisibility(View.INVISIBLE);
+                binding.titleTextView.setText(R.string.waiting_for_payment);
+            } else if (dogWalk.getStatus().equals(WalkStatus.IN_PROGRESS)) {
                 setControlsForWalkInProgress();
+                locationService.startRealTimeLocationTracking(getActivity(), dogWalk.getId());
             }
 
             String concatenatedDogNames = "";

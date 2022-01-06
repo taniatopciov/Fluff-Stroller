@@ -11,11 +11,15 @@ public class WalkInProgressViewModel extends ViewModel {
     private final MutableLiveData<Long> elapsedSeconds;
     private final MutableLiveData<Float> distanceInMeters;
     private final MutableLiveData<List<Location>> locations;
+    private final MutableLiveData<String> walkId;
+    private final MutableLiveData<String> dogOwnerId;
 
     public WalkInProgressViewModel() {
         elapsedSeconds = new MutableLiveData<>();
         distanceInMeters = new MutableLiveData<>();
         locations = new MutableLiveData<>();
+        walkId = new MutableLiveData<>();
+        dogOwnerId = new MutableLiveData<>();
     }
 
     public MutableLiveData<Long> getElapsedSeconds() {
@@ -28,6 +32,14 @@ public class WalkInProgressViewModel extends ViewModel {
 
     public MutableLiveData<List<Location>> getLocations() {
         return locations;
+    }
+
+    public MutableLiveData<String> getWalkId() {
+        return walkId;
+    }
+
+    public MutableLiveData<String> getDogOwnerId() {
+        return dogOwnerId;
     }
 
     public void setElapsedSeconds(Long elapsedSeconds) {
@@ -47,5 +59,13 @@ public class WalkInProgressViewModel extends ViewModel {
         if (value != null) {
             this.elapsedSeconds.postValue(value + amount);
         }
+    }
+
+    public void setWalkId(String walkId) {
+        this.walkId.postValue(walkId);
+    }
+
+    public void setDogOwnerId(String dogOwnerId) {
+        this.dogOwnerId.postValue(dogOwnerId);
     }
 }

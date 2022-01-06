@@ -39,7 +39,7 @@ public class ServicesRegistration {
         FirebaseRepository firebaseRepository = new FirebaseRepository();
 
         FirebaseProfileService firebaseProfileService = new FirebaseProfileService(firebaseRepository);
-        FirebaseDogWalksService firebaseDogWalksService = new FirebaseDogWalksService(firebaseRepository);
+        FirebaseDogWalksService firebaseDogWalksService = new FirebaseDogWalksService(firebaseRepository, firebaseProfileService);
 
         ServiceLocator serviceLocator = ServiceLocator.getInstance();
         serviceLocator.register(FeesService.class, new FeesService());

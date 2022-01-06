@@ -231,7 +231,6 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
             }
 
             DogWalk dogWalk = res.data;
-            dogWalk.setStatus(WalkStatus.WAITING_FOR_START);
             List<WalkRequest> requests = dogWalk.getRequests();
 
             for (WalkRequest request : requests) {
@@ -241,33 +240,23 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
                     request.setStatus(WalkRequestStatus.REJECTED);
                 }
             }
-            dogWalk.setRequests(requests);
 
-            dogWalksService.updateDogWalk(dogWalk).subscribe(response -> {
+            dogWalksService.updateDogWalk(loggedUserDataService.getLoggedUserId(), dogWalk.getId(), WalkStatus.WAITING_FOR_START, requests).subscribe(response -> {
                 if (response.hasErrors()) {
-                    requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in progress", Toast.LENGTH_SHORT).show());
+                    requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in waiting for Stroller Start", Toast.LENGTH_SHORT).show());
                     return;
                 }
 
-                DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
-                walkPreview.setStatus(WalkStatus.WAITING_FOR_START);
-                profileService.updateDogWalkPreview(loggedUserDataService.getLoggedUserId(), walkPreview).subscribe(response1 -> {
-                    if (response1.hasErrors()) {
-                        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk preview in progress", Toast.LENGTH_SHORT).show());
-                        return;
-                    }
+                AtomicInteger updatedRequestCount = new AtomicInteger(0);
 
-                    AtomicInteger updatedRequestCount = new AtomicInteger(0);
-
-                    for (WalkRequest request : requests) {
-                        profileService.updateCurrentRequest(request.getStrollerId(), request).subscribe(res2 -> {
-                            if (updatedRequestCount.incrementAndGet() == requests.size()) {
-                                loggedUserDataService.setDogWalkPreview(walkPreview);
-                                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHomeWalkInProgress());
-                            }
-                        });
-                    }
-                });
+                for (WalkRequest request : requests) {
+                    profileService.updateCurrentRequest(request.getStrollerId(), request).subscribe(res2 -> {
+                        if (updatedRequestCount.incrementAndGet() == requests.size()) {
+                            loggedUserDataService.setDogWalkPreview(response.data);
+                            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHomeWalkInProgress());
+                        }
+                    });
+                }
             });
         });
     }
