@@ -7,6 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.fluffstroller.databinding.DogOwnerMainPageWaitingForStrollerFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalkPreview;
@@ -17,6 +23,7 @@ import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.services.RemoveDogWalkService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.components.InfoPopupDialog;
 
 import java.util.ArrayList;
@@ -24,12 +31,6 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServices {
 
@@ -193,7 +194,8 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         removeDogWalkService.removeCurrentWalk(preview.getWalkId(), loggedUserDataService.getLoggedUserId()).subscribe(response -> {
             if (response.hasErrors()) {
-                Toast.makeText(getContext(), "Could not remove Walk", Toast.LENGTH_SHORT).show();
+                CustomToast.show(requireActivity(), "Could not remove Walk",
+                        Toast.LENGTH_LONG);
                 return;
             }
             if (timer != null) {
@@ -220,7 +222,8 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
         // todo clear all other stroller requests
         dogWalksService.setWalkInProgress(requestPair.first.getWalkId()).subscribe(response -> {
             if (response.hasErrors()) {
-                Toast.makeText(getContext(), "Could set walk in progress", Toast.LENGTH_SHORT).show();
+                CustomToast.show(requireActivity(), "Could set walk in progress",
+                        Toast.LENGTH_LONG);
                 return;
             }
 
@@ -228,7 +231,8 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
             walkPreview.setStatus(WalkStatus.IN_PROGRESS);
             profileService.updateDogWalkPreview(loggedUserDataService.getLoggedUserId(), walkPreview).subscribe(response1 -> {
                 if (response1.hasErrors()) {
-                    Toast.makeText(getContext(), "Could set walk preview in progress", Toast.LENGTH_SHORT).show();
+                    CustomToast.show(requireActivity(), "Could set walk preview in progress",
+                            Toast.LENGTH_LONG);
                     return;
                 }
 

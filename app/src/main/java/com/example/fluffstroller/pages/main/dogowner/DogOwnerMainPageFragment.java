@@ -6,6 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
@@ -19,23 +27,15 @@ import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.components.EnableLocationPopupDialog;
 import com.example.fluffstroller.utils.components.TextWithLabel;
 import com.example.fluffstroller.utils.formatting.CurrencyIntegerTextWatcher;
 import com.example.fluffstroller.utils.formatting.TimeIntegerTextWatcher;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 public class DogOwnerMainPageFragment extends FragmentWithServices {
@@ -119,13 +119,15 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
             List<String> checkedDogs = dogNamesAdapter.getCheckedDogs();
 
             if (!validateInputs() || checkedDogs.isEmpty()) {
-                Snackbar.make(view, R.string.empty_required_fields, Snackbar.LENGTH_SHORT).show();
+                CustomToast.show(requireActivity(), getResources().getString(R.string.empty_required_fields),
+                        Toast.LENGTH_LONG);
                 return;
             }
 
             locationService.getCurrentLocation().subscribe(response -> {
                 if (response.hasErrors()) {
-                    Snackbar.make(view, "Could not get current location", Snackbar.LENGTH_SHORT).show();
+                    CustomToast.show(requireActivity(), "Could not get current location",
+                            Toast.LENGTH_LONG);
                     return;
                 }
 
@@ -190,13 +192,15 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
         dogWalksService.createDogWalk(new DogWalk(checkedDogs, userId, userName, userPhoneNumber, totalPrice, walkTime, location)).subscribe(response -> {
             if (response.hasErrors()) {
                 response.exception.printStackTrace();
-                Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                CustomToast.show(requireActivity(), "Couldn't create walk",
+                        Toast.LENGTH_LONG);
                 return;
             }
 
             DogWalk dogWalk = response.data;
             if (dogWalk == null) {
-                Toast.makeText(getContext(), "Create empty walk", Toast.LENGTH_SHORT).show();
+                CustomToast.show(requireActivity(), "Create empty walk",
+                        Toast.LENGTH_LONG);
                 return;
             }
 
@@ -204,7 +208,8 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
             profileService.updateDogWalkPreview(userId, walkPreview).subscribe(res1 -> {
                 if (res1.hasErrors()) {
                     res1.exception.printStackTrace();
-                    Toast.makeText(getContext(), "Couldn't create walk", Toast.LENGTH_SHORT).show();
+                    CustomToast.show(requireActivity(), "Couldn't create walk",
+                            Toast.LENGTH_LONG);
                 }
 
                 loggedUserDataService.setDogWalkPreview(walkPreview);

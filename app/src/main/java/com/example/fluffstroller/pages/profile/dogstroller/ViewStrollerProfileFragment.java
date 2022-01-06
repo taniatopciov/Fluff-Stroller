@@ -18,6 +18,7 @@ import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
 
 public class ViewStrollerProfileFragment extends FragmentWithServices {
 
@@ -59,8 +60,8 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
 
             profileService.getProfileData(profileId).subscribe(response -> {
                 if (response.hasErrors() || response.data == null) {
-                    Toast.makeText(this.getContext(), "Error fetching data",
-                            Toast.LENGTH_LONG).show();
+                    CustomToast.show(requireActivity(), "Error fetching data",
+                            Toast.LENGTH_LONG);
                     return;
                 }
 

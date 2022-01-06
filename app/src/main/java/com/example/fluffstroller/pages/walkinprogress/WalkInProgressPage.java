@@ -4,19 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.fluffstroller.databinding.WalkInProgressFragmentBinding;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.snackbar.Snackbar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.fluffstroller.databinding.WalkInProgressFragmentBinding;
+import com.example.fluffstroller.utils.components.CustomToast;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class WalkInProgressPage extends Fragment implements OnMapReadyCallback {
     private WalkInProgressFragmentBinding binding;
@@ -29,7 +30,8 @@ public class WalkInProgressPage extends Fragment implements OnMapReadyCallback {
         WalkInProgressViewModel viewModel = new ViewModelProvider(this).get(WalkInProgressViewModel.class);
 
         binding.finishWalkButton.setOnClickListener(view -> {
-            Snackbar.make(view, "Finish Walk", Snackbar.LENGTH_SHORT).show();
+            CustomToast.show(requireActivity(), "Finish Walk",
+                    Toast.LENGTH_LONG);
         });
 
         viewModel.getDistanceInMeters().observe(getViewLifecycleOwner(), distance -> {
