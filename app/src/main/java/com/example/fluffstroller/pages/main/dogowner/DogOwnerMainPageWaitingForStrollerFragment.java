@@ -9,8 +9,10 @@ import android.widget.Toast;
 
 import com.example.fluffstroller.databinding.DogOwnerMainPageWaitingForStrollerFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.models.WalkRequestStatus;
 import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
@@ -20,9 +22,11 @@ import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.components.InfoPopupDialog;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import androidx.annotation.NonNull;
@@ -67,7 +71,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
             return binding.getRoot();
         }
 
-        if (walkPreview.getStatus() == WalkStatus.IN_PROGRESS) {
+        if (walkPreview.getStatus().equals(WalkStatus.IN_PROGRESS) || walkPreview.getStatus().equals(WalkStatus.WAITING_FOR_START)) {
             NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHomeWalkInProgress());
             return binding.getRoot();
         }
@@ -217,23 +221,42 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
     }
 
     private void handleRequestAccepted(Pair<WalkRequest, Integer> requestPair) {
-        // todo clear all other stroller requests
-        dogWalksService.setWalkInProgress(requestPair.first.getWalkId()).subscribe(response -> {
-            if (response.hasErrors()) {
-                Toast.makeText(getContext(), "Could set walk in progress", Toast.LENGTH_SHORT).show();
+        String walkId = requestPair.first.getWalkId();
+        String strollerId = requestPair.first.getStrollerId();
+
+        dogWalksService.getDogWalk(walkId).subscribe(res -> {
+            if (res.hasErrors() || res.data == null) {
+                requireActivity().runOnUiThread(() -> Toast.makeText(requireActivity(), "Could set walk in progress", Toast.LENGTH_SHORT).show());
                 return;
             }
 
-            DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
-            walkPreview.setStatus(WalkStatus.IN_PROGRESS);
-            profileService.updateDogWalkPreview(loggedUserDataService.getLoggedUserId(), walkPreview).subscribe(response1 -> {
-                if (response1.hasErrors()) {
-                    Toast.makeText(getContext(), "Could set walk preview in progress", Toast.LENGTH_SHORT).show();
+            DogWalk dogWalk = res.data;
+            List<WalkRequest> requests = dogWalk.getRequests();
+
+            for (WalkRequest request : requests) {
+                if (request.getStrollerId().equals(strollerId)) {
+                    request.setStatus(WalkRequestStatus.ACCEPTED);
+                } else {
+                    request.setStatus(WalkRequestStatus.REJECTED);
+                }
+            }
+
+            dogWalksService.updateDogWalk(loggedUserDataService.getLoggedUserId(), dogWalk.getId(), WalkStatus.WAITING_FOR_START, requests).subscribe(response -> {
+                if (response.hasErrors()) {
+                    requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in waiting for Stroller Start", Toast.LENGTH_SHORT).show());
                     return;
                 }
 
-                loggedUserDataService.setDogWalkPreview(walkPreview);
-                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHomeWalkInProgress());
+                AtomicInteger updatedRequestCount = new AtomicInteger(0);
+
+                for (WalkRequest request : requests) {
+                    profileService.updateCurrentRequest(request.getStrollerId(), request).subscribe(res2 -> {
+                        if (updatedRequestCount.incrementAndGet() == requests.size()) {
+                            loggedUserDataService.setDogWalkPreview(response.data);
+                            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHomeWalkInProgress());
+                        }
+                    });
+                }
             });
         });
     }

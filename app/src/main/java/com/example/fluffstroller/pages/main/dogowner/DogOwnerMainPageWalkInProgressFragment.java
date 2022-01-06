@@ -5,9 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWalkInProgressFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.DogWalkPreview;
+import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.models.WalkRequestStatus;
 import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
@@ -38,7 +42,7 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
 
         DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
 
-        if (walkPreview == null || walkPreview.getStatus() != WalkStatus.IN_PROGRESS) {
+        if (walkPreview == null || !walkPreview.getStatus().equals(WalkStatus.IN_PROGRESS) && !walkPreview.getStatus().equals(WalkStatus.WAITING_FOR_START)) {
             NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWalkInProgressFragmentDirections.actionNavDogOwnerHomeWalkInProgressToNavDogOwnerHome());
             return binding.getRoot();
         }
@@ -95,16 +99,32 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
             }
         });
 
+        viewModel.getWalkStatus().observe(getViewLifecycleOwner(), walkStatus -> {
+            if (!walkStatus.equals(WalkStatus.IN_PROGRESS)) {
+                binding.goToMapPageButton.setEnabled(false);
+                binding.walkInProgressTextView.setText(R.string.waiting_for_stroller_to_start);
+            }
+
+            // todo enable or disable Walk In Progress Nav Drawer
+        });
+
         dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
-            if (response.hasErrors() || response.data == null) {
+            DogWalk dogWalk = response.data;
+            if (response.hasErrors() || dogWalk == null) {
                 return;
             }
 
-            viewModel.setTotalPrice(response.data.getTotalPrice());
-            viewModel.setDogNames(response.data.getDogNames());
+            viewModel.setTotalPrice(dogWalk.getTotalPrice());
+            viewModel.setDogNames(dogWalk.getDogNames());
+            viewModel.setWalkStatus(dogWalk.getStatus());
 
-            if (response.data.getRequests() != null && response.data.getRequests().size() == 1) {
-                viewModel.setWalkRequest(response.data.getRequests().get(0));
+            if (dogWalk.getRequests() != null && dogWalk.getRequests().size() == 1) {
+                for (WalkRequest request : dogWalk.getRequests()) {
+                    if (request.getStatus().equals(WalkRequestStatus.ACCEPTED)) {
+                        viewModel.setWalkRequest(request);
+                        break;
+                    }
+                }
             }
         });
 

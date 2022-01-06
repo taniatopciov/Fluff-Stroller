@@ -10,6 +10,11 @@ import java.util.stream.Collectors;
 public class Subject<T> {
     private final List<Pair<Observer<T>, Boolean>> observers = new ArrayList<>();
     private final List<Subject<?>> createdSubjects = new ArrayList<>();
+    private Runnable onObserversCleared = null;
+
+    public void setOnObserversCleared(Runnable onObserversCleared) {
+        this.onObserversCleared = onObserversCleared;
+    }
 
     public void subscribe(Observer<T> observer, boolean unsubscribeAfterNotify) {
         observers.add(new Pair<>(observer, unsubscribeAfterNotify));
@@ -55,6 +60,9 @@ public class Subject<T> {
         }
         createdSubjects.clear();
         observers.clear();
+        if (onObserversCleared != null) {
+            onObserversCleared.run();
+        }
     }
 
     public void notifyObservers(T state) {

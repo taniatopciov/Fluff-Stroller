@@ -23,6 +23,8 @@
     <string name="label">Label</string>
     <string name="hint">Hint</string>
     <string name="waiting_for_stroller">Waiting for Stroller …</string>
+    <string name="waiting_for_stroller_to_start">Waiting for Stroller to Start Walk</string>
+    <string name="waiting_for_payment">Waiting for Payment</string>
     <string name="_0_minutes_remaining">(0 minutes remaining)</string>
     <string name="cancel_walk">Cancel Walk</string>
     <string name="current_walk_details">Current Walk Details</string>

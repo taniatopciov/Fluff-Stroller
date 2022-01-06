@@ -82,6 +82,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
                 }
                 break;
 
+                case WAITING_FOR_START:
                 case IN_PROGRESS: {
                     NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWalkInProgress());
                 }
@@ -123,7 +124,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
                 return;
             }
 
-            locationService.getCurrentLocation().subscribe(response -> {
+            locationService.getCurrentLocation(getActivity()).subscribe(response -> {
                 if (response.hasErrors()) {
                     Snackbar.make(view, "Could not get current location", Snackbar.LENGTH_SHORT).show();
                     return;
