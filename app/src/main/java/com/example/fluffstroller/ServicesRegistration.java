@@ -42,7 +42,7 @@ public class ServicesRegistration {
         PhotoService photoService = new PhotoServiceFirestorage();
 
         FirebaseProfileService firebaseProfileService = new FirebaseProfileService(firebaseRepository, photoService);
-        FirebaseDogWalksService firebaseDogWalksService = new FirebaseDogWalksService(firebaseRepository);
+        FirebaseDogWalksService firebaseDogWalksService = new FirebaseDogWalksService(firebaseRepository, firebaseProfileService);
 
         ServiceLocator serviceLocator = ServiceLocator.getInstance();
         serviceLocator.register(FeesService.class, new FeesService());
@@ -51,7 +51,7 @@ public class ServicesRegistration {
         serviceLocator.register(DogWalksService.class, firebaseDogWalksService);
         serviceLocator.register(AuthenticationService.class, new FirebaseAuthenticationService());
         serviceLocator.register(LoggedUserDataService.class, new LoggedUserDataServiceImpl());
-        serviceLocator.register(LocationService.class, new LocationServiceImpl(activity));
+        serviceLocator.register(LocationService.class, new LocationServiceImpl());
         serviceLocator.register(PhotoService.class, photoService);
         serviceLocator.register(LocationService.class, new LocationServiceImpl());
         serviceLocator.register(WalkInProgressService.class, new WalkInProgressServiceImpl());
