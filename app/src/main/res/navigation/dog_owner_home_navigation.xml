@@ -57,5 +57,9 @@
         android:id="@+id/nav_review"
         android:name="com.example.fluffstroller.reviews.ReviewFragment"
         android:label="Review"
-        tools:layout="@layout/review_fragment" />
+        tools:layout="@layout/review_fragment" >
+        <argument
+            android:name="strollerId"
+            app:argType="string" />
+    </fragment>
 </navigation>

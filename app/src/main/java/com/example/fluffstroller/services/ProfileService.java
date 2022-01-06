@@ -26,7 +26,9 @@ public interface ProfileService {
 
     Subject<Boolean> updateReviewsArray(String id, ArrayList<Review> reviews);
 
-    public Subject<Boolean> updateDogOwnerProfile(String id, String name, String phoneNumber, List<Dog> dogs);
+    Subject<Boolean> updateDogOwnerProfile(String id, String name, String phoneNumber, List<Dog> dogs);
 
-    public Subject<Boolean> updateDogStrollerProfile(String id, String name, String phoneNumber, String description);
+    Subject<Boolean> updateStrollerProfile(String id, String name, String phoneNumber, String description);
+
+    Subject<Boolean> updateStrollerProfile(String strollerId, Review review);
 }

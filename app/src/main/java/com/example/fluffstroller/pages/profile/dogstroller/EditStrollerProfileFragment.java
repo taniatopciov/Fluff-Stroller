@@ -45,7 +45,7 @@ public class EditStrollerProfileFragment extends FragmentWithServices {
             String phoneNumber = binding.phoneNumberTextViewWithLabelEditStrollerProfile.getText();
             String description = binding.descriptionTextViewWithLabelEditStrollerProfile.getText();
 
-            profileService.updateDogStrollerProfile(loggedUserDataService.getLoggedUserId(), name, phoneNumber, description).subscribe(response -> {
+            profileService.updateStrollerProfile(loggedUserDataService.getLoggedUserId(), name, phoneNumber, description).subscribe(response -> {
                 if (response.hasErrors()) {
                     CustomToast.show(requireActivity(), "Error updating data",
                             Toast.LENGTH_LONG);

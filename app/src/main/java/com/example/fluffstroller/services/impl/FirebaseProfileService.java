@@ -141,7 +141,7 @@ public class FirebaseProfileService implements ProfileService {
         return firebaseRepository.updateDocument(PROFILES_COLLECTION_PATH + "/" + id, values);
     }
 
-    public Subject<Boolean> updateDogStrollerProfile(String id, String name, String phoneNumber, String description) {
+    public Subject<Boolean> updateStrollerProfile(String id, String name, String phoneNumber, String description) {
         Map<String, Object> values = new HashMap<>();
 
         values.put("name", name);

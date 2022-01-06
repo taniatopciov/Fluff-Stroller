@@ -2,9 +2,9 @@ package com.example.fluffstroller.models;
 
 public class Review {
 
-    private String reviewerName;
-    private String reviewText;
-    private Integer givenStars;
+    private final String reviewerName;
+    private final String reviewText;
+    private final Integer givenStars;
 
     public Review(String reviewerName, String reviewText, Integer givenStars) {
         this.reviewerName = reviewerName;
