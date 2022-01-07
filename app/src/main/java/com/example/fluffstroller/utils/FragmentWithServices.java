@@ -2,14 +2,14 @@ package com.example.fluffstroller.utils;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.utils.observer.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 public class FragmentWithServices extends Fragment {
     private final List<Subject<?>> subjects = new ArrayList<>();

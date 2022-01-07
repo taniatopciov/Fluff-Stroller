@@ -7,6 +7,7 @@ import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.FeesService;
 import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.PaymentService;
 import com.example.fluffstroller.services.PermissionsService;
 import com.example.fluffstroller.services.PhotoService;
 import com.example.fluffstroller.services.ProfileService;
@@ -18,6 +19,7 @@ import com.example.fluffstroller.services.impl.FirebaseProfileService;
 import com.example.fluffstroller.services.impl.FirebaseRemoveDogWalkService;
 import com.example.fluffstroller.services.impl.LocationServiceImpl;
 import com.example.fluffstroller.services.impl.LoggedUserDataServiceImpl;
+import com.example.fluffstroller.services.impl.PaymentServiceImpl;
 import com.example.fluffstroller.services.impl.PhotoServiceFirestorage;
 import com.example.fluffstroller.services.impl.WalkInProgressServiceImpl;
 
@@ -57,5 +59,6 @@ public class ServicesRegistration {
         serviceLocator.register(LocationService.class, new LocationServiceImpl());
         serviceLocator.register(WalkInProgressService.class, new WalkInProgressServiceImpl());
         serviceLocator.register(PermissionsService.class, activity);
+        serviceLocator.register(PaymentService.class, new PaymentServiceImpl(activity));
     }
 }

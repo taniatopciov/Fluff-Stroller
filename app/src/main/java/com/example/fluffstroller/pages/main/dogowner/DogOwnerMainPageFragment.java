@@ -113,12 +113,18 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
                 }
                 break;
                 case WAITING_PAYMENT: {
-                }
-                break;
-                case PAYMENT_IN_PROGRESS: {
-                }
-                break;
-                case PAYMENT_DENIED: {
+                    String currentWalkId = currentWalkPreview.getWalkId();
+
+                    dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
+                        if (response.hasErrors() || response.data == null) {
+                            CustomToast.show(requireActivity(), "Could not get current dog walk",
+                                    Toast.LENGTH_LONG);
+                            return;
+                        }
+
+                        DogWalk dogWalk = response.data;
+                        NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToPaymentFragment(dogWalk));
+                    });
                 }
                 break;
                 case PAID: {
