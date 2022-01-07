@@ -6,7 +6,5 @@ public enum WalkStatus {
     IN_PROGRESS,
     ADD_REVIEW,
     WAITING_PAYMENT,
-    PAYMENT_IN_PROGRESS,
-    PAYMENT_DENIED,
     PAID,
 }
