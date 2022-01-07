@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_nav_dog_owner_home_to_nav_review"
             app:destination="@id/nav_review" />
+        <action
+            android:id="@+id/action_nav_dog_owner_home_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_dog_owner_home_walk_in_progress"
@@ -64,5 +67,17 @@
         <argument
             android:name="strollerName"
             app:argType="string" />
+        <action
+            android:id="@+id/action_nav_review_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.example.fluffstroller.payment.PaymentFragment"
+        android:label="payment_fragment"
+        tools:layout="@layout/payment_fragment" >
+        <argument
+            android:name="walk"
+            app:argType="com.example.fluffstroller.models.DogWalk" />
     </fragment>
 </navigation>
