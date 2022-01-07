@@ -7,9 +7,6 @@ public class StrollerProfileData extends ProfileData {
     private WalkRequest currentRequest;
     private List<Review> reviews;
     private String description;
-    private String walkId;
-    private Double totalScore;
-    private Integer reviewCount;
 
     public StrollerProfileData() {
         reviews = new ArrayList<>();
@@ -18,8 +15,6 @@ public class StrollerProfileData extends ProfileData {
     public StrollerProfileData(String id, String name, String email, UserType userType) {
         super(id, name, email, userType);
         reviews = new ArrayList<>();
-        totalScore = 0.0;
-        reviewCount = 0;
     }
 
     public String getDescription() {
@@ -34,14 +29,6 @@ public class StrollerProfileData extends ProfileData {
         return currentRequest;
     }
 
-    public Double getTotalScore() {
-        return totalScore;
-    }
-
-    public Integer getReviewCount() {
-        return reviewCount;
-    }
-
     public void setCurrentRequest(WalkRequest currentRequest) {
         this.currentRequest = currentRequest;
     }
@@ -50,13 +37,19 @@ public class StrollerProfileData extends ProfileData {
         this.description = description;
     }
 
-    public String getWalkId() {
-        return walkId;
-    }
-
     public Double getRating() {
-        if (totalScore == null || reviewCount == null || reviewCount == 0) {
+        if (reviews == null || reviews.size() == 0) {
             return 0.0;
+        }
+
+        Double totalScore = 0.0;
+        int reviewCount = 0;
+
+        for (Review review : reviews) {
+            if (review.getGivenStars() != null) {
+                totalScore += review.getGivenStars();
+            }
+            reviewCount++;
         }
 
         return totalScore / reviewCount;

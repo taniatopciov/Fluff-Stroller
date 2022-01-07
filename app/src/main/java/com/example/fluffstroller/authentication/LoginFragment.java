@@ -5,26 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.fluffstroller.BuildConfig;
-import com.example.fluffstroller.R;
-import com.example.fluffstroller.databinding.LoginFragmentBinding;
-import com.example.fluffstroller.di.Injectable;
-import com.example.fluffstroller.pages.main.home.HomeFragmentDirections;
-import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
-import com.example.fluffstroller.services.AuthenticationService;
-import com.example.fluffstroller.services.LoggedUserDataService;
-import com.example.fluffstroller.services.ProfileService;
-import com.example.fluffstroller.utils.FragmentWithServices;
-import com.example.fluffstroller.utils.HideKeyboard;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -34,9 +15,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.example.fluffstroller.BuildConfig;
+import com.example.fluffstroller.databinding.LoginFragmentBinding;
+import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
+import com.example.fluffstroller.services.AuthenticationService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.ProfileService;
+import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.HideKeyboard;
+import com.example.fluffstroller.utils.components.CustomToast;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
 public class LoginFragment extends FragmentWithServices {
 
@@ -62,10 +59,8 @@ public class LoginFragment extends FragmentWithServices {
                         GoogleSignInAccount account = task.getResult(ApiException.class);
                         authenticationService.loginWithGoogle(account.getIdToken()).subscribe(response -> {
                             if (response.hasErrors()) {
-                                Toast toast = Toast.makeText(requireActivity(), "Google sign in failed",
+                                CustomToast.show(requireActivity(), "Google sign in failed",
                                         Toast.LENGTH_LONG);
-                                changeToastColors(toast);
-                                toast.show();
                                 return;
                             }
 
@@ -92,28 +87,22 @@ public class LoginFragment extends FragmentWithServices {
             String password = binding.passwordTextWithLabelLoginFragment.editText.getText().toString();
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast toast = Toast.makeText(this.getContext(), "All fields must be completed",
+                CustomToast.show(requireActivity(), "All fields must be completed",
                         Toast.LENGTH_LONG);
-                changeToastColors(toast);
-                toast.show();
                 return;
             }
 
             authenticationService.loginWithEmailAndPassword(email, password).subscribe(response -> {
                 if (response.hasErrors()) {
-                    Toast toast = Toast.makeText(this.getContext(), "Invalid credentials",
+                    CustomToast.show(requireActivity(), "Invalid credentials",
                             Toast.LENGTH_LONG);
-                    changeToastColors(toast);
-                    toast.show();
                     return;
                 }
 
                 profileService.getProfileData(response.data.getUid()).subscribe(response2 -> {
                     if (response2.hasErrors()) {
-                        Toast toast = Toast.makeText(this.getContext(), "Fetching data from Firebase failed",
+                        CustomToast.show(requireActivity(), "Fetching data from Firebase failed",
                                 Toast.LENGTH_LONG);
-                        changeToastColors(toast);
-                        toast.show();
                         return;
                     }
                     loggedUserDataService.setLoggedUserData(response2.data);
@@ -168,12 +157,6 @@ public class LoginFragment extends FragmentWithServices {
                 supportActionBar.show();
             }
         }
-    }
-
-    private void changeToastColors(Toast toast) {
-        TextView text = (TextView) toast.getView().findViewById(android.R.id.message);
-        text.setTextColor(ContextCompat.getColor(getContext(), R.color.accent));
-        text.setTextSize(16);
     }
 
     private void googleSignIn() {

@@ -8,7 +8,6 @@ import com.example.fluffstroller.models.UserType;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.utils.observer.Subject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface ProfileService {
@@ -22,11 +21,9 @@ public interface ProfileService {
 
     Subject<ProfileData> createProfile(String uid, String name, String email, UserType userType);
 
-    Subject<Boolean> updateDogsArray(String id, ArrayList<Dog> dogs);
+    Subject<Boolean> updateDogOwnerProfile(String id, String name, String phoneNumber, List<Dog> dogs);
 
-    Subject<Boolean> updateReviewsArray(String id, ArrayList<Review> reviews);
+    Subject<Boolean> updateStrollerProfile(String id, String name, String phoneNumber, String description);
 
-    public Subject<Boolean> updateDogOwnerProfile(String id, String name, String phoneNumber, List<Dog> dogs);
-
-    public Subject<Boolean> updateDogStrollerProfile(String id, String name, String phoneNumber, String description);
+    Subject<Boolean> updateStrollerProfile(String strollerId, Review review);
 }

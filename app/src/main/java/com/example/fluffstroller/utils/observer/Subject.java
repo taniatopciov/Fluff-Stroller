@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,23 @@ public class Subject<T> {
                 result.notifyObservers(response.exception);
             } else {
                 result.notifyObservers(function.apply(response.data));
+            }
+        });
+
+        createdSubjects.add(result);
+
+        return result;
+    }
+
+    public Subject<T> peek(Consumer<T> consumer) {
+        Subject<T> result = new Subject<>();
+
+        subscribe(response -> {
+            if (response.hasErrors()) {
+                result.notifyObservers(response.exception);
+            } else {
+                consumer.accept(response.data);
+                result.notifyObservers(response.data);
             }
         });
 

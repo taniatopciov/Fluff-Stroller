@@ -7,6 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogStrollerHomePageWalkInProgressFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
@@ -19,12 +24,8 @@ import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.PermissionsService;
 import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
 import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
 public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServices {
 
@@ -64,7 +65,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         binding.startWalkButton.setOnClickListener(view -> {
             permissionsService.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, permissionGranted -> {
                 if (!permissionGranted) {
-                    requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_SHORT).show());
+                    CustomToast.show(requireActivity(), "Permission denied!", Toast.LENGTH_SHORT);
                     return;
                 }
 
@@ -75,10 +76,11 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
                 dogWalksService.updateDogWalk(dogWalk.getOwnerId(), dogWalk.getId(), WalkStatus.IN_PROGRESS, dogWalk.getRequests()).subscribe(response -> {
                     if (response.hasErrors()) {
-                        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in progress", Toast.LENGTH_SHORT).show());
+                        CustomToast.show(requireActivity(), "Could set walk in progress", Toast.LENGTH_SHORT);
                         return;
                     }
 
+                    loggedUserDataService.setDogWalkPreview(response.data);
                     walkInProgressService.startWalk(dogWalk, loggedUserDataService.getLoggedUserId());
                     setControlsForWalkInProgress();
                     locationService.startRealTimeLocationTracking(getActivity(), dogWalk.getId());

@@ -8,16 +8,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.fluffstroller.databinding.EditStrollerProfileFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
-import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
 
 public class EditStrollerProfileFragment extends FragmentWithServices {
 
@@ -46,14 +45,13 @@ public class EditStrollerProfileFragment extends FragmentWithServices {
             String phoneNumber = binding.phoneNumberTextViewWithLabelEditStrollerProfile.getText();
             String description = binding.descriptionTextViewWithLabelEditStrollerProfile.getText();
 
-            profileService.updateDogStrollerProfile(loggedUserDataService.getLoggedUserId(), name, phoneNumber, description).subscribe(response -> {
+            profileService.updateStrollerProfile(loggedUserDataService.getLoggedUserId(), name, phoneNumber, description).subscribe(response -> {
                 if (response.hasErrors()) {
-                    Toast.makeText(this.getContext(), "Error updating data",
-                            Toast.LENGTH_LONG).show();
+                    CustomToast.show(requireActivity(), "Error updating data",
+                            Toast.LENGTH_LONG);
                     return;
                 }
 
-                loggedUserDataService.updateStrollerData(name, phoneNumber, description);
                 Navigation.findNavController(view).navigate(EditStrollerProfileFragmentDirections.actionEditStrollerProfileFragmentToNavViewStrollerProfile(loggedUserDataService.getLoggedUserId()));
             });
         });

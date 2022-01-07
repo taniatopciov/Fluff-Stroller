@@ -7,6 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.WalkInProgressFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
@@ -19,6 +24,7 @@ import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.components.EnableLocationPopupDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,17 +32,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 
 public class WalkInProgressPage extends FragmentWithServices implements OnMapReadyCallback {
     private static final String WALK_IN_PROGRESS_PAGE = "WALK_IN_PROGRESS_PAGE";
@@ -82,8 +82,10 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
                         return;
                     }
 
+                    loggedUserDataService.setDogWalkPreview(response.data);
                     binding.finishWalkButton.setEnabled(false);
-                    Snackbar.make(view, "Walk Finished", Snackbar.LENGTH_SHORT).show();
+                    CustomToast.show(requireActivity(), "Walk Finished",
+                            Toast.LENGTH_LONG);
                 });
             });
         }

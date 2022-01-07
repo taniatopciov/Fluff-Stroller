@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_nav_dog_owner_home_to_nav_dog_owner_home_walk_in_progress"
             app:destination="@id/nav_dog_owner_home_walk_in_progress" />
+        <action
+            android:id="@+id/action_nav_dog_owner_home_to_nav_review"
+            app:destination="@id/nav_review" />
     </fragment>
     <fragment
         android:id="@+id/nav_dog_owner_home_walk_in_progress"
@@ -27,6 +30,9 @@
         <action
             android:id="@+id/action_nav_dog_owner_home_walk_in_progress_to_nav_dog_owner_home"
             app:destination="@id/nav_dog_owner_home" />
+        <action
+            android:id="@+id/action_nav_dog_owner_home_walk_in_progress_to_nav_review"
+            app:destination="@id/nav_review" />
     </fragment>
 
     <fragment
@@ -47,4 +53,16 @@
         android:name="com.example.fluffstroller.pages.main.dogowner.DogOwnerWithNoDogsMainPageFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/dog_owner_with_no_dogs_main_page_fragment" />
+    <fragment
+        android:id="@+id/nav_review"
+        android:name="com.example.fluffstroller.reviews.ReviewFragment"
+        android:label="Review"
+        tools:layout="@layout/review_fragment" >
+        <argument
+            android:name="strollerId"
+            app:argType="string" />
+        <argument
+            android:name="strollerName"
+            app:argType="string" />
+    </fragment>
 </navigation>

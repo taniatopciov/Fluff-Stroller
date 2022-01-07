@@ -6,32 +6,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.RegisterFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.UserType;
-import com.example.fluffstroller.pages.main.home.HomeFragmentDirections;
-import com.example.fluffstroller.pages.main.home.HomeNavFragment;
 import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
 import com.example.fluffstroller.services.AuthenticationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.HideKeyboard;
+import com.example.fluffstroller.utils.components.CustomToast;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 public class RegisterFragment extends FragmentWithServices {
 
@@ -65,58 +62,44 @@ public class RegisterFragment extends FragmentWithServices {
             UserType userType = UserType.convertString(binding.userTypeSpinnerRegisterFragment.getSelectedItem().toString());
 
             if (email.isEmpty() || name.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || userType == null) {
-                Toast toast = Toast.makeText(this.getContext(), "All fields must be completed",
+                CustomToast.show(requireActivity(), "All fields must be completed",
                         Toast.LENGTH_LONG);
-                changeToastColors(toast);
-                toast.show();
                 return;
             }
 
             if (!validateEmail(email)) {
-                Toast toast = Toast.makeText(this.getContext(), "Invalid e-mail address",
+                CustomToast.show(requireActivity(), "Invalid e-mail address",
                         Toast.LENGTH_LONG);
-                changeToastColors(toast);
-                toast.show();
                 return;
             }
 
             if (!password.equals(confirmPassword)) {
-                Toast toast = Toast.makeText(this.getContext(), "Passwords do not match",
+                CustomToast.show(requireActivity(), "Passwords do not match",
                         Toast.LENGTH_LONG);
-                changeToastColors(toast);
-                toast.show();
                 return;
             }
 
             if (password.length() < 8) {
-                Toast toast = Toast.makeText(this.getContext(), "Password must be at least 8 characters",
+                CustomToast.show(requireActivity(), "Password must be at least 8 characters",
                         Toast.LENGTH_LONG);
-                changeToastColors(toast);
-                toast.show();
                 return;
             }
 
             authenticationService.register(email, password).subscribe(response -> {
                 if (response.hasErrors()) {
-                    Toast toast = Toast.makeText(this.getContext(), "Registration failed",
+                    CustomToast.show(requireActivity(), "Registration failed",
                             Toast.LENGTH_LONG);
-                    changeToastColors(toast);
-                    toast.show();
                     response.exception.printStackTrace();
                     return;
                 }
 
                 profileService.createProfile(response.data.getUid(), name, email, userType).subscribe(response2 -> {
                     if (response2.hasErrors()) {
-                        Toast toast = Toast.makeText(this.getContext(), "Profile creation failed",
+                        CustomToast.show(requireActivity(), "Profile creation failed",
                                 Toast.LENGTH_LONG);
-                        changeToastColors(toast);
-                        toast.show();
                         response2.exception.printStackTrace();
                         return;
                     }
-
-                    loggedUserDataService.setLoggedUserData(response2.data);
 
                     HideKeyboard.hide(requireActivity());
                     NavHostFragment.findNavController(this).navigate(HomeNavFragmentDirections.actionGlobalNavHome());
@@ -171,11 +154,5 @@ public class RegisterFragment extends FragmentWithServices {
         pattern = Pattern.compile(EMAIL_PATTERN);
         matcher = pattern.matcher(email);
         return matcher.matches();
-    }
-
-    private void changeToastColors(Toast toast) {
-        TextView text = (TextView) toast.getView().findViewById(android.R.id.message);
-        text.setTextColor(ContextCompat.getColor(getContext(), R.color.accent));
-        text.setTextSize(16);
     }
 }

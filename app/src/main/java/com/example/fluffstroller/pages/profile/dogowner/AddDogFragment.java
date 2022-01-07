@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -20,7 +19,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -28,10 +26,10 @@ import androidx.navigation.Navigation;
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.AddDogFragmentBinding;
 import com.example.fluffstroller.models.Dog;
+import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.formatting.TimeIntegerTextWatcher;
 import com.example.fluffstroller.utils.photoUpload.FileUtil;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class AddDogFragment extends Fragment {
@@ -94,7 +92,8 @@ public class AddDogFragment extends Fragment {
                         if (bitmap != null) {
                             viewModel.setBitmap(bitmap);
                         } else {
-                            Toast.makeText(requireActivity(), "Picture not taken!", Toast.LENGTH_SHORT).show();
+                            CustomToast.show(requireActivity(), "Picture not taken!",
+                                    Toast.LENGTH_LONG);
                         }
                     });
                     return true;
@@ -105,7 +104,8 @@ public class AddDogFragment extends Fragment {
                         if (bitmap != null) {
                             viewModel.setBitmap(bitmap);
                         } else {
-                            Toast.makeText(requireActivity(), "Picture not selected!", Toast.LENGTH_SHORT).show();
+                            CustomToast.show(requireActivity(), "Picture not selected!",
+                                    Toast.LENGTH_LONG);
                         }
                     });
                     return true;
@@ -124,10 +124,8 @@ public class AddDogFragment extends Fragment {
             Bitmap dogImage = viewModel.getBitmap().getValue();
 
             if (name.isEmpty() || breed.isEmpty() || ageString.isEmpty()) {
-                Toast toast = Toast.makeText(this.getContext(), "Name, breed and age must be completed!",
+                CustomToast.show(requireActivity(), "Name, breed and age must be completed!",
                         Toast.LENGTH_LONG);
-                changeToastColors(toast);
-                toast.show();
                 return;
             }
 
@@ -186,11 +184,5 @@ public class AddDogFragment extends Fragment {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         activityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
-    }
-
-    private void changeToastColors(Toast toast) {
-        TextView text = (TextView) toast.getView().findViewById(android.R.id.message);
-        text.setTextColor(ContextCompat.getColor(getContext(), R.color.accent));
-        text.setTextSize(16);
     }
 }

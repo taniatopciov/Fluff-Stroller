@@ -93,6 +93,7 @@
     <string name="description">Description</string>
     <string name="choose_picture">Choose Picture</string>
     <string name="breed">Breed</string>
+    <string name="question_mark">\?</string>
     <string name="dog_name_hint">Buddy</string>
     <string name="dog_breed_hint">Golden Retriever</string>
     <string name="age_hint">2 years</string>
@@ -124,4 +125,10 @@
     <string name="from_gallery">From Gallery</string>
     <string name="add_dog">Add Dog</string>
     <string name="dog_image">Dog Image</string>
+    <string name="message">Message</string>
+    <string name="review_question">Would you like to submit a review</string>
+    <string name="skip">Skip</string>
+    <string name="submit">Submit</string>
+    <string name="for_word">for</string>
+    <string name="open_parenthesis">(</string>
 </resources>

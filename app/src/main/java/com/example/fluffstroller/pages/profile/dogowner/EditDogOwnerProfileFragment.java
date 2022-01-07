@@ -15,10 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.fluffstroller.databinding.EditDogOwnerProfileFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.Dog;
-import com.example.fluffstroller.services.PhotoService;
 import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.PhotoService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
 
 import java.util.List;
 import java.util.UUID;
@@ -72,12 +73,11 @@ public class EditDogOwnerProfileFragment extends FragmentWithServices {
 
             profileService.updateDogOwnerProfile(loggedUserDataService.getLoggedUserId(), name, phoneNumber, dogs).subscribe(response -> {
                 if (response.hasErrors()) {
-                    Toast.makeText(this.getContext(), "Error updating data",
-                            Toast.LENGTH_LONG).show();
+                    CustomToast.show(requireActivity(), "Error updating data",
+                            Toast.LENGTH_LONG);
                     return;
                 }
 
-                loggedUserDataService.updateDogOwnerData(name, phoneNumber, dogs);
                 Navigation.findNavController(view).navigate(EditDogOwnerProfileFragmentDirections.actionFromEditOwnerProfileToViewOwnerProfile(loggedUserDataService.getLoggedUserId()));
             });
         });

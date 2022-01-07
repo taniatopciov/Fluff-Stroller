@@ -9,6 +9,12 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.fluffstroller.databinding.DogStrollerHomePageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
@@ -19,6 +25,7 @@ import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.components.EnableLocationPopupDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,12 +38,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DogStrollerHomePageFragment extends FragmentWithServices implements OnMapReadyCallback {
 
@@ -140,7 +141,8 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
             locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
                 if (locationResponse.hasErrors()) {
-                    Toast.makeText(requireContext(), "Could not get current location", Toast.LENGTH_SHORT).show();
+                    CustomToast.show(requireActivity(), "Could not get current location",
+                            Toast.LENGTH_LONG);
                     return;
                 }
 
@@ -208,7 +210,8 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
     private void getAvailableDogWalks() {
         locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
             if (locationResponse.hasErrors()) {
-                Toast.makeText(requireContext(), "Could not get current location", Toast.LENGTH_SHORT).show();
+                CustomToast.show(requireActivity(), "Could not get current location",
+                        Toast.LENGTH_LONG);
                 return;
             }
 
@@ -226,7 +229,8 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
             dogWalksService.getNearbyAvailableDogWalks(id, locationResponse.data, radius).subscribe(response -> {
                 if (response.hasErrors() || response.data == null) {
-                    requireActivity().runOnUiThread(() -> Toast.makeText(requireActivity(), "Could not get nearby walks", Toast.LENGTH_SHORT).show());
+                    CustomToast.show(requireActivity(), "Could not get nearby walks",
+                            Toast.LENGTH_LONG);
                     return;
                 }
 
@@ -255,7 +259,8 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
         locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
             if (locationResponse.hasErrors()) {
-                Toast.makeText(requireContext(), "Could not get current location", Toast.LENGTH_SHORT).show();
+                CustomToast.show(requireActivity(), "Could not get current location",
+                        Toast.LENGTH_LONG);
                 return;
             }
 
@@ -287,8 +292,6 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
         String strollerPhoneNumber = loggedUserDataService.getLoggedUserPhoneNumber();
         Double strollerRating = loggedUserDataService.getLoggedUserRating();
         WalkRequest walkRequest = new WalkRequest(dogWalk.getId(), strollerId, strollerName, strollerPhoneNumber, strollerRating);
-
-        System.out.println(dogWalk.getId());
 
         dogWalksService.requestWalk(walkRequest).subscribe(response -> {
             if (response.hasErrors()) {

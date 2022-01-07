@@ -18,6 +18,7 @@ import com.example.fluffstroller.models.StrollerProfileData;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
 
 public class ViewStrollerProfileFragment extends FragmentWithServices {
 
@@ -42,6 +43,7 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
         viewModel.getEmail().observe(getViewLifecycleOwner(), email -> binding.emailTextViewViewStrollerProfile.setText(email));
         viewModel.getPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber -> binding.phoneNumberTextViewViewStrollerProfile.setText(phoneNumber));
         viewModel.getDescription().observe(getViewLifecycleOwner(), description -> binding.descriptionTextViewStrollerProfile.setText(description));
+        viewModel.getReviewsNumber().observe(getViewLifecycleOwner(), reviewsNumber -> binding.reviewsNumberViewStrollerProfileFragment.setText(reviewsNumber.toString()));
         viewModel.getRating().observe(getViewLifecycleOwner(), rating -> {
             binding.averageRatingViewStrollerProfile.setText(rating + "");
             binding.ratingBarViewStrollerProfile.setRating(Float.parseFloat(rating + ""));
@@ -59,8 +61,8 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
 
             profileService.getProfileData(profileId).subscribe(response -> {
                 if (response.hasErrors() || response.data == null) {
-                    Toast.makeText(this.getContext(), "Error fetching data",
-                            Toast.LENGTH_LONG).show();
+                    CustomToast.show(requireActivity(), "Error fetching data",
+                            Toast.LENGTH_LONG);
                     return;
                 }
 
@@ -73,6 +75,7 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
                     viewModel.setDescription(strollerProfileData.getDescription());
                     viewModel.setReviews(strollerProfileData.getReviews());
                     viewModel.setRating(strollerProfileData.getRating());
+                    viewModel.setReviewsNumber(strollerProfileData.getReviews().size());
                 }
             });
         } else {
@@ -82,6 +85,7 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
             viewModel.setDescription(loggedUserDataService.getLoggedUserDescription());
             viewModel.setReviews(loggedUserDataService.getLoggedUserReviews());
             viewModel.setRating(loggedUserDataService.getLoggedUserRating());
+            viewModel.setReviewsNumber(loggedUserDataService.getLoggedUserReviews().size());
 
             binding.editProfileButtonViewStrollerProfile.setOnClickListener(view -> {
                 Navigation.findNavController(view).navigate(ViewStrollerProfileFragmentDirections.actionNavViewStrollerProfileToEditStrollerProfileFragment());

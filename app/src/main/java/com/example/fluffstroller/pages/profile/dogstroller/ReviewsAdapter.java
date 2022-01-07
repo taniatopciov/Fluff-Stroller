@@ -3,10 +3,9 @@ package com.example.fluffstroller.pages.profile.dogstroller;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,7 +37,9 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
 
         holder.getReviewerName().setText(review.getReviewerName());
         holder.getReviewText().setText(review.getReviewText());
-        holder.getRatingBar().setRating(review.getGivenStars());
+        if (review.getGivenStars() != null) {
+            holder.getRatingBar().setRating(review.getGivenStars().floatValue());
+        }
     }
 
     @Override
@@ -56,8 +57,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final EditText reviewerName;
-        private final EditText reviewText;
+        private final TextView reviewerName;
+        private final TextView reviewText;
         private final RatingBar ratingBar;
 
         public ViewHolder(View view) {
@@ -67,11 +68,11 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
             ratingBar = view.findViewById(R.id.ratingBarReviewCard);
         }
 
-        public EditText getReviewerName() {
+        public TextView getReviewerName() {
             return reviewerName;
         }
 
-        public EditText getReviewText() {
+        public TextView getReviewText() {
             return reviewText;
         }
 
