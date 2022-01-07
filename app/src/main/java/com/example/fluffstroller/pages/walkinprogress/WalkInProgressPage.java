@@ -165,8 +165,8 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
                     viewModel.setWalkId(walkInProgressModel.getWalkId());
                     viewModel.setDogOwnerId(dogWalk.getOwnerId());
                     viewModel.setLocations(walkInProgressModel.getCoordinates());
-                    if (dogWalk.getCreationTimeMillis() != null) {
-                        long elapsedMillis = System.currentTimeMillis() - dogWalk.getCreationTimeMillis();
+                    if (dogWalk.getWalkStartedMillis() != null) {
+                        long elapsedMillis = System.currentTimeMillis() - dogWalk.getWalkStartedMillis();
                         viewModel.setElapsedSeconds(elapsedMillis / 1000L);
                     }
 

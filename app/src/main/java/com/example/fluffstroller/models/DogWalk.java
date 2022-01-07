@@ -15,6 +15,7 @@ public class DogWalk extends FirebaseDocument {
     private WalkStatus status;
     private List<WalkRequest> requests;
     private Long creationTimeMillis;
+    private Long walkStartedMillis;
     private Location location;
 
     public DogWalk() {
@@ -73,11 +74,19 @@ public class DogWalk extends FirebaseDocument {
         return location;
     }
 
+    public Long getWalkStartedMillis() {
+        return walkStartedMillis;
+    }
+
     public void setStatus(WalkStatus status) {
         this.status = status;
     }
 
     public void setRequests(List<WalkRequest> requests) {
         this.requests = requests;
+    }
+
+    public void setWalkStartedMillis(Long walkStartedMillis) {
+        this.walkStartedMillis = walkStartedMillis;
     }
 }

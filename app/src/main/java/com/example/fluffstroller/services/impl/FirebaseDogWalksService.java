@@ -52,6 +52,9 @@ public class FirebaseDogWalksService implements DogWalksService {
         if (requests != null) {
             values.put("requests", requests);
         }
+        if (walkStatus.equals(WalkStatus.IN_PROGRESS)) {
+            values.put("walkStartedMillis", System.currentTimeMillis());
+        }
 
         firebaseRepository.updateDocument(WALKS_PATH + "/" + walkId, values).subscribe(response -> {
             if (response.hasErrors()) {
