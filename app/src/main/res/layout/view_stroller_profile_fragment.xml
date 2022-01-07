@@ -114,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:text="@string/average_rating"
         android:textColor="@color/primary"
         android:textSize="16sp"
@@ -137,7 +137,7 @@
         android:id="@+id/averageRatingViewStrollerProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:text="@string/text"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -150,7 +150,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:text="@string/reviews"
         android:textColor="@color/primary"
         android:textSize="16sp"
@@ -160,7 +160,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reviewsRecyclerViewStrollerViewProfile"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
@@ -187,4 +187,43 @@
         app:layout_constraintStart_toEndOf="@+id/nameTextViewViewStrollerProfile"
         app:layout_constraintTop_toTopOf="@+id/nameLabelViewStrollerProfile"
         app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/open_parenthesis"
+        android:textColor="@color/primary_dark"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/averageRatingLabelViewStrollerProfile"
+        app:layout_constraintStart_toEndOf="@+id/averageRatingLabelViewStrollerProfile"
+        app:layout_constraintTop_toTopOf="@+id/averageRatingLabelViewStrollerProfile" />
+
+    <TextView
+        android:id="@+id/reviewsNumberViewStrollerProfileFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="@string/text"
+        android:textColor="@color/primary_dark"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textView12"
+        app:layout_constraintStart_toEndOf="@+id/textView12"
+        app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="reviews )"
+        android:textColor="@color/primary_dark"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/reviewsNumberViewStrollerProfileFragment"
+        app:layout_constraintStart_toEndOf="@+id/reviewsNumberViewStrollerProfileFragment"
+        app:layout_constraintTop_toTopOf="@+id/reviewsNumberViewStrollerProfileFragment" />
 </androidx.constraintlayout.widget.ConstraintLayout>

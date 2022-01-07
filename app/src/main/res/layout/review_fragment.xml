@@ -59,7 +59,7 @@
         android:ems="10"
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
-        android:maxLength="256"
+        android:maxLength="150"
         android:minHeight="48dp"
         app:label="@string/message"
         app:layout_constraintEnd_toEndOf="parent"

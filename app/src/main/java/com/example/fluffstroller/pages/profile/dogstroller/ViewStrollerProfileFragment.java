@@ -43,6 +43,7 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
         viewModel.getEmail().observe(getViewLifecycleOwner(), email -> binding.emailTextViewViewStrollerProfile.setText(email));
         viewModel.getPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber -> binding.phoneNumberTextViewViewStrollerProfile.setText(phoneNumber));
         viewModel.getDescription().observe(getViewLifecycleOwner(), description -> binding.descriptionTextViewStrollerProfile.setText(description));
+        viewModel.getReviewsNumber().observe(getViewLifecycleOwner(), reviewsNumber -> binding.reviewsNumberViewStrollerProfileFragment.setText(reviewsNumber.toString()));
         viewModel.getRating().observe(getViewLifecycleOwner(), rating -> {
             binding.averageRatingViewStrollerProfile.setText(rating + "");
             binding.ratingBarViewStrollerProfile.setRating(Float.parseFloat(rating + ""));
@@ -74,6 +75,7 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
                     viewModel.setDescription(strollerProfileData.getDescription());
                     viewModel.setReviews(strollerProfileData.getReviews());
                     viewModel.setRating(strollerProfileData.getRating());
+                    viewModel.setReviewsNumber(strollerProfileData.getReviews().size());
                 }
             });
         } else {
@@ -83,6 +85,7 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
             viewModel.setDescription(loggedUserDataService.getLoggedUserDescription());
             viewModel.setReviews(loggedUserDataService.getLoggedUserReviews());
             viewModel.setRating(loggedUserDataService.getLoggedUserRating());
+            viewModel.setReviewsNumber(loggedUserDataService.getLoggedUserReviews().size());
 
             binding.editProfileButtonViewStrollerProfile.setOnClickListener(view -> {
                 Navigation.findNavController(view).navigate(ViewStrollerProfileFragmentDirections.actionNavViewStrollerProfileToEditStrollerProfileFragment());
