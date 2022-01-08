@@ -8,10 +8,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.fluffstroller.databinding.ReviewFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
+import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.Review;
+import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
@@ -22,6 +26,7 @@ import com.example.fluffstroller.utils.components.CustomToast;
 public class ReviewFragment extends FragmentWithServices {
 
     private ReviewFragmentBinding binding;
+    private ReviewViewModel viewModel;
 
     @Injectable
     private LoggedUserDataService loggedUserDataService;
@@ -36,9 +41,26 @@ public class ReviewFragment extends FragmentWithServices {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = ReviewFragmentBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(this).get(ReviewViewModel.class);
 
-        String strollerName = ReviewFragmentArgs.fromBundle(getArguments()).getStrollerName();
-        binding.strollerNameReviewFragment.setText(strollerName);
+        String dogWalkId = ReviewFragmentArgs.fromBundle(getArguments()).getDogWalkId();
+
+        dogWalksService.getDogWalk(dogWalkId).subscribe(response -> {
+            if (response.hasErrors() || response.data == null) {
+                CustomToast.show(requireActivity(), "Could not get current dog walk",
+                        Toast.LENGTH_LONG);
+                return;
+            }
+
+            DogWalk dogWalk = response.data;
+            WalkRequest walkRequest = dogWalk.getAcceptedRequest();
+            if (walkRequest != null) {
+                viewModel.setStrollerName(walkRequest.getStrollerName());
+                viewModel.setStrollerId(walkRequest.getStrollerId());
+            }
+        });
+
+        viewModel.getStrollerName().observe(getViewLifecycleOwner(), name -> binding.strollerNameReviewFragment.setText(name));
 
         binding.skipReviewButton.setOnClickListener(view -> {
             changeWalkStatusAndNavigateToPayment();
@@ -54,10 +76,9 @@ public class ReviewFragment extends FragmentWithServices {
                 return;
             }
 
-            String strollerId = ReviewFragmentArgs.fromBundle(getArguments()).getStrollerId();
             Review review = new Review(loggedUserDataService.getLoggedUserName(), description, (double) rating);
 
-            profileService.updateStrollerProfile(strollerId, review).subscribe(response -> {
+            profileService.updateStrollerProfile(viewModel.getStrollerId().getValue(), review).subscribe(response -> {
                 if (response.hasErrors()) {
                     CustomToast.show(requireActivity(), "Error updating data",
                             Toast.LENGTH_LONG);
@@ -86,7 +107,7 @@ public class ReviewFragment extends FragmentWithServices {
                     }
 
                     loggedUserDataService.setDogWalkPreview(response.data);
-                    //todo navigate to payment
+                    NavHostFragment.findNavController(this).navigate(ReviewFragmentDirections.actionNavReviewToPaymentFragment(response.data.getWalkId()));
                 });
     }
 }

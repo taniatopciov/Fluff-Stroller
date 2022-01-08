@@ -61,23 +61,23 @@
         android:name="com.example.fluffstroller.reviews.ReviewFragment"
         android:label="Review"
         tools:layout="@layout/review_fragment" >
-        <argument
-            android:name="strollerId"
-            app:argType="string" />
-        <argument
-            android:name="strollerName"
-            app:argType="string" />
         <action
             android:id="@+id/action_nav_review_to_paymentFragment"
             app:destination="@id/paymentFragment" />
+        <argument
+            android:name="dogWalkId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"
         android:name="com.example.fluffstroller.payment.PaymentFragment"
         android:label="payment_fragment"
         tools:layout="@layout/payment_fragment" >
+        <action
+            android:id="@+id/action_paymentFragment_to_nav_dog_owner_home"
+            app:destination="@id/nav_dog_owner_home" />
         <argument
-            android:name="walk"
-            app:argType="com.example.fluffstroller.models.DogWalk" />
+            android:name="dogWalkId"
+            app:argType="string" />
     </fragment>
 </navigation>
