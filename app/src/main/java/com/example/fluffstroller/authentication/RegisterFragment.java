@@ -8,20 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.RegisterFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.UserType;
-import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
 import com.example.fluffstroller.services.AuthenticationService;
-import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.HideKeyboard;
@@ -29,6 +20,13 @@ import com.example.fluffstroller.utils.components.CustomToast;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class RegisterFragment extends FragmentWithServices {
 
@@ -38,14 +36,10 @@ public class RegisterFragment extends FragmentWithServices {
     @Injectable
     private ProfileService profileService;
 
-    @Injectable
-    private LoggedUserDataService loggedUserDataService;
-
     private RegisterFragmentBinding binding;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = RegisterFragmentBinding.inflate(inflater, container, false);
 
@@ -87,22 +81,20 @@ public class RegisterFragment extends FragmentWithServices {
 
             authenticationService.register(email, password).subscribe(response -> {
                 if (response.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Registration failed",
-                            Toast.LENGTH_LONG);
+                    CustomToast.show(requireActivity(), "Registration failed", Toast.LENGTH_LONG);
                     response.exception.printStackTrace();
                     return;
                 }
 
                 profileService.createProfile(response.data.getUid(), name, email, userType).subscribe(response2 -> {
                     if (response2.hasErrors()) {
-                        CustomToast.show(requireActivity(), "Profile creation failed",
-                                Toast.LENGTH_LONG);
+                        CustomToast.show(requireActivity(), "Profile creation failed", Toast.LENGTH_LONG);
                         response2.exception.printStackTrace();
                         return;
                     }
 
                     HideKeyboard.hide(requireActivity());
-                    NavHostFragment.findNavController(this).navigate(HomeNavFragmentDirections.actionGlobalNavHome());
+                    NavHostFragment.findNavController(this).navigate(RegisterFragmentDirections.actionRegisterFragmentToNavHome());
                 });
             });
         });

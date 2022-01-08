@@ -7,11 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogStrollerHomePageWalkInProgressFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
@@ -26,6 +21,11 @@ import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.components.CustomToast;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServices {
 
@@ -89,13 +89,16 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         });
 
         binding.goToMapPageButton.setOnClickListener(view -> {
-            // todo go to map page
-//            NavHostFragment.findNavController(this).navigate(HomeFragmentDirections.actionGlobalNavWalkInProgress());
+            NavHostFragment.findNavController(this).navigate(DogStrollerHomePageWalkInProgressFragmentDirections.actionGlobalNavWalkInProgress());
         });
 
         binding.includeAvailableWalkDetails.visitProfileButton.setOnClickListener(view -> {
-            // todo implement visit profile
-            Snackbar.make(view, "Visit Profile", Snackbar.LENGTH_SHORT).show();
+            DogWalk dogWalk = viewModel.getDogWalk().getValue();
+            if (dogWalk == null) {
+                return;
+            }
+
+            NavHostFragment.findNavController(this).navigate(DogStrollerHomePageWalkInProgressFragmentDirections.actionGlobalNavViewDogOwnerProfile(dogWalk.getOwnerId()));
         });
 
         binding.includeAvailableWalkDetails.callImageButton.setOnClickListener(view -> {
@@ -104,7 +107,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         });
 
         viewModel.getDogWalk().observe(getViewLifecycleOwner(), dogWalk -> {
-            if (dogWalk.getStatus().equals(WalkStatus.WAITING_PAYMENT) || dogWalk.getStatus().equals(WalkStatus.ADD_REVIEW) || dogWalk.getStatus().equals(WalkStatus.PAYMENT_DENIED)) {
+            if (dogWalk.getStatus().equals(WalkStatus.WAITING_PAYMENT) || dogWalk.getStatus().equals(WalkStatus.ADD_REVIEW)) {
                 binding.startWalkButton.setVisibility(View.INVISIBLE);
                 binding.titleTextView.setText(R.string.waiting_for_payment);
             } else if (dogWalk.getStatus().equals(WalkStatus.IN_PROGRESS)) {

@@ -13,6 +13,7 @@ import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.models.WalkRequestStatus;
 import com.example.fluffstroller.models.WalkStatus;
+import com.example.fluffstroller.pages.main.stroller.DogStrollerHomePageWalkInProgressFragmentDirections;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.utils.FragmentWithServices;
@@ -63,13 +64,16 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
         });
 
         binding.includeWalkRequestDetails.visitProfileButton.setOnClickListener(view -> {
-            // todo implement visit profile
-            Snackbar.make(view, "Visit Profile", Snackbar.LENGTH_SHORT).show();
+            WalkRequest walkRequest = viewModel.getWalkRequest().getValue();
+            if (walkRequest == null) {
+                return;
+            }
+
+            NavHostFragment.findNavController(this).navigate(DogStrollerHomePageWalkInProgressFragmentDirections.actionGlobalNavViewStrollerProfile(walkRequest.getStrollerId()));
         });
 
         binding.goToMapPageButton.setOnClickListener(view -> {
-            // todo implement go to map
-            Snackbar.make(view, "Go To Map", Snackbar.LENGTH_SHORT).show();
+            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWalkInProgressFragmentDirections.actionGlobalNavWalkInProgress());
         });
 
         viewModel.getDogNames().observe(getViewLifecycleOwner(), dogNames -> {

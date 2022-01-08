@@ -65,6 +65,10 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
 
         viewModel = new ViewModelProvider(this).get(WalkInProgressViewModel.class);
 
+        if (loggedUserDataService.getLogUserType() == null) {
+            return binding.getRoot();
+        }
+
         if (loggedUserDataService.getLogUserType().equals(UserType.DOG_OWNER)) {
             binding.finishWalkButton.setVisibility(View.GONE);
         } else {
