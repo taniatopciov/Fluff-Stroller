@@ -104,7 +104,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         });
 
         viewModel.getDogWalk().observe(getViewLifecycleOwner(), dogWalk -> {
-            if (dogWalk.getStatus().equals(WalkStatus.WAITING_PAYMENT) || dogWalk.getStatus().equals(WalkStatus.ADD_REVIEW) || dogWalk.getStatus().equals(WalkStatus.PAYMENT_DENIED)) {
+            if (dogWalk.getStatus().equals(WalkStatus.WAITING_PAYMENT) || dogWalk.getStatus().equals(WalkStatus.ADD_REVIEW)) {
                 binding.startWalkButton.setVisibility(View.INVISIBLE);
                 binding.titleTextView.setText(R.string.waiting_for_payment);
             } else if (dogWalk.getStatus().equals(WalkStatus.IN_PROGRESS)) {

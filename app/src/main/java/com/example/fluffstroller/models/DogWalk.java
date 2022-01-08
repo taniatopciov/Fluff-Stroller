@@ -74,6 +74,15 @@ public class DogWalk extends FirebaseDocument implements Serializable {
         return location;
     }
 
+    public WalkRequest getAcceptedRequest() {
+        for (WalkRequest request : requests) {
+            if (request.getStatus().equals(WalkRequestStatus.ACCEPTED)) {
+                return request;
+            }
+        }
+        return null;
+    }
+
     public void setStatus(WalkStatus status) {
         this.status = status;
     }

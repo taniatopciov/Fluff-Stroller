@@ -24,7 +24,6 @@ import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.FragmentWithServices;
-import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.components.EnableLocationPopupDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -84,8 +83,6 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
 
                     loggedUserDataService.setDogWalkPreview(response.data);
                     binding.finishWalkButton.setEnabled(false);
-                    CustomToast.show(requireActivity(), "Walk Finished",
-                            Toast.LENGTH_LONG);
                 });
             });
         }
