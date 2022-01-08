@@ -7,21 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.fluffstroller.BuildConfig;
 import com.example.fluffstroller.databinding.LoginFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
-import com.example.fluffstroller.pages.main.home.HomeNavFragmentDirections;
+import com.example.fluffstroller.models.UserType;
 import com.example.fluffstroller.services.AuthenticationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
@@ -34,6 +23,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class LoginFragment extends FragmentWithServices {
 
@@ -73,8 +74,7 @@ public class LoginFragment extends FragmentWithServices {
             });
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = LoginFragmentBinding.inflate(inflater, container, false);
 
@@ -108,7 +108,7 @@ public class LoginFragment extends FragmentWithServices {
                     loggedUserDataService.setLoggedUserData(response2.data);
 
                     HideKeyboard.hide(requireActivity());
-                    NavHostFragment.findNavController(this).navigate(HomeNavFragmentDirections.actionGlobalNavHome());
+                    NavHostFragment.findNavController(this).navigate(LoginFragmentDirections.actionLoginFragmentToNavHome());
                 });
             });
         });

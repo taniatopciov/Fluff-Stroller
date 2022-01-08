@@ -8,12 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.fluffstroller.databinding.SplashScreenBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.services.LoggedUserDataService;
@@ -23,6 +17,12 @@ import com.example.fluffstroller.utils.components.CustomToast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class HomeFragment extends FragmentWithServices {
 
@@ -55,11 +55,11 @@ public class HomeFragment extends FragmentWithServices {
         if (loggedUserDataService.isUserLogged()) {
             switch (loggedUserDataService.getLogUserType()) {
                 case DOG_OWNER: {
-                    NavHostFragment.findNavController(this).navigate(HomeFragmentDirections.actionHomeFragmentToDogOwnerHomeNavigation());
+                    NavHostFragment.findNavController(this).navigate(HomeFragmentDirections.actionNavHomeToNavDogOwnerHome());
                 }
                 break;
                 case STROLLER: {
-                    NavHostFragment.findNavController(this).navigate(HomeFragmentDirections.actionHomeFragmentToStrollerHomeNavigation());
+                    NavHostFragment.findNavController(this).navigate(HomeFragmentDirections.actionNavHomeToNavStrollerHome());
                 }
                 break;
 

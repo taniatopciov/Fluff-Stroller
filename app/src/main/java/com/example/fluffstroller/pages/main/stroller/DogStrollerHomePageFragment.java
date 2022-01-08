@@ -9,12 +9,6 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.fluffstroller.databinding.DogStrollerHomePageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
@@ -38,6 +32,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DogStrollerHomePageFragment extends FragmentWithServices implements OnMapReadyCallback {
 
@@ -257,9 +258,15 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
+        FragmentActivity activity = getActivity();
+
+        if (activity == null) {
+            return;
+        }
+
+        locationService.getCurrentLocation(activity).subscribe(locationResponse -> {
             if (locationResponse.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not get current location",
+                CustomToast.show(activity, "Could not get current location",
                         Toast.LENGTH_LONG);
                 return;
             }

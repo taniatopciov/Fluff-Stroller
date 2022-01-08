@@ -64,6 +64,10 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
 
         viewModel = new ViewModelProvider(this).get(WalkInProgressViewModel.class);
 
+        if (loggedUserDataService.getLogUserType() == null) {
+            return binding.getRoot();
+        }
+
         if (loggedUserDataService.getLogUserType().equals(UserType.DOG_OWNER)) {
             binding.finishWalkButton.setVisibility(View.GONE);
         } else {
@@ -162,8 +166,8 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
                     viewModel.setWalkId(walkInProgressModel.getWalkId());
                     viewModel.setDogOwnerId(dogWalk.getOwnerId());
                     viewModel.setLocations(walkInProgressModel.getCoordinates());
-                    if (dogWalk.getCreationTimeMillis() != null) {
-                        long elapsedMillis = System.currentTimeMillis() - dogWalk.getCreationTimeMillis();
+                    if (dogWalk.getWalkStartedMillis() != null) {
+                        long elapsedMillis = System.currentTimeMillis() - dogWalk.getWalkStartedMillis();
                         viewModel.setElapsedSeconds(elapsedMillis / 1000L);
                     }
 
