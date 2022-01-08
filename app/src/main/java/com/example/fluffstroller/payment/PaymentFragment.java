@@ -1,6 +1,5 @@
 package com.example.fluffstroller.payment;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,36 +9,56 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.fluffstroller.databinding.PaymentFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
+import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.models.WalkStatus;
+import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.PaymentService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.HideKeyboard;
 import com.example.fluffstroller.utils.components.CustomToast;
+import com.example.fluffstroller.utils.components.InfoPopupDialog;
 import com.stripe.android.model.PaymentIntent;
 import com.stripe.android.model.PaymentMethodCreateParams;
 import com.stripe.android.model.StripeIntent;
-import com.stripe.android.payments.paymentlauncher.PaymentResult;
 
 public class PaymentFragment extends FragmentWithServices {
 
     private PaymentFragmentBinding binding;
     private PaymentViewModel viewModel;
+    private static final String PAYMENT_FRAGMENT_UNIQUE_STRING = "PAYMENT_FRAGMENT_UNIQUE_STRING";
 
     @Injectable
     private PaymentService paymentService;
+
+    @Injectable
+    private DogWalksService dogWalksService;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = PaymentFragmentBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(PaymentViewModel.class);
 
-        DogWalk walk = PaymentFragmentArgs.fromBundle(getArguments()).getWalk();
+        String walkId = PaymentFragmentArgs.fromBundle(getArguments()).getDogWalkId();
+
+        dogWalksService.getDogWalk(walkId).subscribe(response -> {
+            if(response.hasErrors() || response.data == null) {
+                CustomToast.show(requireActivity(), "Could not get DogWalk", Toast.LENGTH_LONG);
+                return;
+            }
+            viewModel.setDogWalk(response.data);
+        });
 
         viewModel.getLoadingCircle().observe(getViewLifecycleOwner(), visible -> {
             binding.progressBarPaymentPage.setVisibility(visible ? View.VISIBLE : View.GONE);
+        });
+
+        viewModel.getDogWalk().observe(getViewLifecycleOwner(), dogWalk -> {
+            binding.amountTextViewPaymentPage.setText(dogWalk.getTotalPrice() + "");
         });
 
         viewModel.getDisablePayButton().observe(getViewLifecycleOwner(), ignored -> {
@@ -48,28 +67,52 @@ public class PaymentFragment extends FragmentWithServices {
 
         viewModel.setLoadingCircle(false);
 
-        binding.amountTextViewPaymentPage.setText(walk.getTotalPrice() + "");
-
         binding.payButtonPaymentPage.setOnClickListener(view -> {
             HideKeyboard.hide(requireActivity());
-            viewModel.setLoadingCircle(true);
-            viewModel.disablePayButton();
-
             PaymentMethodCreateParams params = binding.cardInputWidgetPaymentPage.getPaymentMethodCreateParams();
+
+            DogWalk walk = viewModel.getDogWalk().getValue();
+            if (params == null || params.getBillingDetails() == null || walk == null) {
+                return;
+            }
+
+            viewModel.setLoadingCircle(true);
+            viewModel.setDisablePayButton(true);
 
             paymentService.startCheckout(walk, params).subscribe(response -> {
                 viewModel.setLoadingCircle(false);
 
                 if (response.hasErrors() || response.data == null) {
                     CustomToast.show(requireActivity(), "Payment error", Toast.LENGTH_LONG);
+                    viewModel.setDisablePayButton(false);
                     return;
                 }
 
                 PaymentIntent intent = response.data.getIntent();
                 if (intent.getStatus() == StripeIntent.Status.Succeeded) {
-                    displayAlert("Payment succeeded", "");
+                    dogWalksService.updateDogWalk(walk.getOwnerId(), walk.getId(), WalkStatus.PAID, null).subscribe(response1 -> {
+                        if (response1.hasErrors() || response1.data == null) {
+                            CustomToast.show(requireActivity(), "Update Dog Walk Error", Toast.LENGTH_LONG);
+                            return;
+                        }
+
+                        WalkRequest acceptedRequest = walk.getAcceptedRequest();
+                        if (acceptedRequest != null) {
+                            dogWalksService.updateWalkAfterPayment(walk.getOwnerId(), acceptedRequest.getStrollerId()).subscribe(response2 -> {
+                                if (response2.hasErrors()) {
+                                    CustomToast.show(requireActivity(), "Update Walk After Payment Error", Toast.LENGTH_LONG);
+                                    return;
+                                }
+                                new InfoPopupDialog("Payment Successful", () -> {
+                                    NavHostFragment.findNavController(this).navigate(PaymentFragmentDirections.actionPaymentFragmentToNavDogOwnerHome());
+                                })
+                                        .show(getChildFragmentManager(), PAYMENT_FRAGMENT_UNIQUE_STRING);
+                            });
+                        }
+                    });
                 } else {
-                    displayAlert("Payment unsuccessful", "");
+                    CustomToast.show(requireActivity(), "Payment Unsuccessful", Toast.LENGTH_LONG);
+                    viewModel.setDisablePayButton(false);
                 }
             });
         });
@@ -81,31 +124,5 @@ public class PaymentFragment extends FragmentWithServices {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    private void displayAlert(@NonNull String title,
-                              @Nullable String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity())
-                .setTitle(title)
-                .setMessage(message);
-
-        builder.setPositiveButton("Ok", null);
-        builder.create().show();
-    }
-
-    private void onPaymentResult(PaymentResult paymentResult) {
-        String message = "";
-        if (paymentResult instanceof PaymentResult.Completed) {
-            message = "Completed!";
-        } else if (paymentResult instanceof PaymentResult.Canceled) {
-            message = "Cancelled!";
-        } else if (paymentResult instanceof PaymentResult.Failed) {
-            // This string comes from the PaymentIntent's error message.
-            // See here: https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error-message
-            message = "Failed: "
-                    + ((PaymentResult.Failed) paymentResult).getThrowable().getMessage();
-        }
-
-        displayAlert("PaymentResult: ", message);
     }
 }

@@ -15,16 +15,6 @@ app.get('/', (req, res) => {
     res.send('Hello, Fluff Stroller!')
 });
 
-app.use(
-    express.json({
-        verify: function (req: any, res, buf) {
-            if (req.originalUrl.startsWith('/webhook')) {
-                req.rawBody = buf.toString();
-            }
-        },
-    })
-);
-
 app.get('/config', (req, res) => {
     res.send({
         publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,

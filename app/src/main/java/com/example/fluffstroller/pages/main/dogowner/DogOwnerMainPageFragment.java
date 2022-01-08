@@ -13,8 +13,6 @@ import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.DogWalkPreview;
 import com.example.fluffstroller.models.Location;
-import com.example.fluffstroller.models.WalkRequest;
-import com.example.fluffstroller.models.WalkRequestStatus;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.FeesService;
 import com.example.fluffstroller.services.LocationService;
@@ -92,46 +90,28 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
 
                 case ADD_REVIEW: {
                     String currentWalkId = currentWalkPreview.getWalkId();
-
-                    dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
-                        if (response.hasErrors() || response.data == null) {
-                            CustomToast.show(requireActivity(), "Could not get current dog walk",
-                                    Toast.LENGTH_LONG);
-                            return;
-                        }
-
-                        DogWalk dogWalk = response.data;
-                        List<WalkRequest> requests = dogWalk.getRequests();
-
-                        for (WalkRequest request : requests) {
-                            if (request.getStatus().equals(WalkRequestStatus.ACCEPTED)) {
-                                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavReview(request.getStrollerId(), request.getStrollerName()));
-                                break;
-                            }
-                        }
-                    });
+                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavReview(currentWalkId));
                 }
                 break;
                 case WAITING_PAYMENT: {
                     String currentWalkId = currentWalkPreview.getWalkId();
-
-                    dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
-                        if (response.hasErrors() || response.data == null) {
-                            CustomToast.show(requireActivity(), "Could not get current dog walk",
-                                    Toast.LENGTH_LONG);
-                            return;
-                        }
-
-                        DogWalk dogWalk = response.data;
-                        NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToPaymentFragment(dogWalk));
-                    });
+                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToPaymentFragment(currentWalkId));
                 }
                 break;
                 case PAID: {
+                    String currentWalkId = currentWalkPreview.getWalkId();
+
+                    dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
+                        if (response.hasErrors() || response.data == null) {
+                            return;
+                        }
+
+                        dogWalksService.updateWalkAfterPayment(response.data.getOwnerId(), response.data.getAcceptedRequest().getStrollerId()).subscribe(response2 -> {
+                        });
+                    });
                 }
                 break;
             }
-
 
             return binding.getRoot();
         }
