@@ -2,10 +2,11 @@ package com.example.fluffstroller.models;
 
 import com.example.fluffstroller.repository.FirebaseDocument;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DogWalk extends FirebaseDocument {
+public class DogWalk extends FirebaseDocument implements Serializable {
     private List<String> dogNames;
     private String ownerId;
     private String ownerName;

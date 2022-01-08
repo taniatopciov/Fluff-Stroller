@@ -72,6 +72,7 @@ dependencies {
 
     // Stripe
     implementation 'com.stripe:stripe-android:18.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
