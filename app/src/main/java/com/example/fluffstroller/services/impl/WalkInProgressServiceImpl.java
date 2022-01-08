@@ -26,7 +26,7 @@ public class WalkInProgressServiceImpl implements WalkInProgressService {
 
     @Override
     public void startWalk(DogWalk dogWalk, String strollerId) {
-        WalkInProgressModel walkInProgress = new WalkInProgressModel(dogWalk.getId(), dogWalk.getLocation());
+        WalkInProgressModel walkInProgress = new WalkInProgressModel(dogWalk.getId(), strollerId, dogWalk.getOwnerId(), dogWalk.getLocation());
 
         firebaseDatabaseReference.child(WALKS_PATH)
                 .child(dogWalk.getId())
