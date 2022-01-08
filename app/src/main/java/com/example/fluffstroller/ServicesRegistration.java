@@ -11,12 +11,10 @@ import com.example.fluffstroller.services.PaymentService;
 import com.example.fluffstroller.services.PermissionsService;
 import com.example.fluffstroller.services.PhotoService;
 import com.example.fluffstroller.services.ProfileService;
-import com.example.fluffstroller.services.RemoveDogWalkService;
 import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.services.impl.FirebaseAuthenticationService;
 import com.example.fluffstroller.services.impl.FirebaseDogWalksService;
 import com.example.fluffstroller.services.impl.FirebaseProfileService;
-import com.example.fluffstroller.services.impl.FirebaseRemoveDogWalkService;
 import com.example.fluffstroller.services.impl.LocationServiceImpl;
 import com.example.fluffstroller.services.impl.LoggedUserDataServiceImpl;
 import com.example.fluffstroller.services.impl.PaymentServiceImpl;
@@ -45,11 +43,10 @@ public class ServicesRegistration {
         LoggedUserDataService loggedUserDataService = new LoggedUserDataServiceImpl();
 
         FirebaseProfileService firebaseProfileService = new FirebaseProfileService(firebaseRepository, photoService, loggedUserDataService);
-        FirebaseDogWalksService firebaseDogWalksService = new FirebaseDogWalksService(firebaseRepository, firebaseProfileService);
+        FirebaseDogWalksService firebaseDogWalksService = new FirebaseDogWalksService(firebaseRepository, firebaseProfileService, loggedUserDataService);
 
         ServiceLocator serviceLocator = ServiceLocator.getInstance();
         serviceLocator.register(FeesService.class, new FeesService());
-        serviceLocator.register(RemoveDogWalkService.class, new FirebaseRemoveDogWalkService(firebaseDogWalksService, firebaseProfileService));
         serviceLocator.register(ProfileService.class, firebaseProfileService);
         serviceLocator.register(DogWalksService.class, firebaseDogWalksService);
         serviceLocator.register(AuthenticationService.class, new FirebaseAuthenticationService());

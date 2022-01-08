@@ -23,4 +23,8 @@ public interface DogWalksService {
     Subject<List<DogWalk>> getNearbyAvailableDogWalks(String id, Location currentLocation, Double radius);
 
     Subject<Boolean> requestWalk(WalkRequest walkRequest);
+
+    Subject<Boolean> updateWalkAfterPayment(String ownerId, String strollerId);
+
+    Subject<Boolean> removeCurrentWalk(String walkId, String dogOwnerId);
 }

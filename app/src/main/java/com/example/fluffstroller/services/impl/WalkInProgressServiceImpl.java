@@ -1,10 +1,11 @@
 package com.example.fluffstroller.services.impl;
 
+import androidx.annotation.NonNull;
+
 import com.example.fluffstroller.BuildConfig;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.models.WalkInProgressModel;
-import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.observer.Subject;
 import com.google.firebase.database.DataSnapshot;
@@ -15,8 +16,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 public class WalkInProgressServiceImpl implements WalkInProgressService {
     private static final String WALKS_PATH = "walks";
@@ -42,14 +41,6 @@ public class WalkInProgressServiceImpl implements WalkInProgressService {
 
         DatabaseReference walkReference = firebaseDatabaseReference.child(WALKS_PATH).child(walkId);
         walkReference.child(COORDINATES_CHILD).push().setValue(new Location(latitude, longitude));
-    }
-
-    @Override
-    public void updateWalkStatus(String walkId, WalkStatus status) {
-        firebaseDatabaseReference.child(WALKS_PATH)
-                .child(walkId)
-                .child(WALK_STATUS_CHILD)
-                .setValue(status);
     }
 
     @Override
