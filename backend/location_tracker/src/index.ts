@@ -3,10 +3,12 @@ import dotenv from "dotenv";
 import { createClient } from 'redis';
 import admin, { ServiceAccount } from 'firebase-admin';
 import { Paths } from "./Paths";
+import Stripe from "stripe";
 import serviceAccount from '../ServiceAcountKey.json';
 import { DogWalk } from "./types/DogWalk";
 import { GeoReplyWith } from "@node-redis/client/dist/lib/commands/generic-transformers";
 import { WalkStatus } from "./types/WalkStatus";
+import { PaymentData } from "./paymentData";
 
 dotenv.config();
 
@@ -17,6 +19,7 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount as ServiceAccount)
 });
 const firestore = admin.firestore();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {apiVersion: "2020-08-27"});
 
 
 const redisClient = createClient({
@@ -126,6 +129,31 @@ app.get('/walk/:id', async (req, res) => {
     const data = await redisClient.geoPos('walks', `walk-${id}`);
     res.send({
         positions: data,
+    });
+});
+
+// payment service
+app.get('/config', (req, res) => {
+    res.send({
+        publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+    });
+});
+
+app.post("/create-payment-intent", async (req, res) => {
+    const paymentData: PaymentData = req.body;
+
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: paymentData.amount,
+        currency: paymentData.currency,
+        metadata: {
+            'ownerId': paymentData.ownerId,
+            'strollerId': paymentData.strollerId,
+            'walkId': paymentData.walkId
+        }
+    });
+
+    res.send({
+        clientSecret: paymentIntent.client_secret
     });
 });
 
