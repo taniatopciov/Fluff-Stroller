@@ -50,7 +50,7 @@
             android:hint="@string/walk_price"
             android:importantForAutofill="no"
             android:inputType="number"
-            android:maxLength="5"
+            android:maxLength="7"
             android:minHeight="48dp"
             app:label="@string/walk_price" />
 

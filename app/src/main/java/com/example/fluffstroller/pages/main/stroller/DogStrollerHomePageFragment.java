@@ -9,11 +9,19 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.fluffstroller.databinding.DogStrollerHomePageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.pages.main.dogowner.DogOwnerMainPageFragmentDirections;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
@@ -21,6 +29,7 @@ import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.components.EnableLocationPopupDialog;
+import com.example.fluffstroller.utils.components.InfoPopupDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,13 +41,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DogStrollerHomePageFragment extends FragmentWithServices implements OnMapReadyCallback {
 
@@ -185,17 +187,18 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
                 case REJECTED:
                 case CANCELED: {
-                    viewModel.setWaitingForDogOwnerApproval(false);
-                    // todo add notification for rejected or canceled walkRequest making
-
-                    profileService.updateCurrentRequest(loggedUserDataService.getLoggedUserId(), null).subscribe(response -> {
-                        if (response.hasErrors()) {
-                            return;
-                        }
-
-                        loggedUserDataService.setCurrentRequest(null);
+                    new InfoPopupDialog("Your request was rejected", () -> {
                         viewModel.setWaitingForDogOwnerApproval(false);
-                    });
+
+                        profileService.updateCurrentRequest(loggedUserDataService.getLoggedUserId(), null).subscribe(response -> {
+                            if (response.hasErrors()) {
+                                return;
+                            }
+
+                            loggedUserDataService.setCurrentRequest(null);
+                            viewModel.setWaitingForDogOwnerApproval(false);
+                        });
+                    }).show(getChildFragmentManager(), STROLLER_MAIN_PAGE_FRAGMENT);
                 }
                 break;
             }
@@ -287,7 +290,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
             CircleOptions circleOptions = new CircleOptions()
                     .center(latLng)
                     .radius(radius * METER_TO_KM)
-                    .strokeColor(Color.BLUE);
+                    .strokeColor(Color.RED);
             mapsCircle = googleMap.addCircle(circleOptions);
         });
     }
@@ -310,7 +313,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
     }
 
     private void handleViewProfile(Pair<DogWalk, Integer> pair) {
-        Toast.makeText(getContext(), "Profile: " + pair.first.getOwnerName() + " " + pair.second, Toast.LENGTH_SHORT).show();
+        NavHostFragment.findNavController(this).navigate(DogStrollerHomePageFragmentDirections.actionGlobalNavViewDogOwnerProfile(pair.first.getOwnerId()));
     }
 
     private void callButtonListener(Pair<DogWalk, Integer> pair) {

@@ -140,27 +140,29 @@ public class FirebaseDogWalksService implements DogWalksService {
         AtomicBoolean updatedCurrentRequest = new AtomicBoolean(false);
 
         profileService.updateDogWalkPreview(ownerId, null).subscribe(response1 -> {
-            if(response1.hasErrors()) {
+            if (response1.hasErrors()) {
                 subject.notifyObservers(response1.exception);
                 return;
             }
             updatedDogWalkPreview.set(true);
 
-            if(updatedDogWalkPreview.get() && updatedCurrentRequest.get()) {
+            if (updatedDogWalkPreview.get() && updatedCurrentRequest.get()) {
                 loggedUserDataService.setDogWalkPreview(null);
+                loggedUserDataService.setCurrentRequest(null);
                 subject.notifyObservers(true);
             }
         });
 
-        profileService.updateCurrentRequest(strollerId,null).subscribe(response2 -> {
-            if(response2.hasErrors()) {
+        profileService.updateCurrentRequest(strollerId, null).subscribe(response2 -> {
+            if (response2.hasErrors()) {
                 subject.notifyObservers(response2.exception);
                 return;
             }
             updatedCurrentRequest.set(true);
 
-            if(updatedDogWalkPreview.get() && updatedCurrentRequest.get()) {
+            if (updatedDogWalkPreview.get() && updatedCurrentRequest.get()) {
                 loggedUserDataService.setCurrentRequest(null);
+                loggedUserDataService.setDogWalkPreview(null);
                 subject.notifyObservers(true);
             }
         });
@@ -179,7 +181,7 @@ public class FirebaseDogWalksService implements DogWalksService {
             }
             DogWalk dogWalk = response.data;
             List<WalkRequest> requests = dogWalk.getRequests();
-            rejectStrollerWalkRequests(requests);
+            cancelStrollerWalkRequests(requests);
 
             removeWalk(walkId).subscribe(response1 -> {
                 if (response.hasErrors()) {
@@ -201,7 +203,7 @@ public class FirebaseDogWalksService implements DogWalksService {
         return subject;
     }
 
-    private void rejectStrollerWalkRequests(List<WalkRequest> requests) {
+    private void cancelStrollerWalkRequests(List<WalkRequest> requests) {
         if (requests != null) {
             for (WalkRequest request : requests) {
                 if (request.getStatus() == WalkRequestStatus.PENDING) {

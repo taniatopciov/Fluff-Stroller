@@ -133,7 +133,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
             binding.includeAvailableWalkDetails.dogOwnerNameTextView.setText(dogWalk.getOwnerName());
             binding.includeAvailableWalkDetails.walkingTimeValueTextView.setText(dogWalk.getWalkTime() + " minutes");
-            binding.includeAvailableWalkDetails.priceValueTextView.setText(dogWalk.getTotalPrice() + " $");
+            binding.includeAvailableWalkDetails.priceValueTextView.setText(dogWalk.getTotalPrice() + " RON");
         });
 
         WalkRequest currentWalkRequest = loggedUserDataService.getLoggedUserCurrentWalkRequest();
