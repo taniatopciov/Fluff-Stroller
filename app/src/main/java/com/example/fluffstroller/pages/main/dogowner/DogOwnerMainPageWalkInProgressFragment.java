@@ -90,7 +90,7 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
             binding.dogsValueTextView.setText(concatenatedDogNames);
         });
 
-        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceValueTextView.setText(totalPrice + " $"));
+        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceValueTextView.setText(totalPrice + " RON"));
 
         viewModel.getWalkRequest().observe(getViewLifecycleOwner(), walkRequest -> {
             binding.includeWalkRequestDetails.strollerNameTextView.setText(walkRequest.getStrollerName());
