@@ -135,4 +135,5 @@
     <string name="complete_payment_for_current_walk">Complete payment for current walk</string>
     <string name="pay">Pay</string>
     <string name="ron">RON</string>
+    <string name="cancel_walk_message">Are you sure you want to cancel this search for strollers?</string>
 </resources>

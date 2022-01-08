@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWaitingForStrollerFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
@@ -24,6 +25,7 @@ import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.ConfirmationPopupDialog;
 import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.components.InfoPopupDialog;
 
@@ -85,7 +87,11 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
         }
         timer = new Timer();
 
-        binding.cancelWalkButton.setOnClickListener(view -> removeCurrentWalk());
+        binding.cancelWalkButton.setOnClickListener(view -> {
+            new ConfirmationPopupDialog(R.string.cancel_walk_message, ignored -> {
+                removeCurrentWalk();
+            }, null).show(getChildFragmentManager(), DOG_OWNER_MAIN_PAGE_WAITING_FOR_STROLLER_FRAGMENT);
+        });
 
         WalkRequestAdapter walkRequestAdapter = new WalkRequestAdapter(new ArrayList<>(),
                 this::handleRequestAccepted, this::handleRequestRejected,
