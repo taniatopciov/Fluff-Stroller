@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel;
 
 public class DogOwnerMainPageWalkInProgressViewModel extends ViewModel {
     private final MutableLiveData<List<String>> dogNames;
-    private final MutableLiveData<Integer> totalPrice;
+    private final MutableLiveData<Double> totalPrice;
     private final MutableLiveData<WalkRequest> walkRequest;
     private final MutableLiveData<WalkStatus> walkStatus;
 
@@ -25,7 +25,7 @@ public class DogOwnerMainPageWalkInProgressViewModel extends ViewModel {
         return dogNames;
     }
 
-    public MutableLiveData<Integer> getTotalPrice() {
+    public MutableLiveData<Double> getTotalPrice() {
         return totalPrice;
     }
 
@@ -41,7 +41,7 @@ public class DogOwnerMainPageWalkInProgressViewModel extends ViewModel {
         this.dogNames.postValue(dogNames);
     }
 
-    public void setTotalPrice(Integer totalPrice) {
+    public void setTotalPrice(Double totalPrice) {
         this.totalPrice.postValue(totalPrice);
     }
 

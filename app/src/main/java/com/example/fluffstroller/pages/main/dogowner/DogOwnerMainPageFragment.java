@@ -169,7 +169,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
             binding.feesTextWithLabel.setText(fees.toString());
 
             MutableLiveData<Integer> walkPrice = viewModel.getWalkPrice();
-            int totalPrice = fees;
+            Double totalPrice = fees;
 
             if (walkPrice != null && walkPrice.getValue() != null) {
                 totalPrice += walkPrice.getValue();
@@ -181,19 +181,19 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
         viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceTextWithLabel.setText(totalPrice + ""));
 
         viewModel.getWalkPrice().observe(getViewLifecycleOwner(), walkPrice -> {
-            MutableLiveData<Integer> fees = viewModel.getFees();
-            int totalPrice = walkPrice;
+            Double fees = feesService.getDogWalkFees(walkPrice);
+            Double totalPrice = Double.valueOf(walkPrice);
 
-            if (fees != null && fees.getValue() != null) {
-                totalPrice += fees.getValue();
+            if (fees != null) {
+                totalPrice += fees;
             }
 
             viewModel.setTotalPrice(totalPrice);
+
+            viewModel.setFees(fees);
         });
 
         viewModel.setDogNames(loggedUserDogs.stream().map(Dog::getName).collect(Collectors.toList()));
-
-        viewModel.setFees(feesService.getDogWalkFees());
 
         return binding.getRoot();
     }
@@ -206,7 +206,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
 
     private void createDogWalkForDogs(List<String> checkedDogs, Location location) {
         Integer walkTime = viewModel.getWalkTime().getValue();
-        Integer totalPrice = viewModel.getTotalPrice().getValue();
+        Double totalPrice = viewModel.getTotalPrice().getValue();
 
         String userId = loggedUserDataService.getLoggedUserId();
         String userName = loggedUserDataService.getLoggedUserName();
