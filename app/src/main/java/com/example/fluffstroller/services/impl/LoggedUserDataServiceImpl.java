@@ -1,5 +1,6 @@
 package com.example.fluffstroller.services.impl;
 
+import com.example.fluffstroller.MainActivity;
 import com.example.fluffstroller.models.Dog;
 import com.example.fluffstroller.models.DogOwnerProfileData;
 import com.example.fluffstroller.models.DogWalkPreview;
@@ -15,6 +16,11 @@ import java.util.List;
 
 public class LoggedUserDataServiceImpl implements LoggedUserDataService {
     private ProfileData profileData = null;
+    private final MainActivity mainActivity;
+
+    public LoggedUserDataServiceImpl(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
 
     @Override
     public boolean isUserLogged() {
@@ -28,6 +34,8 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
             strollerProfileData.setName(name);
             strollerProfileData.setPhoneNumber(phoneNumber);
             strollerProfileData.setDescription(description);
+
+            mainActivity.setLoggedUserDataNavDrawer(name, profileData.getEmail());
         }
     }
 
@@ -38,12 +46,18 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
             dogOwnerProfileData.setName(name);
             dogOwnerProfileData.setPhoneNumber(phoneNumber);
             dogOwnerProfileData.setDogs(dogs);
+
+            mainActivity.setLoggedUserDataNavDrawer(name, profileData.getEmail());
         }
     }
 
     @Override
     public void setLoggedUserData(ProfileData profileData) {
         this.profileData = profileData;
+
+        if (profileData != null) {
+            mainActivity.setLoggedUserDataNavDrawer(profileData.getName(), profileData.getEmail());
+        }
     }
 
     @Override

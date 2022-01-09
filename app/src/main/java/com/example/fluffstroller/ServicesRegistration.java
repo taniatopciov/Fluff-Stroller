@@ -40,7 +40,7 @@ public class ServicesRegistration {
 
         FirebaseRepository firebaseRepository = new FirebaseRepository();
         PhotoService photoService = new PhotoServiceFirestorage();
-        LoggedUserDataService loggedUserDataService = new LoggedUserDataServiceImpl();
+        LoggedUserDataService loggedUserDataService = new LoggedUserDataServiceImpl(activity);
 
         FirebaseProfileService firebaseProfileService = new FirebaseProfileService(firebaseRepository, photoService, loggedUserDataService);
         FirebaseDogWalksService firebaseDogWalksService = new FirebaseDogWalksService(firebaseRepository, firebaseProfileService, loggedUserDataService);
