@@ -6,6 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
@@ -22,20 +30,11 @@ import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.components.EnableLocationPopupDialog;
 import com.example.fluffstroller.utils.components.TextWithLabel;
-import com.example.fluffstroller.utils.formatting.CurrencyIntegerTextWatcher;
 import com.example.fluffstroller.utils.formatting.TimeIntegerTextWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 public class DogOwnerMainPageFragment extends FragmentWithServices {
@@ -118,7 +117,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
 
         final RecyclerView selectedDogsRecyclerView = binding.selectedDogsRecyclerView;
 
-        binding.walkPriceTextWithLabel.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.walkPriceTextWithLabel.editText, "$", text -> {
+        binding.walkPriceTextWithLabel.addTextChangedListener(new TimeIntegerTextWatcher(binding.walkPriceTextWithLabel.editText, "RON", text -> {
             try {
                 viewModel.setWalkPrice(Integer.parseInt(text));
             } catch (Exception e) {
@@ -132,8 +131,8 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
                 viewModel.setWalkPrice(0);
             }
         }));
-        binding.feesTextWithLabel.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.feesTextWithLabel.editText, "$"));
-        binding.totalPriceTextWithLabel.addTextChangedListener(new CurrencyIntegerTextWatcher(binding.totalPriceTextWithLabel.editText, "$"));
+        binding.feesTextWithLabel.addTextChangedListener(new TimeIntegerTextWatcher(binding.feesTextWithLabel.editText, "RON"));
+        binding.totalPriceTextWithLabel.addTextChangedListener(new TimeIntegerTextWatcher(binding.totalPriceTextWithLabel.editText, "RON"));
 
         DogNamesAdapter dogNamesAdapter = new DogNamesAdapter(new ArrayList<>());
         selectedDogsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

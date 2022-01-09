@@ -61,8 +61,8 @@ public class PaymentFragment extends FragmentWithServices {
             binding.amountTextViewPaymentPage.setText(dogWalk.getTotalPrice() + "");
         });
 
-        viewModel.getDisablePayButton().observe(getViewLifecycleOwner(), ignored -> {
-            binding.payButtonPaymentPage.setEnabled(false);
+        viewModel.getDisablePayButton().observe(getViewLifecycleOwner(), disabled -> {
+            binding.payButtonPaymentPage.setEnabled(!disabled);
         });
 
         viewModel.setLoadingCircle(false);

@@ -8,14 +8,16 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.models.WalkRequest;
+import com.example.fluffstroller.models.WalkRequestStatus;
 
 import java.util.List;
 import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import java.util.stream.Collectors;
 
 public class WalkRequestAdapter extends RecyclerView.Adapter<WalkRequestAdapter.ViewHolder> {
 
@@ -56,6 +58,8 @@ public class WalkRequestAdapter extends RecyclerView.Adapter<WalkRequestAdapter.
             if (rejectButtonListener != null) {
                 rejectButtonListener.accept(new Pair<>(request, position));
             }
+            walkRequests.remove(position);
+            notifyItemRemoved(position);
         });
 
         holder.visitProfileButton.setOnClickListener(view -> {
@@ -82,7 +86,10 @@ public class WalkRequestAdapter extends RecyclerView.Adapter<WalkRequestAdapter.
     }
 
     public void setWalkRequests(List<WalkRequest> walkRequests) {
-        this.walkRequests = walkRequests;
+        this.walkRequests = walkRequests
+                .stream()
+                .filter(request -> request.getStatus().equals(WalkRequestStatus.PENDING))
+                .collect(Collectors.toList());
         notifyDataSetChanged();
     }
 

@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWaitingForStrollerFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
@@ -24,6 +25,7 @@ import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.ConfirmationPopupDialog;
 import com.example.fluffstroller.utils.components.CustomToast;
 import com.example.fluffstroller.utils.components.InfoPopupDialog;
 
@@ -85,7 +87,11 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
         }
         timer = new Timer();
 
-        binding.cancelWalkButton.setOnClickListener(view -> removeCurrentWalk());
+        binding.cancelWalkButton.setOnClickListener(view -> {
+            new ConfirmationPopupDialog(R.string.cancel_walk_message, ignored -> {
+                removeCurrentWalk();
+            }, null).show(getChildFragmentManager(), DOG_OWNER_MAIN_PAGE_WAITING_FOR_STROLLER_FRAGMENT);
+        });
 
         WalkRequestAdapter walkRequestAdapter = new WalkRequestAdapter(new ArrayList<>(),
                 this::handleRequestAccepted, this::handleRequestRejected,
@@ -162,7 +168,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
             binding.dogsTextView.setText(concatenatedDogNames);
         });
 
-        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceTextView.setText(totalPrice + " $"));
+        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> binding.totalPriceTextView.setText(totalPrice + " RON"));
 
         viewModel.getWalkTime().observe(getViewLifecycleOwner(), walkTime -> binding.initialWalkTimeTextView.setText(walkTime + " minutes"));
 
@@ -262,11 +268,34 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
     }
 
     private void handleRequestRejected(Pair<WalkRequest, Integer> requestPair) {
-        Toast.makeText(getContext(), "Rejected: " + requestPair.first.getStrollerName() + " " + requestPair.second, Toast.LENGTH_SHORT).show();
+        requestPair.first.setStatus(WalkRequestStatus.REJECTED);
+        List<WalkRequest> walkRequests = viewModel.getWalkRequests().getValue();
+        for (WalkRequest walk : walkRequests) {
+            if (walk.getStrollerId().equals(requestPair.first.getStrollerId())) {
+                walk.setStatus(WalkRequestStatus.REJECTED);
+                break;
+            }
+        }
+
+        dogWalksService.updateDogWalk(loggedUserDataService.getLoggedUserId(), loggedUserDataService.getCurrentWalkId(), viewModel.getStatus().getValue(), walkRequests).subscribe(response -> {
+            if (response.hasErrors()) {
+                CustomToast.show(requireActivity(), "Could not update dog walk",
+                        Toast.LENGTH_LONG);
+                return;
+            }
+        });
+
+        profileService.updateCurrentRequest(requestPair.first.getStrollerId(), requestPair.first).subscribe(response -> {
+            if (response.hasErrors()) {
+                CustomToast.show(requireActivity(), "Could not cancel request",
+                        Toast.LENGTH_LONG);
+                return;
+            }
+        });
     }
 
     private void handleRequestViewProfile(Pair<WalkRequest, Integer> requestPair) {
-        Toast.makeText(getContext(), "Profile: " + requestPair.first.getStrollerName() + " " + requestPair.second, Toast.LENGTH_SHORT).show();
+        NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionGlobalNavViewStrollerProfile(requestPair.first.getStrollerId()));
     }
 
     private void handleRequestCall(Pair<WalkRequest, Integer> requestPair) {

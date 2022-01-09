@@ -6,6 +6,5 @@ import com.stripe.android.PaymentIntentResult;
 import com.stripe.android.model.PaymentMethodCreateParams;
 
 public interface PaymentService {
-
     Subject<PaymentIntentResult> startCheckout(DogWalk dogWalk, PaymentMethodCreateParams paymentMethodCreateParams);
 }

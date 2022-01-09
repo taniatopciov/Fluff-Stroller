@@ -48,7 +48,7 @@
     <string name="profile">Profile</string>
     <string name="walk_in_progress">Walk In Progress</string>
     <string name="view_on_map">View On Map</string>
-    <string name="empty_price">0 $</string>
+    <string name="empty_price">0 RON</string>
     <string name="stroller_info">Stroller Info</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="available_walks">Available Walks</string>
@@ -135,4 +135,5 @@
     <string name="complete_payment_for_current_walk">Complete payment for current walk</string>
     <string name="pay">Pay</string>
     <string name="ron">RON</string>
+    <string name="cancel_walk_message">Are you sure you want to cancel this search for strollers?</string>
 </resources>
