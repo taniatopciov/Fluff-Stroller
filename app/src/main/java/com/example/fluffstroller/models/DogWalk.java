@@ -11,7 +11,7 @@ public class DogWalk extends FirebaseDocument implements Serializable {
     private String ownerId;
     private String ownerName;
     private String ownerPhoneNumber;
-    private Integer totalPrice;
+    private Double totalPrice;
     private Integer walkTime;
     private WalkStatus status;
     private List<WalkRequest> requests;
@@ -22,7 +22,7 @@ public class DogWalk extends FirebaseDocument implements Serializable {
     public DogWalk() {
     }
 
-    public DogWalk(List<String> dogNames, String ownerId, String ownerName, String ownerPhoneNumber, Integer totalPrice, Integer walkTime, Location location) {
+    public DogWalk(List<String> dogNames, String ownerId, String ownerName, String ownerPhoneNumber, Double totalPrice, Integer walkTime, Location location) {
         this.dogNames = dogNames;
         this.ownerId = ownerId;
         this.ownerName = ownerName;
@@ -51,7 +51,7 @@ public class DogWalk extends FirebaseDocument implements Serializable {
         return ownerPhoneNumber;
     }
 
-    public Integer getTotalPrice() {
+    public Double getTotalPrice() {
         return totalPrice;
     }
 

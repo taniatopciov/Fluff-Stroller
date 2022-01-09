@@ -1,4 +1,4 @@
-package com.example.fluffstroller.reviews;
+package com.example.fluffstroller.pages.reviews;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

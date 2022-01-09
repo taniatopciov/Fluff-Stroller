@@ -1,4 +1,4 @@
-package com.example.fluffstroller.reviews;
+package com.example.fluffstroller.pages.reviews;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

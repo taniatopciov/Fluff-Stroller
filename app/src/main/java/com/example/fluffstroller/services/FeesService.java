@@ -1,7 +1,7 @@
 package com.example.fluffstroller.services;
 
 public class FeesService {
-    public int getDogWalkFees() {
-        return 15;
+    public Double getDogWalkFees(Integer price) {
+        return price / 10.0;
     }
 }
