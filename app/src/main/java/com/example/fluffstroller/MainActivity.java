@@ -6,6 +6,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
 import com.example.fluffstroller.databinding.ActivityMainBinding;
 import com.example.fluffstroller.di.ServiceLocator;
 import com.example.fluffstroller.models.ActivityResult;
@@ -19,17 +30,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity implements PermissionsService {
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsServic
                 R.id.nav_stroller_home, R.id.nav_stroller_home_walk_in_progress,
                 R.id.nav_dog_owner_home, R.id.nav_dog_owner_home_no_dogs, R.id.nav_dog_owner_home_walk_in_progress, R.id.nav_dog_owner_home_waiting_for_stroller,
                 R.id.nav_view_stroller_profile, R.id.nav_view_dog_owner_profile,
-                R.id.nav_home, R.id.nav_walk_in_progress, R.id.nav_profile)
+                R.id.nav_home, R.id.nav_walk_in_progress, R.id.nav_profile, R.id.nav_about_us)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsServic
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

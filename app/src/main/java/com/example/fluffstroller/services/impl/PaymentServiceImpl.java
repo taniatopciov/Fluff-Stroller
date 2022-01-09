@@ -51,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
         String ownerId = dogWalk.getOwnerId();
         String strollerId = "";
         String walkId = dogWalk.getId();
-        Integer amount = dogWalk.getTotalPrice();
+        Double amount = dogWalk.getTotalPrice();
 
         List<WalkRequest> requests = dogWalk.getRequests();
         for (WalkRequest request : requests) {
@@ -61,7 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }
 
-        PaymentData paymentData = new PaymentData("RON", ownerId, strollerId, walkId, amount * 100);
+        PaymentData paymentData = new PaymentData("RON", ownerId, strollerId, walkId, amount * 100.0);
         Gson gson = new Gson();
 
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");

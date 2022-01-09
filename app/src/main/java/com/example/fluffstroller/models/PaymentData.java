@@ -5,12 +5,12 @@ public class PaymentData {
     private String ownerId;
     private String strollerId;
     private String walkId;
-    private int amount;
+    private Double amount;
 
     public PaymentData() {
     }
 
-    public PaymentData(String currency, String ownerId, String strollerId, String walkId, int amount) {
+    public PaymentData(String currency, String ownerId, String strollerId, String walkId, Double amount) {
         this.currency = currency;
         this.ownerId = ownerId;
         this.strollerId = strollerId;

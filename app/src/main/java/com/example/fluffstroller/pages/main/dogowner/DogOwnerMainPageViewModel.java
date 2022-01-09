@@ -1,17 +1,17 @@
 package com.example.fluffstroller.pages.main.dogowner;
 
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import java.util.List;
 
 public class DogOwnerMainPageViewModel extends ViewModel {
     private final MutableLiveData<List<String>> dogNames;
     private final MutableLiveData<Integer> walkPrice;
     private final MutableLiveData<Integer> walkTime;
-    private final MutableLiveData<Integer> fees;
-    private final MutableLiveData<Integer> totalPrice;
+    private final MutableLiveData<Double> fees;
+    private final MutableLiveData<Double> totalPrice;
 
     public DogOwnerMainPageViewModel() {
         dogNames = new MutableLiveData<>();
@@ -29,7 +29,7 @@ public class DogOwnerMainPageViewModel extends ViewModel {
         return walkPrice;
     }
 
-    public MutableLiveData<Integer> getFees() {
+    public MutableLiveData<Double> getFees() {
         return fees;
     }
 
@@ -37,7 +37,7 @@ public class DogOwnerMainPageViewModel extends ViewModel {
         return walkTime;
     }
 
-    public MutableLiveData<Integer> getTotalPrice() {
+    public MutableLiveData<Double> getTotalPrice() {
         return totalPrice;
     }
 
@@ -53,11 +53,11 @@ public class DogOwnerMainPageViewModel extends ViewModel {
         this.walkTime.postValue(walkTime);
     }
 
-    public void setFees(Integer fees) {
+    public void setFees(Double fees) {
         this.fees.postValue(fees);
     }
 
-    public void setTotalPrice(Integer totalPrice) {
+    public void setTotalPrice(Double totalPrice) {
         this.totalPrice.postValue(totalPrice);
     }
 }

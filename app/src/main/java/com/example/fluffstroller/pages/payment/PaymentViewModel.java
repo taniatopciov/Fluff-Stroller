@@ -1,4 +1,4 @@
-package com.example.fluffstroller.payment;
+package com.example.fluffstroller.pages.payment;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

@@ -9,7 +9,7 @@ public class TimeIntegerTextWatcher extends NumberTextWatcher {
     private final String timeSpan;
 
     public TimeIntegerTextWatcher(EditText editText, String timeSpan, Consumer<String> onTextChanged) {
-        super(editText, "[" + timeSpan + ",.-]", onTextChanged);
+        super(editText, "[" + timeSpan + ",-]", onTextChanged);
         this.timeSpan = timeSpan;
     }
 

@@ -94,7 +94,7 @@
         tools:layout="@layout/dog_owner_with_no_dogs_main_page_fragment" />
     <fragment
         android:id="@+id/nav_review"
-        android:name="com.example.fluffstroller.reviews.ReviewFragment"
+        android:name="com.example.fluffstroller.pages.reviews.ReviewFragment"
         android:label="Review"
         tools:layout="@layout/review_fragment">
         <action
@@ -108,7 +108,7 @@
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"
-        android:name="com.example.fluffstroller.payment.PaymentFragment"
+        android:name="com.example.fluffstroller.pages.payment.PaymentFragment"
         android:label="Payment"
         tools:layout="@layout/payment_fragment">
         <argument
@@ -280,4 +280,9 @@
     <action
         android:id="@+id/action_global_nav_view_stroller_profile"
         app:destination="@id/nav_view_stroller_profile" />
+    <fragment
+        android:id="@+id/nav_about_us"
+        android:name="com.example.fluffstroller.pages.about.AboutUsFragment"
+        android:label="About Us"
+        tools:layout="@layout/about_us_fragment" />
 </navigation>

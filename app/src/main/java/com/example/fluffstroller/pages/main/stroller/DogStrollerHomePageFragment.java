@@ -1,6 +1,8 @@
 package com.example.fluffstroller.pages.main.stroller;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -21,7 +23,6 @@ import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.models.WalkRequest;
-import com.example.fluffstroller.pages.main.dogowner.DogOwnerMainPageFragmentDirections;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
@@ -317,6 +318,12 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
     }
 
     private void callButtonListener(Pair<DogWalk, Integer> pair) {
-        Toast.makeText(getContext(), "Call: " + pair.first.getOwnerName() + " " + pair.second, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+
+        intent.setData(Uri.parse("tel:" + pair.first.getOwnerPhoneNumber()));
+
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            startActivity(Intent.createChooser(intent, "Choose Call Application"));
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.fluffstroller.pages.main.dogowner;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -299,6 +301,12 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
     }
 
     private void handleRequestCall(Pair<WalkRequest, Integer> requestPair) {
-        Toast.makeText(getContext(), "Call: " + requestPair.first.getStrollerName() + " " + requestPair.second, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+
+        intent.setData(Uri.parse("tel:" + requestPair.first.getStrollerPhoneNumber()));
+
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            startActivity(Intent.createChooser(intent, "Choose Call Application"));
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.fluffstroller.payment;
+package com.example.fluffstroller.pages.payment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,7 +46,7 @@ public class PaymentFragment extends FragmentWithServices {
         String walkId = PaymentFragmentArgs.fromBundle(getArguments()).getDogWalkId();
 
         dogWalksService.getDogWalk(walkId).subscribe(response -> {
-            if(response.hasErrors() || response.data == null) {
+            if (response.hasErrors() || response.data == null) {
                 CustomToast.show(requireActivity(), "Could not get DogWalk", Toast.LENGTH_LONG);
                 return;
             }

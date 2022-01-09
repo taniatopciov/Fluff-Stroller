@@ -1,19 +1,18 @@
 package com.example.fluffstroller.pages.main.dogowner;
 
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
 import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.WalkRequest;
-import com.example.fluffstroller.models.WalkRequestStatus;
 import com.example.fluffstroller.models.WalkStatus;
 
 import java.util.List;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-
 public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
     private final MutableLiveData<List<String>> dogNames;
     private final MutableLiveData<Integer> walkTime;
-    private final MutableLiveData<Integer> totalPrice;
+    private final MutableLiveData<Double> totalPrice;
     private final MutableLiveData<Long> walkCreationTimeMillis;
     private final MutableLiveData<WalkStatus> status;
     private final MutableLiveData<List<WalkRequest>> walkRequests;
@@ -39,7 +38,7 @@ public class DogOwnerMainPageWaitingForStrollerViewModel extends ViewModel {
         return walkTime;
     }
 
-    public MutableLiveData<Integer> getTotalPrice() {
+    public MutableLiveData<Double> getTotalPrice() {
         return totalPrice;
     }
 

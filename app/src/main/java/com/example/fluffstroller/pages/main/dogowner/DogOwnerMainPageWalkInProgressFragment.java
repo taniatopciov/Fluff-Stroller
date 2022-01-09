@@ -1,9 +1,16 @@
 package com.example.fluffstroller.pages.main.dogowner;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWalkInProgressFragmentBinding;
@@ -17,12 +24,6 @@ import com.example.fluffstroller.pages.main.stroller.DogStrollerHomePageWalkInPr
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.utils.FragmentWithServices;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
 public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices {
 
@@ -59,8 +60,14 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
 
 
         binding.includeWalkRequestDetails.callImageButton.setOnClickListener(view -> {
-            // todo implement call
-            Snackbar.make(view, "Call", Snackbar.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+
+            String phoneNumber = viewModel.getWalkRequest().getValue().getStrollerPhoneNumber();
+            intent.setData(Uri.parse("tel:" + phoneNumber));
+
+            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                startActivity(Intent.createChooser(intent, "Choose Call Application"));
+            }
         });
 
         binding.includeWalkRequestDetails.visitProfileButton.setOnClickListener(view -> {
@@ -108,8 +115,6 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
                 binding.goToMapPageButton.setEnabled(false);
                 binding.walkInProgressTextView.setText(R.string.waiting_for_stroller_to_start);
             }
-
-            // todo enable or disable Walk In Progress Nav Drawer
         });
 
         dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {

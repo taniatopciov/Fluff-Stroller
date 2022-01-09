@@ -1,11 +1,18 @@
 package com.example.fluffstroller.pages.main.stroller;
 
 import android.Manifest;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogStrollerHomePageWalkInProgressFragmentBinding;
@@ -20,12 +27,6 @@ import com.example.fluffstroller.services.PermissionsService;
 import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.components.CustomToast;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
 public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServices {
 
@@ -102,8 +103,14 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         });
 
         binding.includeAvailableWalkDetails.callImageButton.setOnClickListener(view -> {
-            // todo implement call
-            Snackbar.make(view, "Call", Snackbar.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+
+            DogWalk dogWalk = viewModel.getDogWalk().getValue();
+            intent.setData(Uri.parse("tel:" + dogWalk.getOwnerPhoneNumber()));
+
+            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                startActivity(Intent.createChooser(intent, "Choose Call Application"));
+            }
         });
 
         viewModel.getDogWalk().observe(getViewLifecycleOwner(), dogWalk -> {
