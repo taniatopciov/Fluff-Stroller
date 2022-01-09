@@ -5,6 +5,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -158,5 +160,15 @@ public class MainActivity extends AppCompatActivity implements PermissionsServic
                 }
             });
         }
+    }
+
+    public void setLoggedUserDataNavDrawer(String name, String email) {
+        View headerView = binding.navView.getHeaderView(0);
+
+        TextView nameTextView = headerView.findViewById(R.id.loggedUserName);
+        nameTextView.setText(name);
+
+        TextView emailTextView = headerView.findViewById(R.id.loggedUserEmail);
+        emailTextView.setText(email);
     }
 }
