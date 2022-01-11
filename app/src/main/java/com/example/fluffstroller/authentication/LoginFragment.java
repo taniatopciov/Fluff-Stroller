@@ -10,19 +10,25 @@ import android.widget.Toast;
 import com.example.fluffstroller.BuildConfig;
 import com.example.fluffstroller.databinding.LoginFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
-import com.example.fluffstroller.models.UserType;
 import com.example.fluffstroller.services.AuthenticationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.HideKeyboard;
 import com.example.fluffstroller.utils.components.CustomToast;
+import com.example.fluffstroller.utils.observer.Subject;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -50,8 +56,9 @@ public class LoginFragment extends FragmentWithServices {
     private LoginFragmentBinding binding;
 
     private GoogleSignInClient googleSignInClient;
+    private Subject<FirebaseUser> googleSignInSubject;
 
-    private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
@@ -64,11 +71,13 @@ public class LoginFragment extends FragmentWithServices {
                                         Toast.LENGTH_LONG);
                                 return;
                             }
-
-                            //TODO finish google login
+                            if (googleSignInSubject != null) {
+                                googleSignInSubject.notifyObservers(response.data);
+                            }
                         });
                     } catch (ApiException e) {
-
+                        CustomToast.show(requireActivity(), "Google sign in failed",
+                                Toast.LENGTH_LONG);
                     }
                 }
             });
@@ -119,9 +128,77 @@ public class LoginFragment extends FragmentWithServices {
                 .build();
 
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+        NavController navController = NavHostFragment.findNavController(this);
 
         binding.googleLoginButton.setOnClickListener(view -> {
+            googleSignInSubject = new Subject<>();
+            googleSignInSubject.subscribe(response -> {
+                if (response.data == null) {
+                    CustomToast.show(requireActivity(), "Fetching data from Firebase failed", Toast.LENGTH_LONG);
+                    return;
+                }
+
+                profileService.getProfileData(response.data.getUid()).subscribe(response2 -> {
+                    if (response2.hasErrors()) {
+                        CustomToast.show(requireActivity(), "Fetching data from Firebase failed", Toast.LENGTH_LONG);
+                        return;
+                    }
+
+                    if (response2.data == null) {
+                        navController.navigate(LoginFragmentDirections.actionLoginFragmentToSetupProfileTypeFragment(response.data.getUid(), response.data.getDisplayName(), response.data.getEmail()));
+                        return;
+                    }
+
+                    loggedUserDataService.setLoggedUserData(response2.data);
+
+                    navController.navigate(LoginFragmentDirections.actionLoginFragmentToNavHome());
+                });
+            });
             googleSignIn();
+        });
+
+        LoginManager.getInstance().logOut();
+        CallbackManager callbackManager = CallbackManager.Factory.create();
+        binding.facebookLoginButton.setPermissions("email", "public_profile");
+        binding.facebookLoginButton.setFragment(this);
+        binding.facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                authenticationService.loginWithFacebook(loginResult.getAccessToken()).subscribe(response -> {
+                    if (response.hasErrors() || response.data == null) {
+                        CustomToast.show(requireActivity(), "Facebook Login error", Toast.LENGTH_LONG);
+                        return;
+                    }
+
+                    profileService.getProfileData(response.data.getUid()).subscribe(response2 -> {
+                        if (response2.hasErrors()) {
+                            CustomToast.show(requireActivity(), "Fetching data from Firebase failed",
+                                    Toast.LENGTH_LONG);
+                            return;
+                        }
+
+                        if (response2.data == null) {
+                            navController.navigate(LoginFragmentDirections.actionLoginFragmentToSetupProfileTypeFragment(response.data.getUid(), response.data.getDisplayName(), response.data.getEmail()));
+                            return;
+                        }
+
+                        loggedUserDataService.setLoggedUserData(response2.data);
+
+                        navController.navigate(LoginFragmentDirections.actionLoginFragmentToNavHome());
+                    });
+
+                });
+            }
+
+            @Override
+            public void onCancel() {
+                CustomToast.show(requireActivity(), "Facebook Login canceled", Toast.LENGTH_LONG);
+            }
+
+            @Override
+            public void onError(@NonNull FacebookException e) {
+                CustomToast.show(requireActivity(), "Facebook Login error", Toast.LENGTH_LONG);
+            }
         });
 
         return binding.getRoot();
