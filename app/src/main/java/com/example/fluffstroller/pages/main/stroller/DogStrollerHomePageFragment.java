@@ -176,40 +176,49 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
             }
         });
 
-        WalkRequest walkRequest = loggedUserDataService.getLoggedUserCurrentWalkRequest();
-        if (walkRequest != null) {
-
-            switch (walkRequest.getStatus()) {
-                case PENDING: {
-                    viewModel.setWaitingForDogOwnerApproval(true);
-                }
-                break;
-
-                case ACCEPTED: {
-                    NavHostFragment.findNavController(this).navigate(DogStrollerHomePageFragmentDirections.actionNavStrollerHomeToNavStrollerHomeWalkInProgress());
-                    return binding.getRoot();
-                }
-
-                case REJECTED:
-                case CANCELED: {
-                    new InfoPopupDialog("Your request was rejected", () -> {
-                        viewModel.setWaitingForDogOwnerApproval(false);
-
-                        profileService.updateCurrentRequest(loggedUserDataService.getLoggedUserId(), null).subscribe(response -> {
-                            if (response.hasErrors()) {
-                                return;
-                            }
-
-                            loggedUserDataService.setCurrentRequest(null);
-                            viewModel.setWaitingForDogOwnerApproval(false);
-                        });
-                    }).show(getChildFragmentManager(), STROLLER_MAIN_PAGE_FRAGMENT);
-                }
-                break;
+        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(result -> {
+            if(result.hasErrors()) {
+                CustomToast.show(requireActivity(),"Could not fetch data", Toast.LENGTH_SHORT);
+                return;
             }
-        } else {
-            viewModel.setWaitingForDogOwnerApproval(false);
-        }
+
+            loggedUserDataService.setLoggedUserData(result.data);
+            WalkRequest walkRequest = loggedUserDataService.getLoggedUserCurrentWalkRequest();
+
+            if (walkRequest != null) {
+
+                switch (walkRequest.getStatus()) {
+                    case PENDING: {
+                        viewModel.setWaitingForDogOwnerApproval(true);
+                    }
+                    break;
+
+                    case ACCEPTED: {
+                        NavHostFragment.findNavController(this).navigate(DogStrollerHomePageFragmentDirections.actionNavStrollerHomeToNavStrollerHomeWalkInProgress());
+                        return;
+                    }
+
+                    case REJECTED:
+                    case CANCELED: {
+                        new InfoPopupDialog("Your request was rejected", () -> {
+                            viewModel.setWaitingForDogOwnerApproval(false);
+
+                            profileService.updateCurrentRequest(loggedUserDataService.getLoggedUserId(), null).subscribe(response -> {
+                                if (response.hasErrors()) {
+                                    return;
+                                }
+
+                                loggedUserDataService.setCurrentRequest(null);
+                                viewModel.setWaitingForDogOwnerApproval(false);
+                            });
+                        }).show(getChildFragmentManager(), STROLLER_MAIN_PAGE_FRAGMENT);
+                    }
+                    break;
+                }
+            } else {
+                viewModel.setWaitingForDogOwnerApproval(false);
+            }
+        }, false);
 
         getAvailableDogWalks();
 

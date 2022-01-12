@@ -72,48 +72,54 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
             return binding.getRoot();
         }
 
-        DogWalkPreview currentWalkPreview = loggedUserDataService.getLoggedUserWalkPreview();
-
-        if (currentWalkPreview != null) {
-            switch (currentWalkPreview.getStatus()) {
-                case PENDING: {
-                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWaitingForStroller());
-                }
-                break;
-
-                case WAITING_FOR_START:
-                case IN_PROGRESS: {
-                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWalkInProgress());
-                }
-                break;
-
-                case ADD_REVIEW: {
-                    String currentWalkId = currentWalkPreview.getWalkId();
-                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavReview(currentWalkId));
-                }
-                break;
-                case WAITING_PAYMENT: {
-                    String currentWalkId = currentWalkPreview.getWalkId();
-                    NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToPaymentFragment(currentWalkId));
-                }
-                break;
-                case PAID: {
-                    String currentWalkId = currentWalkPreview.getWalkId();
-
-                    dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
-                        if (response.hasErrors() || response.data == null) {
-                            return;
-                        }
-
-                        dogWalksService.updateWalkAfterPayment(response.data.getOwnerId(), response.data.getAcceptedRequest().getStrollerId()).subscribe(response2 -> {
-                        });
-                    });
-                }
-                break;
+        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {
+            if (res.hasErrors()) {
+                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
+                return;
             }
 
-            return binding.getRoot();
-        }
+            loggedUserDataService.setLoggedUserData(res.data);
+            DogWalkPreview currentWalkPreview = loggedUserDataService.getLoggedUserWalkPreview();
+
+            if (currentWalkPreview != null) {
+                switch (currentWalkPreview.getStatus()) {
+                    case PENDING: {
+                        NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWaitingForStroller());
+                    }
+                    break;
+
+                    case WAITING_FOR_START:
+                    case IN_PROGRESS: {
+                        NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWalkInProgress());
+                    }
+                    break;
+
+                    case ADD_REVIEW: {
+                        String currentWalkId = currentWalkPreview.getWalkId();
+                        NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavReview(currentWalkId));
+                    }
+                    break;
+                    case WAITING_PAYMENT: {
+                        String currentWalkId = currentWalkPreview.getWalkId();
+                        NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToPaymentFragment(currentWalkId));
+                    }
+                    break;
+                    case PAID: {
+                        String currentWalkId = currentWalkPreview.getWalkId();
+
+                        dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
+                            if (response.hasErrors() || response.data == null) {
+                                return;
+                            }
+
+                            dogWalksService.updateWalkAfterPayment(response.data.getOwnerId(), response.data.getAcceptedRequest().getStrollerId()).subscribe(response2 -> {
+                            });
+                        });
+                    }
+                    break;
+                }
+            }
+        }, false);
 
         final RecyclerView selectedDogsRecyclerView = binding.selectedDogsRecyclerView;
 

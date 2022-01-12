@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -35,11 +36,12 @@
 
             <TextView
                 android:id="@+id/strollerTextView"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/stroller"
                 card_view:layout_constraintEnd_toEndOf="@+id/strollerNameTextView"
+                card_view:layout_constraintHorizontal_bias="0.0"
                 card_view:layout_constraintStart_toStartOf="@+id/strollerNameTextView"
                 card_view:layout_constraintTop_toBottomOf="@+id/strollerNameTextView" />
 
@@ -59,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="@string/phone_number"
-                card_view:layout_constraintStart_toStartOf="@+id/strollerTextView"
+                card_view:layout_constraintStart_toStartOf="@+id/strollerNameTextView"
                 card_view:layout_constraintTop_toBottomOf="@+id/strollerTextView" />
 
             <TextView
