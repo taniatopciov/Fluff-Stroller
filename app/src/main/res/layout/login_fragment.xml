@@ -64,14 +64,15 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/vertical_linear_layout_spacing" />
 
-        <TextView
-            android:id="@+id/forgotPasswordTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/forgot_password_click_here"
-            android:textColor="@color/primary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+<!--        <TextView-->
+<!--            android:id="@+id/forgotPasswordTextView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/forgot_password_click_here"-->
+<!--            android:textColor="@color/primary"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textStyle="bold"-->
+<!--            tools:visibility="gone" />-->
 
     </LinearLayout>
 
@@ -79,7 +80,7 @@
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +116,7 @@
         android:id="@+id/orTextViewLoginFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/or"
         app:layout_constraintEnd_toEndOf="@+id/loginButton"
         app:layout_constraintStart_toStartOf="@+id/loginButton"
@@ -126,7 +127,7 @@
         android:id="@+id/connectWithTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/connect_with"
         android:textColor="@color/primary"
         android:textSize="16sp"
@@ -142,36 +143,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/noAccountTextViewLoginFragment"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/connectWithTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/googleLoginButton" />
 
-    <!--    <Button-->
-    <!--        android:id="@+id/facebookLoginButton"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="64dp"-->
-    <!--        android:layout_marginTop="16dp"-->
-    <!--        android:layout_marginBottom="16dp"-->
-    <!--        android:text="@string/facebook"-->
-    <!--        app:layout_constraintBottom_toTopOf="@+id/noAccountTextViewLoginFragment"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/connectWithTextView"-->
-    <!--        tools:visibility="visible" />-->
-
-    <Button
+    <com.google.android.gms.common.SignInButton
         android:id="@+id/googleLoginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/google"
-        app:layout_constraintBottom_toBottomOf="@+id/facebookLoginButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/facebookLoginButton"
-        app:layout_constraintTop_toTopOf="@+id/facebookLoginButton"
-        tools:visibility="visible" />
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/facebookLoginButton"
+        app:layout_constraintStart_toStartOf="@+id/facebookLoginButton"
+        app:layout_constraintTop_toBottomOf="@+id/connectWithTextView" />
 
     <TextView
         android:id="@+id/noAccountTextViewLoginFragment"

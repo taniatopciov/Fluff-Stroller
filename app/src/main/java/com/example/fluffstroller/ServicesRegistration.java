@@ -49,7 +49,7 @@ public class ServicesRegistration {
         serviceLocator.register(FeesService.class, new FeesService());
         serviceLocator.register(ProfileService.class, firebaseProfileService);
         serviceLocator.register(DogWalksService.class, firebaseDogWalksService);
-        serviceLocator.register(AuthenticationService.class, new FirebaseAuthenticationService());
+        serviceLocator.register(AuthenticationService.class, new FirebaseAuthenticationService(activity));
         serviceLocator.register(LoggedUserDataService.class, loggedUserDataService);
         serviceLocator.register(LocationService.class, new LocationServiceImpl());
         serviceLocator.register(PhotoService.class, photoService);

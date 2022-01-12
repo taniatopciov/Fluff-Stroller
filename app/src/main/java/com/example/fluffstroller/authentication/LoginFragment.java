@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.fluffstroller.BuildConfig;
 import com.example.fluffstroller.databinding.LoginFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.services.AuthenticationService;
@@ -24,8 +23,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -55,7 +52,6 @@ public class LoginFragment extends FragmentWithServices {
 
     private LoginFragmentBinding binding;
 
-    private GoogleSignInClient googleSignInClient;
     private Subject<FirebaseUser> googleSignInSubject;
 
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -65,7 +61,7 @@ public class LoginFragment extends FragmentWithServices {
                     Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
                     try {
                         GoogleSignInAccount account = task.getResult(ApiException.class);
-                        authenticationService.loginWithGoogle(account.getIdToken()).subscribe(response -> {
+                        authenticationService.getLoginWithGoogleIntent(account.getIdToken()).subscribe(response -> {
                             if (response.hasErrors()) {
                                 CustomToast.show(requireActivity(), "Google sign in failed",
                                         Toast.LENGTH_LONG);
@@ -122,12 +118,7 @@ public class LoginFragment extends FragmentWithServices {
             });
         });
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(BuildConfig.WEB_CLIENT_ID)
-                .requestEmail()
-                .build();
 
-        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
         NavController navController = NavHostFragment.findNavController(this);
 
         binding.googleLoginButton.setOnClickListener(view -> {
@@ -154,6 +145,7 @@ public class LoginFragment extends FragmentWithServices {
                     navController.navigate(LoginFragmentDirections.actionLoginFragmentToNavHome());
                 });
             });
+
             googleSignIn();
         });
 
@@ -237,7 +229,6 @@ public class LoginFragment extends FragmentWithServices {
     }
 
     private void googleSignIn() {
-        Intent googleSignInIntent = googleSignInClient.getSignInIntent();
-        activityResultLauncher.launch(googleSignInIntent);
+        activityResultLauncher.launch(authenticationService.getLoginWithGoogleIntent());
     }
 }

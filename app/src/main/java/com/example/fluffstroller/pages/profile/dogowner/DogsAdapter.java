@@ -48,8 +48,11 @@ public class DogsAdapter extends RecyclerView.Adapter<DogsAdapter.ViewHolder> {
 
         if (canRemove) {
             holder.removeButton.setOnClickListener(view -> {
-                dogs.remove(position);
-                notifyItemRemoved(position);
+                int indexOfDog = dogs.indexOf(dog);
+                if (indexOfDog >= 0) {
+                    dogs.remove(indexOfDog);
+                    notifyItemRemoved(indexOfDog);
+                }
             });
         } else {
             holder.removeButton.setVisibility(View.GONE);

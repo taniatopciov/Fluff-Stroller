@@ -103,6 +103,10 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
             // must be present to prevent click propagation
         });
 
+        binding.refreshFloatingActionButton.setOnClickListener(view -> {
+            getAvailableDogWalks();
+        });
+
         viewModel.getAvailableWalks().observe(getViewLifecycleOwner(), availableWalks -> {
             requireActivity().runOnUiThread(() -> availableWalksAdapter.setAvailableWalks(availableWalks));
 
