@@ -148,7 +148,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
             binding.includeAvailableWalkDetails.priceValueTextView.setText(dogWalk.getTotalPrice() + " RON");
         });
         NavController navController = NavHostFragment.findNavController(this);
-        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {
+        registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {
             if (res.hasErrors()) {
                 CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;

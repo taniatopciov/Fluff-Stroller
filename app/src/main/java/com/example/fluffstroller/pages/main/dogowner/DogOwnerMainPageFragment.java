@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -58,12 +59,14 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
 
     private DogOwnerMainPageViewModel viewModel;
     private DogOwnerMainPageFragmentBinding binding;
+    private NavController navController;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(DogOwnerMainPageViewModel.class);
 
         binding = DogOwnerMainPageFragmentBinding.inflate(inflater, container, false);
+        navController = NavHostFragment.findNavController(this);
 
         List<Dog> loggedUserDogs = loggedUserDataService.getLoggedUserDogs();
         if (loggedUserDogs == null || loggedUserDogs.isEmpty()) {
@@ -72,7 +75,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
             return binding.getRoot();
         }
 
-        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {
+        registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {
             if (res.hasErrors()) {
                 CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;
@@ -237,7 +240,12 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
                 }
 
                 loggedUserDataService.setDogWalkPreview(walkPreview);
-                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWaitingForStroller());
+                try {
+                    navController.navigate(DogOwnerMainPageFragmentDirections.actionNavDogOwnerHomeToNavDogOwnerHomeWaitingForStroller());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
             });
         });
     }

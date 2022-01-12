@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.fluffstroller.databinding.PaymentFragmentBinding;
@@ -78,6 +79,7 @@ public class PaymentFragment extends FragmentWithServices {
 
             viewModel.setLoadingCircle(true);
             viewModel.setDisablePayButton(true);
+            NavController navController = NavHostFragment.findNavController(this);
 
             paymentService.startCheckout(walk, params).subscribe(response -> {
                 viewModel.setLoadingCircle(false);
@@ -104,7 +106,7 @@ public class PaymentFragment extends FragmentWithServices {
                                     return;
                                 }
                                 new InfoPopupDialog("Payment Successful", () -> {
-                                    NavHostFragment.findNavController(this).navigate(PaymentFragmentDirections.actionPaymentFragmentToNavDogOwnerHome());
+                                    navController.navigate(PaymentFragmentDirections.actionPaymentFragmentToNavDogOwnerHome());
                                 })
                                         .show(getChildFragmentManager(), PAYMENT_FRAGMENT_UNIQUE_STRING);
                             });

@@ -7,11 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.WalkInProgressFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
@@ -36,6 +31,11 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 public class WalkInProgressPage extends FragmentWithServices implements OnMapReadyCallback {
     private static final String WALK_IN_PROGRESS_PAGE = "WALK_IN_PROGRESS_PAGE";
@@ -151,11 +151,17 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
         String walkId = loggedUserDataService.getCurrentWalkId();
         if (!walkId.isEmpty()) {
 
-            dogWalksService.getDogWalk(walkId).subscribe(res -> {
+            registerSubject(dogWalksService.listenForDogWalkChanges(walkId)).subscribe(res -> {
                 if (res.hasErrors() || res.data == null) {
                     return;
                 }
                 DogWalk dogWalk = res.data;
+
+                if (!dogWalk.getStatus().equals(WalkStatus.IN_PROGRESS)) {
+                    if (timer != null) {
+                        timer.cancel();
+                    }
+                }
 
                 walkInProgressService.getWalkInProgressModel(walkId).subscribe(response -> {
                     if (response.hasErrors() || response.data == null) {
@@ -184,7 +190,7 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
                         binding.finishWalkButton.setEnabled(false);
                     }
                 });
-            });
+            }, false);
         }
     }
 

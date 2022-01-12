@@ -12,11 +12,15 @@ public class CustomToast {
 
     public static void show(Activity activity, String message, int duration) {
         activity.runOnUiThread(() -> {
-            Toast toast = Toast.makeText(activity, message, duration);
-            TextView text = toast.getView().findViewById(android.R.id.message);
-            text.setTextColor(ContextCompat.getColor(activity, R.color.accent));
-            text.setTextSize(16);
-            toast.show();
+            try {
+                Toast toast = Toast.makeText(activity, message, duration);
+                TextView text = toast.getView().findViewById(android.R.id.message);
+                text.setTextColor(ContextCompat.getColor(activity, R.color.accent));
+                text.setTextSize(16);
+                toast.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 }

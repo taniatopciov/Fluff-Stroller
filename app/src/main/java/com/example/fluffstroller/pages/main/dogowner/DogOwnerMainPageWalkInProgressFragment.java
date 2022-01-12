@@ -48,16 +48,41 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
 
         viewModel = new ViewModelProvider(this).get(DogOwnerMainPageWalkInProgressViewModel.class);
 
-        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
+        registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
             if (response.hasErrors()) {
                 CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;
             }
+            loggedUserDataService.setLoggedUserData(response.data);
             DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
 
             if (walkPreview == null || !walkPreview.getStatus().equals(WalkStatus.IN_PROGRESS) && !walkPreview.getStatus().equals(WalkStatus.WAITING_FOR_START)) {
                 NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWalkInProgressFragmentDirections.actionNavDogOwnerHomeWalkInProgressToNavDogOwnerHome());
+                return;
             }
+
+            String currentWalkId = walkPreview.getWalkId();
+
+            dogWalksService.getDogWalk(currentWalkId).subscribe(response1 -> {
+                DogWalk dogWalk = response1.data;
+                if (response1.hasErrors() || dogWalk == null) {
+                    return;
+                }
+
+                viewModel.setTotalPrice(dogWalk.getTotalPrice());
+                viewModel.setDogNames(dogWalk.getDogNames());
+                viewModel.setWalkStatus(dogWalk.getStatus());
+
+                if (dogWalk.getRequests() != null && dogWalk.getRequests().size() == 1) {
+                    for (WalkRequest request : dogWalk.getRequests()) {
+                        if (request.getStatus().equals(WalkRequestStatus.ACCEPTED)) {
+                            viewModel.setWalkRequest(request);
+                            break;
+                        }
+                    }
+                }
+            });
+
         }, false);
 
         String currentWalkId = loggedUserDataService.getLoggedUserWalkPreview().getWalkId();
@@ -125,29 +150,11 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
             if (!walkStatus.equals(WalkStatus.IN_PROGRESS)) {
                 binding.goToMapPageButton.setEnabled(false);
                 binding.walkInProgressTextView.setText(R.string.waiting_for_stroller_to_start);
+            } else {
+                binding.goToMapPageButton.setEnabled(true);
+                binding.walkInProgressTextView.setText(R.string.walk_in_progress);
             }
         });
-
-        dogWalksService.getDogWalk(currentWalkId).subscribe(response -> {
-            DogWalk dogWalk = response.data;
-            if (response.hasErrors() || dogWalk == null) {
-                return;
-            }
-
-            viewModel.setTotalPrice(dogWalk.getTotalPrice());
-            viewModel.setDogNames(dogWalk.getDogNames());
-            viewModel.setWalkStatus(dogWalk.getStatus());
-
-            if (dogWalk.getRequests() != null && dogWalk.getRequests().size() == 1) {
-                for (WalkRequest request : dogWalk.getRequests()) {
-                    if (request.getStatus().equals(WalkRequestStatus.ACCEPTED)) {
-                        viewModel.setWalkRequest(request);
-                        break;
-                    }
-                }
-            }
-        });
-
 
         return binding.getRoot();
     }
