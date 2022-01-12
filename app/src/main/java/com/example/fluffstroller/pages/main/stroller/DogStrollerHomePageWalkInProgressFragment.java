@@ -9,11 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogStrollerHomePageWalkInProgressFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
@@ -24,9 +19,16 @@ import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.PermissionsService;
+import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.services.WalkInProgressService;
 import com.example.fluffstroller.utils.FragmentWithServices;
 import com.example.fluffstroller.utils.components.CustomToast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServices {
 
@@ -44,6 +46,9 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
     @Injectable
     private LocationService locationService;
+
+    @Injectable
+    private ProfileService profileService;
 
     private DogStrollerHomePageWalkInProgressViewModel viewModel;
     private DogStrollerHomePageWalkInProgressFragmentBinding binding;
@@ -142,20 +147,28 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
             binding.includeAvailableWalkDetails.walkingTimeValueTextView.setText(dogWalk.getWalkTime() + " minutes");
             binding.includeAvailableWalkDetails.priceValueTextView.setText(dogWalk.getTotalPrice() + " RON");
         });
+        NavController navController = NavHostFragment.findNavController(this);
+        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {
+            if (res.hasErrors()) {
+                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
+                return;
+            }
+            loggedUserDataService.setLoggedUserData(res.data);
+            WalkRequest currentWalkRequest = loggedUserDataService.getLoggedUserCurrentWalkRequest();
 
-        WalkRequest currentWalkRequest = loggedUserDataService.getLoggedUserCurrentWalkRequest();
-
-        if (currentWalkRequest == null) {
-            return binding.getRoot();
-        }
-
-        dogWalksService.getDogWalk(currentWalkRequest.getWalkId()).subscribe(response -> {
-            if (response.hasErrors() || response.data == null) {
+            if (currentWalkRequest == null) {
+                navController.navigate(DogStrollerHomePageWalkInProgressFragmentDirections.actionNavStrollerHomeWalkInProgressToNavStrollerHome());
                 return;
             }
 
-            viewModel.setDogWalk(response.data);
-        });
+            dogWalksService.getDogWalk(currentWalkRequest.getWalkId()).subscribe(response -> {
+                if (response.hasErrors() || response.data == null) {
+                    return;
+                }
+
+                viewModel.setDogWalk(response.data);
+            });
+        }, false);
 
         return binding.getRoot();
     }

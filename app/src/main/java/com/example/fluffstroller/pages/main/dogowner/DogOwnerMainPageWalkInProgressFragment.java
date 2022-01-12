@@ -6,11 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
+import android.widget.Toast;
 
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWalkInProgressFragmentBinding;
@@ -23,7 +19,14 @@ import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.pages.main.stroller.DogStrollerHomePageWalkInProgressFragmentDirections;
 import com.example.fluffstroller.services.DogWalksService;
 import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.ProfileService;
 import com.example.fluffstroller.utils.FragmentWithServices;
+import com.example.fluffstroller.utils.components.CustomToast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices {
 
@@ -32,6 +35,9 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
 
     @Injectable
     private DogWalksService dogWalksService;
+
+    @Injectable
+    private ProfileService profileService;
 
     private DogOwnerMainPageWalkInProgressViewModel viewModel;
     private DogOwnerMainPageWalkInProgressFragmentBinding binding;
@@ -42,14 +48,19 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
 
         viewModel = new ViewModelProvider(this).get(DogOwnerMainPageWalkInProgressViewModel.class);
 
-        DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
+        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
+            if (response.hasErrors()) {
+                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
+                return;
+            }
+            DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
 
-        if (walkPreview == null || !walkPreview.getStatus().equals(WalkStatus.IN_PROGRESS) && !walkPreview.getStatus().equals(WalkStatus.WAITING_FOR_START)) {
-            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWalkInProgressFragmentDirections.actionNavDogOwnerHomeWalkInProgressToNavDogOwnerHome());
-            return binding.getRoot();
-        }
+            if (walkPreview == null || !walkPreview.getStatus().equals(WalkStatus.IN_PROGRESS) && !walkPreview.getStatus().equals(WalkStatus.WAITING_FOR_START)) {
+                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWalkInProgressFragmentDirections.actionNavDogOwnerHomeWalkInProgressToNavDogOwnerHome());
+            }
+        }, false);
 
-        String currentWalkId = walkPreview.getWalkId();
+        String currentWalkId = loggedUserDataService.getLoggedUserWalkPreview().getWalkId();
 
         if (currentWalkId.isEmpty()) {
             return binding.getRoot();

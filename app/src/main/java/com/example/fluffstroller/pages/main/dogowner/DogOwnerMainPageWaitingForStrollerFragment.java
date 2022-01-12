@@ -9,12 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.DogOwnerMainPageWaitingForStrollerFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
@@ -38,6 +32,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServices {
 
@@ -65,24 +65,29 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         viewModel = new ViewModelProvider(this).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
 
-        DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
+        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
+            if (response.hasErrors()) {
+                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
+                return;
+            }
 
-        if (walkPreview == null) {
-            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHome());
-            return binding.getRoot();
-        }
+            DogWalkPreview walkPreview = loggedUserDataService.getLoggedUserWalkPreview();
 
-        if (walkPreview.getStatus().equals(WalkStatus.IN_PROGRESS) || walkPreview.getStatus().equals(WalkStatus.WAITING_FOR_START)) {
-            NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHomeWalkInProgress());
-            return binding.getRoot();
-        }
+            if (walkPreview == null) {
+                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHome());
+                return;
+            }
 
-        String currentWalkId = walkPreview.getWalkId();
+            if (walkPreview.getStatus().equals(WalkStatus.IN_PROGRESS) || walkPreview.getStatus().equals(WalkStatus.WAITING_FOR_START)) {
+                NavHostFragment.findNavController(this).navigate(DogOwnerMainPageWaitingForStrollerFragmentDirections.actionNavDogOwnerHomeWaitingForStrollerToNavDogOwnerHomeWalkInProgress());
+            }
+        }, false);
+
+        String currentWalkId = loggedUserDataService.getLoggedUserWalkPreview().getWalkId();
 
         if (currentWalkId.isEmpty()) {
             return binding.getRoot();
         }
-
 
         if (timer != null) {
             timer.cancel();
