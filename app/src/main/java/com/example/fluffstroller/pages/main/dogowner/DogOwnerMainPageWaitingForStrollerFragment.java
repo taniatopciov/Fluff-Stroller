@@ -65,7 +65,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         viewModel = new ViewModelProvider(this).get(DogOwnerMainPageWaitingForStrollerViewModel.class);
 
-        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
+        registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
             if (response.hasErrors()) {
                 CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;

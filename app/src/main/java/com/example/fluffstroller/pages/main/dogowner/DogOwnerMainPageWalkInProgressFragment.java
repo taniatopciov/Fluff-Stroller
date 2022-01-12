@@ -48,7 +48,7 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
 
         viewModel = new ViewModelProvider(this).get(DogOwnerMainPageWalkInProgressViewModel.class);
 
-        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
+        registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
             if (response.hasErrors()) {
                 CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;

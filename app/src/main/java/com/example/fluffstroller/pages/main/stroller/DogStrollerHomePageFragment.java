@@ -176,7 +176,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
             }
         });
 
-        registerSubject(profileService.getProfileData(loggedUserDataService.getLoggedUserId())).subscribe(result -> {
+        registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(result -> {
             if(result.hasErrors()) {
                 CustomToast.show(requireActivity(),"Could not fetch data", Toast.LENGTH_SHORT);
                 return;
