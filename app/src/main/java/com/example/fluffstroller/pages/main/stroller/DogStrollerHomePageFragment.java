@@ -11,13 +11,6 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.fluffstroller.databinding.DogStrollerHomePageFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
@@ -42,6 +35,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DogStrollerHomePageFragment extends FragmentWithServices implements OnMapReadyCallback {
 
@@ -177,8 +177,8 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
         });
 
         registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(result -> {
-            if(result.hasErrors()) {
-                CustomToast.show(requireActivity(),"Could not fetch data", Toast.LENGTH_SHORT);
+            if (result.hasErrors()) {
+                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;
             }
 
@@ -322,6 +322,13 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
                 response.exception.printStackTrace();
                 return;
             }
+            profileService.updateCurrentRequest(strollerId, walkRequest).subscribe(response1 -> {
+                if (response.hasErrors()) {
+                    response.exception.printStackTrace();
+                    return;
+                }
+            });
+            loggedUserDataService.setCurrentRequest(walkRequest);
             viewModel.setWaitingForDogOwnerApproval(true);
         });
     }

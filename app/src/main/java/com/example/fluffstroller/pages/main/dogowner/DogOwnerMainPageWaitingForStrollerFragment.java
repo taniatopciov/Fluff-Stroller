@@ -152,7 +152,10 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
                 walkRequests = new ArrayList<>();
             }
 
-            if (walkRequests.isEmpty()) {
+            boolean allRequestsAreRejected = walkRequests.stream()
+                    .allMatch(walkRequest -> walkRequest.getStatus().equals(WalkRequestStatus.REJECTED));
+
+            if (walkRequests.isEmpty() || allRequestsAreRejected) {
                 binding.noRequestsTextView.setVisibility(View.VISIBLE);
             } else {
                 binding.noRequestsTextView.setVisibility(View.INVISIBLE);

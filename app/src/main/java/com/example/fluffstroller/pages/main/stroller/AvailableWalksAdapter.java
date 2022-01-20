@@ -69,7 +69,7 @@ public class AvailableWalksAdapter extends RecyclerView.Adapter<AvailableWalksAd
             }
         });
 
-        if (dogWalk.getOwnerPhoneNumber() == null || dogWalk.getOwnerPhoneNumber().isEmpty()) {
+        if (dogWalk.getOwnerPhoneNumber() == null || dogWalk.getOwnerPhoneNumber().trim().isEmpty()) {
             holder.callButton.setVisibility(View.INVISIBLE);
         } else {
             holder.phoneTextView.setText(dogWalk.getOwnerPhoneNumber());

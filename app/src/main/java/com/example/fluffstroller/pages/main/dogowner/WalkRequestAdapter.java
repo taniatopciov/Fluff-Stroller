@@ -68,7 +68,7 @@ public class WalkRequestAdapter extends RecyclerView.Adapter<WalkRequestAdapter.
             }
         });
 
-        if (request.getStrollerPhoneNumber() == null || request.getStrollerPhoneNumber().isEmpty()) {
+        if (request.getStrollerPhoneNumber() == null || request.getStrollerPhoneNumber().trim().isEmpty()) {
             holder.callButton.setVisibility(View.INVISIBLE);
         } else {
             holder.strollerPhoneNumberTextView.setText(request.getStrollerPhoneNumber());
