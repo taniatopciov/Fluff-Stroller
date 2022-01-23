@@ -13,6 +13,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_walk_in_progress">Walk in Progress</string>
     <string name="menu_profile">Profile</string>
+    <string name="menu_walks_history">Walks History</string>
     <string name="menu_balance">Balance</string>
     <string name="menu_about_us">About Us</string>
     <string name="find_stroller">Find Stroller</string>
@@ -63,7 +64,7 @@
     <string name="no_available_walks_nearby">No Available Walks nearby</string>
     <string name="map">Map</string>
     <string name="empty_duration">0:0</string>
-    <string name="duration">Duration</string>
+    <string name="duration">Duration (min)</string>
     <string name="finish_walk">Finish Walk</string>
     <string name="distance_metres">Distance (km)</string>
     <string name="zero">0</string>
@@ -159,4 +160,8 @@
     <string name="could_not_transfer_money">Could not transfer money</string>
     <string name="money_transferred">Money transferred</string>
     <string name="money_that_will_be_transferred_to_a_personal_account">Money that will be transferred to a personal account</string>
+    <string name="date">Date:</string>
+    <string name="walks_history">Walks History</string>
+    <string name="owner_name">Owner name:</string>
+    <string name="couldnt_get_past_walks">Could not get past walks</string>
 </resources>

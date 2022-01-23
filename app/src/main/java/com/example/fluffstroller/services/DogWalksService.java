@@ -27,4 +27,6 @@ public interface DogWalksService {
     Subject<Boolean> updateWalkAfterPayment(String ownerId, String strollerId);
 
     Subject<Boolean> removeCurrentWalk(String walkId, String dogOwnerId);
+
+    Subject<List<DogWalk>> getPastDogWalks(String loggedUserId);
 }

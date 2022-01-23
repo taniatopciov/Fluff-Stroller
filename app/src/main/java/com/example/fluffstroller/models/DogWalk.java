@@ -17,6 +17,7 @@ public class DogWalk extends FirebaseDocument implements Serializable {
     private List<WalkRequest> requests;
     private Long creationTimeMillis;
     private Long walkStartedMillis;
+    private Long walkFinishedMillis;
     private Location location;
 
     public DogWalk() {
@@ -98,5 +99,13 @@ public class DogWalk extends FirebaseDocument implements Serializable {
 
     public void setWalkStartedMillis(Long walkStartedMillis) {
         this.walkStartedMillis = walkStartedMillis;
+    }
+
+    public Long getWalkFinishedMillis() {
+        return walkFinishedMillis;
+    }
+
+    public void setWalkFinishedMillis(Long walkFinishedMillis) {
+        this.walkFinishedMillis = walkFinishedMillis;
     }
 }

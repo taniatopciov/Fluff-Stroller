@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsServic
                 R.id.nav_stroller_home, R.id.nav_stroller_home_walk_in_progress,
                 R.id.nav_dog_owner_home, R.id.nav_dog_owner_home_no_dogs, R.id.nav_dog_owner_home_walk_in_progress, R.id.nav_dog_owner_home_waiting_for_stroller,
                 R.id.nav_view_stroller_profile, R.id.nav_view_dog_owner_profile,
-                R.id.nav_home, R.id.nav_walk_in_progress, R.id.nav_profile, R.id.nav_balance, R.id.nav_about_us)
+                R.id.nav_home, R.id.nav_walk_in_progress, R.id.nav_profile, R.id.nav_walks_history, R.id.nav_balance, R.id.nav_about_us)
                 .setOpenableLayout(drawer)
                 .build();
 
