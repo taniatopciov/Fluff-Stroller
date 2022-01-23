@@ -20,6 +20,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -226,6 +227,7 @@ public class FirebaseDogWalksService implements DogWalksService {
             List<DogWalk> dogWalks = response.data.stream()
                     .filter(dogWalk -> dogWalk.getStatus().equals(WalkStatus.PAID))
                     .filter(dogWalk -> dogWalk.getOwnerId().equals(loggedUserId) || (dogWalk.getAcceptedRequest() != null && dogWalk.getAcceptedRequest().getStrollerId().equals(loggedUserId)))
+                    .sorted(Comparator.comparing(DogWalk::getCreationTimeMillis))
                     .collect(Collectors.toList());
 
             pastWalksSubject.notifyObservers(dogWalks);

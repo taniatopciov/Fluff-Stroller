@@ -19,6 +19,7 @@
     <string name="find_stroller">Find Stroller</string>
     <string name="walk_price">Walk Price</string>
     <string name="walk_time">Walk Time</string>
+    <string name="walk_time_dot">Walk Time:</string>
     <string name="fees">Fees</string>
     <string name="total_price">Total Price</string>
     <string name="select_dogs">Select Dogs</string>
@@ -27,7 +28,7 @@
     <string name="empty_required_fields">Some required fields are empty!</string>
     <string name="label">Label</string>
     <string name="hint">Hint</string>
-    <string name="waiting_for_stroller">Waiting for Stroller …</string>
+    <string name="waiting_for_stroller">Waiting for Stroller</string>
     <string name="waiting_for_stroller_to_start">Waiting for Stroller to Start Walk</string>
     <string name="waiting_for_payment">Waiting for Payment</string>
     <string name="_0_minutes_remaining">(0 minutes remaining)</string>
@@ -54,7 +55,7 @@
     <string name="walk_in_progress">Walk In Progress</string>
     <string name="view_on_map">View On Map</string>
     <string name="empty_price">0 RON</string>
-    <string name="stroller_info">Stroller Info</string>
+    <string name="stroller_info">Stroller Contact Information</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="available_walks">Available Walks</string>
     <string name="stroller_action_tabs">Stroller Action Tabs</string>
@@ -145,7 +146,7 @@
     <string name="administration_and_payment_fees">Administration and Payment Fees:</string>
     <string name="administration_fees">Administration Fees:</string>
     <string name="who_are_we">Who are we?</string>
-    <string name="presentation">We are two animal lovers who came up with a solution to the problems we face every day. You have an important task to solve, but your fluff needs a walk right away? Fluff Stroller is here to help you!</string>
+    <string name="presentation">We are two animal lovers who came up with a solution to the problems we face every day. Your dog needs a walk right away, but you have an important task to finish? Fluff Stroller is here to help you!</string>
     <string name="fees_text_about_page">A commission of 10% is charged for each transaction.</string>
     <string name="if_you_have_any_questions">If you have any questions:</string>
     <string name="contact_us_via_e_mail">Contact us via e-mail</string>

@@ -61,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="@string/phone_number"
+                android:textStyle="bold"
                 card_view:layout_constraintStart_toStartOf="@+id/strollerNameTextView"
                 card_view:layout_constraintTop_toBottomOf="@+id/strollerTextView" />
 
@@ -70,6 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/rating"
+                android:textStyle="bold"
                 card_view:layout_constraintStart_toStartOf="@+id/phoneNumberTextView"
                 card_view:layout_constraintTop_toBottomOf="@+id/phoneNumberTextView" />
 

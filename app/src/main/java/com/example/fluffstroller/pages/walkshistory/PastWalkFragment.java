@@ -58,9 +58,6 @@ public class PastWalkFragment extends FragmentWithServices implements OnMapReady
         });
 
         viewModel.getDistanceInMeters().observe(getViewLifecycleOwner(), distance -> {
-            double d1 = distance * 100;
-            int d2 = (int) d1;
-            double d3 = d2 / 100;
             binding.distanceValueTextView.setText(String.format("%.2f", distance));
         });
 

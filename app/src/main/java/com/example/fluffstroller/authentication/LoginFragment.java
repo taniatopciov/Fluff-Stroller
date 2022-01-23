@@ -228,6 +228,14 @@ public class LoginFragment extends FragmentWithServices {
         }
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        if(loggedUserDataService.isUserLogged()) {
+            Navigation.findNavController(binding.getRoot()).navigate(LoginFragmentDirections.actionLoginFragmentToNavHome());
+        }
+
+    }
+
     private void googleSignIn() {
         activityResultLauncher.launch(authenticationService.getLoginWithGoogleIntent());
     }
