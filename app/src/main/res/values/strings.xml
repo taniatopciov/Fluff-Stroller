@@ -159,4 +159,7 @@
     <string name="could_not_transfer_money">Could not transfer money</string>
     <string name="money_transferred">Money transferred</string>
     <string name="money_that_will_be_transferred_to_a_personal_account">Money that will be transferred to a personal account</string>
+    <string name="reset_email_sent">Reset email sent</string>
+    <string name="email_field_must_be_set">Email field must be set</string>
+    <string name="email_send_failed">Email could not be sent</string>
 </resources>

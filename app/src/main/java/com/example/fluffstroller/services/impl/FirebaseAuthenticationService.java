@@ -88,6 +88,19 @@ public class FirebaseAuthenticationService implements AuthenticationService {
         return subject;
     }
 
+    @Override
+    public Subject<Boolean> sendResetPasswordRequest(String email) {
+        Subject<Boolean> subject = new Subject<>();
+        firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                subject.notifyObservers(true);
+            } else {
+                subject.notifyObservers(task.getException());
+            }
+        });
+        return subject;
+    }
+
     @NonNull
     private OnCompleteListener<AuthResult> getAuthResultOnCompleteListener(Subject<FirebaseUser> subject) {
         return task -> {
