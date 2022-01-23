@@ -8,6 +8,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.fluffstroller.databinding.ActivityMainBinding;
+import com.example.fluffstroller.di.ServiceLocator;
+import com.example.fluffstroller.models.ActivityResult;
+import com.example.fluffstroller.models.UserType;
+import com.example.fluffstroller.services.AuthenticationService;
+import com.example.fluffstroller.services.LoggedUserDataService;
+import com.example.fluffstroller.services.PermissionsService;
+import com.example.fluffstroller.utils.observer.Subject;
+import com.google.android.material.internal.NavigationMenuItemView;
+import com.google.android.material.navigation.NavigationView;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,20 +34,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-import com.example.fluffstroller.databinding.ActivityMainBinding;
-import com.example.fluffstroller.di.ServiceLocator;
-import com.example.fluffstroller.models.ActivityResult;
-import com.example.fluffstroller.services.AuthenticationService;
-import com.example.fluffstroller.services.LoggedUserDataService;
-import com.example.fluffstroller.services.PermissionsService;
-import com.example.fluffstroller.utils.observer.Subject;
-import com.google.android.material.navigation.NavigationView;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity implements PermissionsService {
 
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsServic
                 R.id.nav_stroller_home, R.id.nav_stroller_home_walk_in_progress,
                 R.id.nav_dog_owner_home, R.id.nav_dog_owner_home_no_dogs, R.id.nav_dog_owner_home_walk_in_progress, R.id.nav_dog_owner_home_waiting_for_stroller,
                 R.id.nav_view_stroller_profile, R.id.nav_view_dog_owner_profile,
-                R.id.nav_home, R.id.nav_walk_in_progress, R.id.nav_profile, R.id.nav_about_us)
+                R.id.nav_home, R.id.nav_walk_in_progress, R.id.nav_profile, R.id.nav_balance, R.id.nav_about_us)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -162,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsServic
         }
     }
 
-    public void setLoggedUserDataNavDrawer(String name, String email) {
+    public void setLoggedUserDataNavDrawer(String name, String email, UserType userType) {
         View headerView = binding.navView.getHeaderView(0);
 
         TextView nameTextView = headerView.findViewById(R.id.loggedUserName);
@@ -170,5 +172,13 @@ public class MainActivity extends AppCompatActivity implements PermissionsServic
 
         TextView emailTextView = headerView.findViewById(R.id.loggedUserEmail);
         emailTextView.setText(email);
+
+        NavigationMenuItemView menu = binding.drawerLayout.findViewById(R.id.nav_balance);
+
+        if (!UserType.STROLLER.equals(userType)) {
+            menu.setVisibility(View.GONE);
+        } else {
+            menu.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -35,7 +35,7 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
             strollerProfileData.setPhoneNumber(phoneNumber);
             strollerProfileData.setDescription(description);
 
-            mainActivity.setLoggedUserDataNavDrawer(name, profileData.getEmail());
+            mainActivity.setLoggedUserDataNavDrawer(name, profileData.getEmail(), UserType.STROLLER);
         }
     }
 
@@ -47,7 +47,7 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
             dogOwnerProfileData.setPhoneNumber(phoneNumber);
             dogOwnerProfileData.setDogs(dogs);
 
-            mainActivity.setLoggedUserDataNavDrawer(name, profileData.getEmail());
+            mainActivity.setLoggedUserDataNavDrawer(name, profileData.getEmail(), UserType.DOG_OWNER);
         }
     }
 
@@ -56,7 +56,7 @@ public class LoggedUserDataServiceImpl implements LoggedUserDataService {
         this.profileData = profileData;
 
         if (profileData != null) {
-            mainActivity.setLoggedUserDataNavDrawer(profileData.getName(), profileData.getEmail());
+            mainActivity.setLoggedUserDataNavDrawer(profileData.getName(), profileData.getEmail(), profileData.getUserType());
         }
     }
 

@@ -16,6 +16,7 @@ import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.models.WalkStatus;
 import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.services.FeesService;
 import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.PermissionsService;
@@ -49,6 +50,9 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
     @Injectable
     private ProfileService profileService;
+
+    @Injectable
+    private FeesService feesService;
 
     private DogStrollerHomePageWalkInProgressViewModel viewModel;
     private DogStrollerHomePageWalkInProgressFragmentBinding binding;
@@ -140,12 +144,12 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
             if (dogWalk.getOwnerPhoneNumber() == null || dogWalk.getOwnerPhoneNumber().isEmpty()) {
                 binding.includeAvailableWalkDetails.callImageButton.setVisibility(View.INVISIBLE);
             } else {
-                binding.includeAvailableWalkDetails.phoneNumberTextView.setText(dogWalk.getOwnerPhoneNumber());
+                binding.includeAvailableWalkDetails.dogOwnerPhoneNumberTextView.setText(dogWalk.getOwnerPhoneNumber());
             }
 
             binding.includeAvailableWalkDetails.dogOwnerNameTextView.setText(dogWalk.getOwnerName());
             binding.includeAvailableWalkDetails.walkingTimeValueTextView.setText(dogWalk.getWalkTime() + " minutes");
-            binding.includeAvailableWalkDetails.priceValueTextView.setText(dogWalk.getTotalPrice() + " RON");
+            binding.includeAvailableWalkDetails.priceValueTextView.setText(feesService.getDogWalkPriceWithoutFees(dogWalk.getTotalPrice()) + " RON");
         });
         NavController navController = NavHostFragment.findNavController(this);
         registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {

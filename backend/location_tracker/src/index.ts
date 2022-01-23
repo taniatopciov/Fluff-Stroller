@@ -9,6 +9,8 @@ import { DogWalk } from "./types/DogWalk";
 import { GeoReplyWith } from "@node-redis/client/dist/lib/commands/generic-transformers";
 import { WalkStatus } from "./types/WalkStatus";
 import { PaymentData } from "./paymentData";
+import { getPriceWithoutFees, getStrollerPriceBeforeFees } from "./feesService";
+import { TransferMoneyInfo } from "./types/TransferMoneyInfo";
 
 dotenv.config();
 
@@ -19,7 +21,7 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount as ServiceAccount)
 });
 const firestore = admin.firestore();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {apiVersion: "2020-08-27"});
+const stripe = new Stripe(process.env.STRIPE_API_KEY ?? "", {apiVersion: "2020-08-27"});
 
 
 const redisClient = createClient({
@@ -146,9 +148,7 @@ app.post("/create-payment-intent", async (req, res) => {
         amount: paymentData.amount,
         currency: paymentData.currency,
         metadata: {
-            'ownerId': paymentData.ownerId,
-            'strollerId': paymentData.strollerId,
-            'walkId': paymentData.walkId
+            ...paymentData.metadata
         }
     });
 
@@ -156,6 +156,57 @@ app.post("/create-payment-intent", async (req, res) => {
         clientSecret: paymentIntent.client_secret
     });
 });
+
+app.post("/transfer-money", async (req, res) => {
+    const transferMoneyInfo: TransferMoneyInfo = req.body;
+
+    try {
+        await stripe.refunds.create({
+            payment_intent: transferMoneyInfo.paymentIntentId,
+            amount: transferMoneyInfo.amount * 100
+        });
+
+        const amount = getStrollerPriceBeforeFees(transferMoneyInfo.amount);
+
+        await firestore.collection(Paths.FIRESTORE_BALANCES_COLLECTION)
+            .doc(transferMoneyInfo.userId)
+            .set({
+                "balance": admin.firestore.FieldValue.increment(-amount),
+            }, {merge: true});
+
+    } catch (err) {
+        res.status(505).send({success: false});
+        console.log(err);
+        return;
+    }
+
+    res.send({success: true});
+});
+
+app.post("/webhook",
+    async (req, res) => {
+        const event = req.body;
+
+        if (event.type === "payment_intent.succeeded") {
+            const paymentIntent = event.data.object;
+            const priceBeforeFees = getPriceWithoutFees(paymentIntent.amount / 100.0);
+
+            if ('strollerId' in paymentIntent.metadata) {
+                try {
+                    const strollerId = paymentIntent.metadata.strollerId;
+
+                    await firestore.collection(Paths.FIRESTORE_BALANCES_COLLECTION)
+                        .doc(strollerId)
+                        .set({"balance": admin.firestore.FieldValue.increment(priceBeforeFees)}, {merge: true});
+                } catch (error) {
+                    res.json({success: false});
+                    console.log(error);
+                }
+            }
+        }
+
+        res.json({success: true});
+    });
 
 app.listen(process.env.PORT, () => {
     console.log(`App Started at ${process.env.PORT}`);

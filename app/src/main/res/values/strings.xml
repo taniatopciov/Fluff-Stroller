@@ -13,6 +13,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_walk_in_progress">Walk in Progress</string>
     <string name="menu_profile">Profile</string>
+    <string name="menu_balance">Balance</string>
     <string name="menu_about_us">About Us</string>
     <string name="find_stroller">Find Stroller</string>
     <string name="walk_price">Walk Price</string>
@@ -139,7 +140,9 @@
     <string name="pay">Pay</string>
     <string name="ron">RON</string>
     <string name="cancel_walk_message">Are you sure you want to cancel this search for strollers?</string>
-    <string name="administration_fees">Administration and Payment Fees:</string>
+    <string name="transfer_money_message">Are you sure you want to transfer the money?</string>
+    <string name="administration_and_payment_fees">Administration and Payment Fees:</string>
+    <string name="administration_fees">Administration Fees:</string>
     <string name="who_are_we">Who are we?</string>
     <string name="presentation">We are two animal lovers who came up with a solution to the problems we face every day. You have an important task to solve, but your fluff needs a walk right away? Fluff Stroller is here to help you!</string>
     <string name="fees_text_about_page">A commission of 10% is charged for each transaction.</string>
@@ -149,4 +152,11 @@
     <string name="confirm">Confirm</string>
     <string name="user_type_spinner">User Type Spinner</string>
     <string name="refresh_button">Refresh Button</string>
+    <string name="current_balance">Current Balance:</string>
+    <string name="transfer">Transfer</string>
+    <string name="transferable_money">Transferable Money:</string>
+    <string name="could_not_connect_to_payment_server">Could not connect to Payment server</string>
+    <string name="could_not_transfer_money">Could not transfer money</string>
+    <string name="money_transferred">Money transferred</string>
+    <string name="money_that_will_be_transferred_to_a_personal_account">Money that will be transferred to a personal account</string>
 </resources>

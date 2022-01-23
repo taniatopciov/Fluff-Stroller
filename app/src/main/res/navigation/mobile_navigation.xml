@@ -85,7 +85,7 @@
             android:id="@+id/action_nav_dog_owner_home_waiting_for_stroller_to_nav_dog_owner_home"
             app:destination="@id/nav_dog_owner_home"
             app:popUpTo="@id/nav_dog_owner_home_waiting_for_stroller"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/nav_dog_owner_home_no_dogs"
@@ -101,7 +101,7 @@
             android:id="@+id/action_nav_review_to_paymentFragment"
             app:destination="@id/paymentFragment"
             app:popUpTo="@id/nav_review"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
         <argument
             android:name="dogWalkId"
             app:argType="string" />
@@ -118,7 +118,7 @@
             android:id="@+id/action_paymentFragment_to_nav_dog_owner_home"
             app:destination="@id/nav_dog_owner_home"
             app:popUpTo="@id/paymentFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -292,7 +292,7 @@
         android:id="@+id/setupProfileTypeFragment"
         android:name="com.example.fluffstroller.authentication.SetupProfileTypeFragment"
         android:label="Setup Profile Type"
-        tools:layout="@layout/setup_profile_type_fragment" >
+        tools:layout="@layout/setup_profile_type_fragment">
         <action
             android:id="@+id/action_setupProfileTypeFragment_to_nav_home"
             app:destination="@id/nav_home" />
@@ -306,4 +306,9 @@
             android:name="email"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_balance"
+        android:name="com.example.fluffstroller.pages.payment.BalanceFragment"
+        android:label="@string/menu_balance"
+        tools:layout="@layout/balance_fragment" />
 </navigation>

@@ -20,5 +20,9 @@
             android:id="@+id/nav_about_us"
             android:icon="@drawable/ic_menu_details_and_contact"
             android:title="@string/menu_about_us" />
+        <item
+            android:id="@+id/nav_balance"
+            android:icon="@drawable/ic_baseline_account_balance_wallet_24"
+            android:title="@string/menu_balance" />
     </group>
 </menu>

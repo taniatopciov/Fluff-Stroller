@@ -1,2 +1,2 @@
 redis-server &
-sleep 1s && node ./src/index.js
+sleep 2s && node ./src/index.js

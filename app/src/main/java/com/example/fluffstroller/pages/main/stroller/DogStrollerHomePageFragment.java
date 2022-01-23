@@ -17,6 +17,7 @@ import com.example.fluffstroller.models.DogWalk;
 import com.example.fluffstroller.models.Location;
 import com.example.fluffstroller.models.WalkRequest;
 import com.example.fluffstroller.services.DogWalksService;
+import com.example.fluffstroller.services.FeesService;
 import com.example.fluffstroller.services.LocationService;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.ProfileService;
@@ -61,6 +62,9 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
     @Injectable
     private LocationService locationService;
 
+    @Injectable
+    private FeesService feesService;
+
     private DogStrollerHomePageViewModel viewModel;
     private DogStrollerHomePageFragmentBinding binding;
     private GoogleMap googleMap;
@@ -73,7 +77,9 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
         viewModel = new ViewModelProvider(this).get(DogStrollerHomePageViewModel.class);
 
-        AvailableWalksAdapter availableWalksAdapter = new AvailableWalksAdapter(new ArrayList<>(),
+        AvailableWalksAdapter availableWalksAdapter = new AvailableWalksAdapter(
+                feesService,
+                new ArrayList<>(),
                 this::handleRequestWalk,
                 this::handleViewProfile,
                 this::callButtonListener);

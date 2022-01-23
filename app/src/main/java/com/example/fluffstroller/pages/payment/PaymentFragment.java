@@ -6,12 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
+import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.PaymentFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.models.DogWalk;
@@ -26,6 +21,12 @@ import com.example.fluffstroller.utils.components.InfoPopupDialog;
 import com.stripe.android.model.PaymentIntent;
 import com.stripe.android.model.PaymentMethodCreateParams;
 import com.stripe.android.model.StripeIntent;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 public class PaymentFragment extends FragmentWithServices {
 
@@ -67,6 +68,12 @@ public class PaymentFragment extends FragmentWithServices {
         });
 
         viewModel.setLoadingCircle(false);
+
+        paymentService.initService().subscribe(response -> {
+            if (response.hasErrors()) {
+                CustomToast.show(requireActivity(), R.string.could_not_connect_to_payment_server, Toast.LENGTH_LONG);
+            }
+        });
 
         binding.payButtonPaymentPage.setOnClickListener(view -> {
             HideKeyboard.hide(requireActivity());
