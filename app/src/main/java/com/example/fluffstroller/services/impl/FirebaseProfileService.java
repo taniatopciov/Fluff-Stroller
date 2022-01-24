@@ -12,6 +12,7 @@ import com.example.fluffstroller.repository.FirebaseRepository;
 import com.example.fluffstroller.services.LoggedUserDataService;
 import com.example.fluffstroller.services.PhotoService;
 import com.example.fluffstroller.services.ProfileService;
+import com.example.fluffstroller.utils.observer.Response;
 import com.example.fluffstroller.utils.observer.Subject;
 
 import java.util.HashMap;
@@ -55,46 +56,7 @@ public class FirebaseProfileService implements ProfileService {
         Subject<ProfileData> subject = new Subject<>();
 
         firebaseRepository.getDocument(PROFILES_COLLECTION_PATH + "/" + userId, "userType", possibleTypes)
-                .subscribe(response -> {
-                    if (response.hasErrors()) {
-                        subject.notifyObservers(response.exception);
-                        return;
-                    }
-
-                    if (response.data == null) {
-                        subject.notifyObservers(response.data);
-                        return;
-                    }
-
-                    if (!(response.data instanceof DogOwnerProfileData)) {
-                        subject.notifyObservers(response.data);
-                        return;
-                    }
-
-                    DogOwnerProfileData dogOwnerProfileData = (DogOwnerProfileData) response.data;
-
-                    if (dogOwnerProfileData.getDogs() == null || dogOwnerProfileData.getDogs().isEmpty()) {
-                        subject.notifyObservers(response.data);
-                        return;
-                    }
-
-                    AtomicInteger atomicInteger = new AtomicInteger(0);
-
-                    for (Dog dog : dogOwnerProfileData.getDogs()) {
-                        if (dog.getImageURL() == null || dog.getImageURL().isEmpty()) {
-                            if (atomicInteger.incrementAndGet() == dogOwnerProfileData.getDogs().size()) {
-                                subject.notifyObservers(dogOwnerProfileData);
-                            }
-                        } else {
-                            photoService.getPhoto(dog.getImageURL(), bitmap -> {
-                                dog.bitmap = bitmap;
-                                if (atomicInteger.incrementAndGet() == dogOwnerProfileData.getDogs().size()) {
-                                    subject.notifyObservers(dogOwnerProfileData);
-                                }
-                            });
-                        }
-                    }
-                });
+                .subscribe(response -> updateProfilePhotos(response, subject));
 
         return subject;
     }
@@ -105,7 +67,12 @@ public class FirebaseProfileService implements ProfileService {
         possibleTypes.put(UserType.STROLLER.toString(), StrollerProfileData.class);
         possibleTypes.put(UserType.DOG_OWNER.toString(), DogOwnerProfileData.class);
 
-        return firebaseRepository.listenForDocumentChanges(PROFILES_COLLECTION_PATH + "/" + userId, "userType", possibleTypes);
+        Subject<ProfileData> subject = new Subject<>();
+
+        firebaseRepository.listenForDocumentChanges(PROFILES_COLLECTION_PATH + "/" + userId, "userType", possibleTypes)
+                .subscribe(response -> updateProfilePhotos(response, subject));
+
+        return subject;
     }
 
     @Override
@@ -151,5 +118,47 @@ public class FirebaseProfileService implements ProfileService {
     @Override
     public Subject<Boolean> updateStrollerProfile(String strollerId, Review review) {
         return firebaseRepository.addItemToArray(PROFILES_COLLECTION_PATH + "/" + strollerId, "reviews", review);
+    }
+
+    private void updateProfilePhotos(Response<ProfileData> response, Subject<ProfileData> subject) {
+        if (response.hasErrors()) {
+            subject.notifyObservers(response.exception);
+            return;
+        }
+
+        if (response.data == null) {
+            subject.notifyObservers(response.data);
+            return;
+        }
+
+        if (!(response.data instanceof DogOwnerProfileData)) {
+            subject.notifyObservers(response.data);
+            return;
+        }
+
+        DogOwnerProfileData dogOwnerProfileData = (DogOwnerProfileData) response.data;
+
+        if (dogOwnerProfileData.getDogs() == null || dogOwnerProfileData.getDogs().isEmpty()) {
+            subject.notifyObservers(response.data);
+            return;
+        }
+
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+
+        for (Dog dog : dogOwnerProfileData.getDogs()) {
+            if (dog.getImageURL() == null || dog.getImageURL().isEmpty()) {
+                if (atomicInteger.incrementAndGet() == dogOwnerProfileData.getDogs().size()) {
+                    subject.notifyObservers(dogOwnerProfileData);
+                }
+            } else {
+                photoService.getPhoto(dog.getImageURL(), bitmap -> {
+                    dog.bitmap = bitmap;
+                    if (atomicInteger.incrementAndGet() == dogOwnerProfileData.getDogs().size()) {
+                        subject.notifyObservers(dogOwnerProfileData);
+                    }
+                });
+            }
+
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.fluffstroller.R;
 import com.example.fluffstroller.databinding.LoginFragmentBinding;
 import com.example.fluffstroller.di.Injectable;
 import com.example.fluffstroller.services.AuthenticationService;
@@ -191,6 +192,23 @@ public class LoginFragment extends FragmentWithServices {
             public void onError(@NonNull FacebookException e) {
                 CustomToast.show(requireActivity(), "Facebook Login error", Toast.LENGTH_LONG);
             }
+        });
+
+        binding.forgotPasswordTextView.setOnClickListener(view -> {
+            String email = binding.emailTextWithLabelLoginFragment.editText.getText().toString();
+
+            if (email.isEmpty()) {
+                CustomToast.show(requireActivity(), R.string.email_field_must_be_set, Toast.LENGTH_LONG);
+                return;
+            }
+
+            authenticationService.sendResetPasswordRequest(email).subscribe(response -> {
+                if (response.hasErrors()) {
+                    CustomToast.show(requireActivity(), R.string.email_send_failed, Toast.LENGTH_LONG);
+                } else {
+                    CustomToast.show(requireActivity(), R.string.reset_email_sent, Toast.LENGTH_LONG);
+                }
+            });
         });
 
         return binding.getRoot();

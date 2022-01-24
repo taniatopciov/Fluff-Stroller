@@ -19,4 +19,6 @@ public interface AuthenticationService {
     Subject<FirebaseUser> register( String email, String password);
 
     Subject<FirebaseUser> loginWithFacebook(AccessToken accessToken);
+
+    Subject<Boolean> sendResetPasswordRequest(String email);
 }
