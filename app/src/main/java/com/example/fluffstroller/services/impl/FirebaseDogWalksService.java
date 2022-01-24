@@ -19,10 +19,13 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class FirebaseDogWalksService implements DogWalksService {
 
@@ -58,6 +61,9 @@ public class FirebaseDogWalksService implements DogWalksService {
         }
         if (walkStatus.equals(WalkStatus.IN_PROGRESS)) {
             values.put("walkStartedMillis", System.currentTimeMillis());
+        }
+        if (walkStatus.equals((WalkStatus.ADD_REVIEW))) {
+            values.put("walkFinishedMillis", System.currentTimeMillis());
         }
 
         firebaseRepository.updateDocument(WALKS_PATH + "/" + walkId, values).subscribe(response -> {
@@ -201,6 +207,33 @@ public class FirebaseDogWalksService implements DogWalksService {
         });
 
         return subject;
+    }
+
+    @Override
+    public Subject<List<DogWalk>> getPastDogWalks(String loggedUserId) {
+        Subject<List<DogWalk>> pastWalksSubject = new Subject<>();
+
+        firebaseRepository.getAllDocuments(WALKS_PATH, DogWalk.class).subscribe(response -> {
+            if (response.hasErrors()) {
+                pastWalksSubject.notifyObservers(response.exception);
+                return;
+            }
+
+            if (response.data == null) {
+                pastWalksSubject.notifyObservers(new ArrayList<>());
+                return;
+            }
+
+            List<DogWalk> dogWalks = response.data.stream()
+                    .filter(dogWalk -> dogWalk.getStatus().equals(WalkStatus.PAID))
+                    .filter(dogWalk -> dogWalk.getOwnerId().equals(loggedUserId) || (dogWalk.getAcceptedRequest() != null && dogWalk.getAcceptedRequest().getStrollerId().equals(loggedUserId)))
+                    .sorted(Comparator.comparing(DogWalk::getCreationTimeMillis))
+                    .collect(Collectors.toList());
+
+            pastWalksSubject.notifyObservers(dogWalks);
+        });
+
+        return pastWalksSubject;
     }
 
     private void cancelStrollerWalkRequests(List<WalkRequest> requests) {

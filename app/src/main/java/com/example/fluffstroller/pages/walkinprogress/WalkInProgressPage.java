@@ -97,7 +97,7 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
         });
 
         viewModel.getDistanceInMeters().observe(getViewLifecycleOwner(), distance -> {
-            binding.distanceValueTextView.setText(distance + "");
+            binding.distanceValueTextView.setText(String.format("%.2f", distance));
         });
 
         viewModel.getElapsedSeconds().observe(getViewLifecycleOwner(), elapsedSeconds -> {

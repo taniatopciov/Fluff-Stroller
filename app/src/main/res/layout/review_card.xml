@@ -32,7 +32,7 @@
                 android:layout_marginTop="24dp"
                 android:text="@string/text"
                 android:textColor="@color/primary"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -63,6 +63,7 @@
                 android:maxLines="6"
                 android:text="@string/text"
                 android:textAlignment="viewStart"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

@@ -17,6 +17,10 @@
             android:icon="@drawable/ic_menu_profile"
             android:title="@string/menu_profile" />
         <item
+            android:id="@+id/nav_walks_history"
+            android:icon="@drawable/ic_walks_history"
+            android:title="@string/menu_walks_history" />
+        <item
             android:id="@+id/nav_about_us"
             android:icon="@drawable/ic_menu_details_and_contact"
             android:title="@string/menu_about_us" />
