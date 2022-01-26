@@ -58,7 +58,7 @@ public class AvailableWalksAdapter extends RecyclerView.Adapter<AvailableWalksAd
         holder.dogOwnerNameTextView.setText(dogWalk.getOwnerName());
         holder.dogNamesTextView.setText(dogNames);
         holder.walkingTimeTextView.setText(dogWalk.getWalkTime() + " minutes");
-        holder.priceTextView.setText(feesService.getDogWalkPriceWithoutFees(dogWalk.getTotalPrice()) + " RON");
+        holder.priceTextView.setText(String.format("%.2f", feesService.getDogWalkPriceWithoutFees(dogWalk.getTotalPrice())) + " RON");
 
         holder.requestButton.setOnClickListener(view -> {
             if (requestButtonListener != null) {

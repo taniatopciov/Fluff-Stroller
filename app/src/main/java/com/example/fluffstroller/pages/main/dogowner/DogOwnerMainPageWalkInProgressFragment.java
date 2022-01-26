@@ -73,7 +73,7 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
                 viewModel.setDogNames(dogWalk.getDogNames());
                 viewModel.setWalkStatus(dogWalk.getStatus());
 
-                if (dogWalk.getRequests() != null && dogWalk.getRequests().size() == 1) {
+                if (dogWalk.getRequests() != null) {
                     for (WalkRequest request : dogWalk.getRequests()) {
                         if (request.getStatus().equals(WalkRequestStatus.ACCEPTED)) {
                             viewModel.setWalkRequest(request);

@@ -72,6 +72,7 @@ public class PaymentFragment extends FragmentWithServices {
         paymentService.initService().subscribe(response -> {
             if (response.hasErrors()) {
                 CustomToast.show(requireActivity(), R.string.could_not_connect_to_payment_server, Toast.LENGTH_LONG);
+                response.exception.printStackTrace();
             }
         });
 
@@ -92,6 +93,9 @@ public class PaymentFragment extends FragmentWithServices {
                 viewModel.setLoadingCircle(false);
 
                 if (response.hasErrors() || response.data == null) {
+                    if (response.exception != null) {
+                        response.exception.printStackTrace();
+                    }
                     CustomToast.show(requireActivity(), "Payment error", Toast.LENGTH_LONG);
                     viewModel.setDisablePayButton(false);
                     return;

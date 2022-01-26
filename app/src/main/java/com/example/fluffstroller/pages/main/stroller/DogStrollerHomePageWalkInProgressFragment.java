@@ -149,7 +149,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
             binding.includeAvailableWalkDetails.dogOwnerNameTextView.setText(dogWalk.getOwnerName());
             binding.includeAvailableWalkDetails.walkingTimeValueTextView.setText(dogWalk.getWalkTime() + " minutes");
-            binding.includeAvailableWalkDetails.priceValueTextView.setText(feesService.getDogWalkPriceWithoutFees(dogWalk.getTotalPrice()) + " RON");
+            binding.includeAvailableWalkDetails.priceValueTextView.setText(String.format("%.2f", feesService.getDogWalkPriceWithoutFees(dogWalk.getTotalPrice())) + " RON");
         });
         NavController navController = NavHostFragment.findNavController(this);
         registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {
