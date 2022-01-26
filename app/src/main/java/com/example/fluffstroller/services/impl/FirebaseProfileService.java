@@ -70,7 +70,7 @@ public class FirebaseProfileService implements ProfileService {
         Subject<ProfileData> subject = new Subject<>();
 
         firebaseRepository.listenForDocumentChanges(PROFILES_COLLECTION_PATH + "/" + userId, "userType", possibleTypes)
-                .subscribe(response -> updateProfilePhotos(response, subject));
+                .subscribe(response -> updateProfilePhotos(response, subject), false);
 
         return subject;
     }
