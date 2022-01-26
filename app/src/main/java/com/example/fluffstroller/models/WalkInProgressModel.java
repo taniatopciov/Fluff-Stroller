@@ -11,6 +11,8 @@ public class WalkInProgressModel {
     private String ownerId;
     private Map<String, Location> coordinates;
 
+    private transient List<Location> sortedCoordinates = null;
+
     public WalkInProgressModel() {
     }
 
@@ -27,6 +29,9 @@ public class WalkInProgressModel {
     }
 
     public List<Location> getCoordinates() {
+        if (sortedCoordinates != null) {
+            return sortedCoordinates;
+        }
         return new ArrayList<>(coordinates.values());
     }
 
@@ -36,5 +41,9 @@ public class WalkInProgressModel {
 
     public String getOwnerId() {
         return ownerId;
+    }
+
+    public void setSortedCoordinates(List<Location> sortedCoordinates) {
+        this.sortedCoordinates = sortedCoordinates;
     }
 }

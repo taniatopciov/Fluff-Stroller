@@ -52,6 +52,22 @@ public class WalkInProgressServiceImpl implements WalkInProgressService {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 WalkInProgressModel value = snapshot.getValue(WalkInProgressModel.class);
+
+                if (value != null) {
+                    List<Location> locations = new ArrayList<>();
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        if (COORDINATES_CHILD.equals(data.getKey())) {
+
+                            for (DataSnapshot coordinates : data.getChildren()) {
+                                locations.add(coordinates.getValue(Location.class));
+                            }
+                            break;
+                        }
+                    }
+
+                    value.setSortedCoordinates(locations);
+                }
+
                 subject.notifyObservers(value);
             }
 
