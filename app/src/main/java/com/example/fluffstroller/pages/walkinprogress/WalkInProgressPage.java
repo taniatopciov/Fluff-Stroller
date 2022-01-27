@@ -81,7 +81,7 @@ public class WalkInProgressPage extends FragmentWithServices implements OnMapRea
                 String dogOwnerId = viewModel.getDogOwnerId().getValue();
                 dogWalksService.updateDogWalk(dogOwnerId, walkId, WalkStatus.ADD_REVIEW, null).subscribe(response -> {
                     if (response.hasErrors()) {
-                        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in add review", Toast.LENGTH_SHORT).show());
+                        getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could set walk in add review", Toast.LENGTH_SHORT).show());
                         return;
                     }
 

@@ -56,44 +56,44 @@ public class RegisterFragment extends FragmentWithServices {
             UserType userType = UserType.convertString(binding.userTypeSpinnerRegisterFragment.getSelectedItem().toString());
 
             if (email.isEmpty() || name.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || userType == null) {
-                CustomToast.show(requireActivity(), "All fields must be completed",
+                CustomToast.show(getActivity(), "All fields must be completed",
                         Toast.LENGTH_LONG);
                 return;
             }
 
             if (!validateEmail(email)) {
-                CustomToast.show(requireActivity(), "Invalid e-mail address",
+                CustomToast.show(getActivity(), "Invalid e-mail address",
                         Toast.LENGTH_LONG);
                 return;
             }
 
             if (!password.equals(confirmPassword)) {
-                CustomToast.show(requireActivity(), "Passwords do not match",
+                CustomToast.show(getActivity(), "Passwords do not match",
                         Toast.LENGTH_LONG);
                 return;
             }
 
             if (password.length() < 8) {
-                CustomToast.show(requireActivity(), "Password must be at least 8 characters",
+                CustomToast.show(getActivity(), "Password must be at least 8 characters",
                         Toast.LENGTH_LONG);
                 return;
             }
 
             authenticationService.register(email, password).subscribe(response -> {
                 if (response.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Registration failed", Toast.LENGTH_LONG);
+                    CustomToast.show(getActivity(), "Registration failed", Toast.LENGTH_LONG);
                     response.exception.printStackTrace();
                     return;
                 }
 
                 profileService.createProfile(response.data.getUid(), name, email, userType).subscribe(response2 -> {
                     if (response2.hasErrors()) {
-                        CustomToast.show(requireActivity(), "Profile creation failed", Toast.LENGTH_LONG);
+                        CustomToast.show(getActivity(), "Profile creation failed", Toast.LENGTH_LONG);
                         response2.exception.printStackTrace();
                         return;
                     }
 
-                    HideKeyboard.hide(requireActivity());
+                    HideKeyboard.hide(getActivity());
                     NavHostFragment.findNavController(this).navigate(RegisterFragmentDirections.actionRegisterFragmentToNavHome());
                 });
             });

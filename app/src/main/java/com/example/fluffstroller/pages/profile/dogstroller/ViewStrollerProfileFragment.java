@@ -37,7 +37,7 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
 
         binding = ViewStrollerProfileFragmentBinding.inflate(inflater, container, false);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(StrollerProfileViewModel.class);
+        viewModel = new ViewModelProvider(getActivity()).get(StrollerProfileViewModel.class);
 
         viewModel.getName().observe(getViewLifecycleOwner(), name -> binding.nameTextViewViewStrollerProfile.setText(name));
         viewModel.getEmail().observe(getViewLifecycleOwner(), email -> binding.emailTextViewViewStrollerProfile.setText(email));
@@ -61,7 +61,7 @@ public class ViewStrollerProfileFragment extends FragmentWithServices {
 
             profileService.getProfileData(profileId).subscribe(response -> {
                 if (response.hasErrors() || response.data == null) {
-                    CustomToast.show(requireActivity(), "Error fetching data",
+                    CustomToast.show(getActivity(), "Error fetching data",
                             Toast.LENGTH_LONG);
                     return;
                 }

@@ -75,7 +75,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         binding.startWalkButton.setOnClickListener(view -> {
             permissionsService.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, permissionGranted -> {
                 if (!permissionGranted) {
-                    CustomToast.show(requireActivity(), "Permission denied!", Toast.LENGTH_SHORT);
+                    CustomToast.show(getActivity(), "Permission denied!", Toast.LENGTH_SHORT);
                     return;
                 }
 
@@ -86,7 +86,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
 
                 dogWalksService.updateDogWalk(dogWalk.getOwnerId(), dogWalk.getId(), WalkStatus.IN_PROGRESS, dogWalk.getRequests()).subscribe(response -> {
                     if (response.hasErrors()) {
-                        CustomToast.show(requireActivity(), "Could set walk in progress", Toast.LENGTH_SHORT);
+                        CustomToast.show(getActivity(), "Could set walk in progress", Toast.LENGTH_SHORT);
                         return;
                     }
 
@@ -117,7 +117,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
             DogWalk dogWalk = viewModel.getDogWalk().getValue();
             intent.setData(Uri.parse("tel:" + dogWalk.getOwnerPhoneNumber()));
 
-            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(Intent.createChooser(intent, "Choose Call Application"));
             }
         });
@@ -154,7 +154,7 @@ public class DogStrollerHomePageWalkInProgressFragment extends FragmentWithServi
         NavController navController = NavHostFragment.findNavController(this);
         registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {
             if (res.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
+                CustomToast.show(getActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;
             }
             loggedUserDataService.setLoggedUserData(res.data);

@@ -74,12 +74,12 @@ public class BalanceFragment extends FragmentWithServices {
 
         paymentService.initService().subscribe(response -> {
             if (response.hasErrors()) {
-                CustomToast.show(requireActivity(), R.string.could_not_connect_to_payment_server, Toast.LENGTH_LONG);
+                CustomToast.show(getActivity(), R.string.could_not_connect_to_payment_server, Toast.LENGTH_LONG);
             }
         });
 
         binding.transferMoneyButton.setOnClickListener(view -> {
-            HideKeyboard.hide(requireActivity());
+            HideKeyboard.hide(getActivity());
             PaymentMethodCreateParams params = binding.cardInputWidgetBalancePage.getPaymentMethodCreateParams();
 
             if (params == null || params.getBillingDetails() == null) {
@@ -96,10 +96,10 @@ public class BalanceFragment extends FragmentWithServices {
                 paymentService.transferMoney(loggedUserDataService.getLoggedUserId(), amount, params).subscribe(response -> {
                     viewModel.setLoadingCircle(false);
                     if (response.hasErrors()) {
-                        CustomToast.show(requireActivity(), R.string.could_not_transfer_money, Toast.LENGTH_LONG);
+                        CustomToast.show(getActivity(), R.string.could_not_transfer_money, Toast.LENGTH_LONG);
                         viewModel.setDisablePayButton(false);
                     } else {
-                        CustomToast.show(requireActivity(), R.string.money_transferred, Toast.LENGTH_LONG);
+                        CustomToast.show(getActivity(), R.string.money_transferred, Toast.LENGTH_LONG);
                     }
                 });
             }, null).show(getChildFragmentManager(), BALANCE_FRAGMENT);
@@ -107,7 +107,7 @@ public class BalanceFragment extends FragmentWithServices {
 
         registerSubject(paymentService.getBalance(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
             if (response.hasErrors()) {
-                CustomToast.show(requireActivity(), R.string.could_not_connect_to_payment_server, Toast.LENGTH_LONG);
+                CustomToast.show(getActivity(), R.string.could_not_connect_to_payment_server, Toast.LENGTH_LONG);
                 return;
             }
 

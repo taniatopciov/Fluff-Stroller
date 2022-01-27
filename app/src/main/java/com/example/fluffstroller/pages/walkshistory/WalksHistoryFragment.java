@@ -37,7 +37,7 @@ public class WalksHistoryFragment extends FragmentWithServices {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = WalksHistoryFragmentBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(requireActivity()).get(WalksHistoryViewModel.class);
+        viewModel = new ViewModelProvider(getActivity()).get(WalksHistoryViewModel.class);
 
         PastWalksAdapter pastWalksAdapter = new PastWalksAdapter(loggedUserDataService.getLogUserType(), this::onPastWalkCardClick);
         binding.pastWalksRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -46,7 +46,7 @@ public class WalksHistoryFragment extends FragmentWithServices {
 
         dogWalksService.getPastDogWalks(loggedUserDataService.getLoggedUserId()).subscribe(response -> {
             if (response.hasErrors()) {
-                CustomToast.show(requireActivity(), R.string.couldnt_get_past_walks,
+                CustomToast.show(getActivity(), R.string.couldnt_get_past_walks,
                         Toast.LENGTH_LONG);
             }
 

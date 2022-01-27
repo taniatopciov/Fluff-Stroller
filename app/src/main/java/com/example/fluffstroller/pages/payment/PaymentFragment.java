@@ -49,7 +49,7 @@ public class PaymentFragment extends FragmentWithServices {
 
         dogWalksService.getDogWalk(walkId).subscribe(response -> {
             if (response.hasErrors() || response.data == null) {
-                CustomToast.show(requireActivity(), "Could not get DogWalk", Toast.LENGTH_LONG);
+                CustomToast.show(getActivity(), "Could not get DogWalk", Toast.LENGTH_LONG);
                 return;
             }
             viewModel.setDogWalk(response.data);
@@ -71,13 +71,13 @@ public class PaymentFragment extends FragmentWithServices {
 
         paymentService.initService().subscribe(response -> {
             if (response.hasErrors()) {
-                CustomToast.show(requireActivity(), R.string.could_not_connect_to_payment_server, Toast.LENGTH_LONG);
+                CustomToast.show(getActivity(), R.string.could_not_connect_to_payment_server, Toast.LENGTH_LONG);
                 response.exception.printStackTrace();
             }
         });
 
         binding.payButtonPaymentPage.setOnClickListener(view -> {
-            HideKeyboard.hide(requireActivity());
+            HideKeyboard.hide(getActivity());
             PaymentMethodCreateParams params = binding.cardInputWidgetPaymentPage.getPaymentMethodCreateParams();
 
             DogWalk walk = viewModel.getDogWalk().getValue();
@@ -96,7 +96,7 @@ public class PaymentFragment extends FragmentWithServices {
                     if (response.exception != null) {
                         response.exception.printStackTrace();
                     }
-                    CustomToast.show(requireActivity(), "Payment error", Toast.LENGTH_LONG);
+                    CustomToast.show(getActivity(), "Payment error", Toast.LENGTH_LONG);
                     viewModel.setDisablePayButton(false);
                     return;
                 }
@@ -105,7 +105,7 @@ public class PaymentFragment extends FragmentWithServices {
                 if (intent.getStatus() == StripeIntent.Status.Succeeded) {
                     dogWalksService.updateDogWalk(walk.getOwnerId(), walk.getId(), WalkStatus.PAID, null).subscribe(response1 -> {
                         if (response1.hasErrors() || response1.data == null) {
-                            CustomToast.show(requireActivity(), "Update Dog Walk Error", Toast.LENGTH_LONG);
+                            CustomToast.show(getActivity(), "Update Dog Walk Error", Toast.LENGTH_LONG);
                             return;
                         }
 
@@ -113,7 +113,7 @@ public class PaymentFragment extends FragmentWithServices {
                         if (acceptedRequest != null) {
                             dogWalksService.updateWalkAfterPayment(walk.getOwnerId(), acceptedRequest.getStrollerId()).subscribe(response2 -> {
                                 if (response2.hasErrors()) {
-                                    CustomToast.show(requireActivity(), "Update Walk After Payment Error", Toast.LENGTH_LONG);
+                                    CustomToast.show(getActivity(), "Update Walk After Payment Error", Toast.LENGTH_LONG);
                                     return;
                                 }
                                 new InfoPopupDialog("Payment Successful", () -> {
@@ -124,7 +124,7 @@ public class PaymentFragment extends FragmentWithServices {
                         }
                     });
                 } else {
-                    CustomToast.show(requireActivity(), "Payment Unsuccessful", Toast.LENGTH_LONG);
+                    CustomToast.show(getActivity(), "Payment Unsuccessful", Toast.LENGTH_LONG);
                     viewModel.setDisablePayButton(false);
                 }
             });

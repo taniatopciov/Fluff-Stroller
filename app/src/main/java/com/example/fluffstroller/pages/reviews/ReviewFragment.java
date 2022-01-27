@@ -47,7 +47,7 @@ public class ReviewFragment extends FragmentWithServices {
 
         dogWalksService.getDogWalk(dogWalkId).subscribe(response -> {
             if (response.hasErrors() || response.data == null) {
-                CustomToast.show(requireActivity(), "Could not get current dog walk",
+                CustomToast.show(getActivity(), "Could not get current dog walk",
                         Toast.LENGTH_LONG);
                 return;
             }
@@ -71,7 +71,7 @@ public class ReviewFragment extends FragmentWithServices {
             String description = binding.descriptionTextViewWithLabelReviewFragment.getText();
 
             if (rating < 1 || description.isEmpty()) {
-                CustomToast.show(requireActivity(), "You must use valid data when submitting the review!",
+                CustomToast.show(getActivity(), "You must use valid data when submitting the review!",
                         Toast.LENGTH_LONG);
                 return;
             }
@@ -80,7 +80,7 @@ public class ReviewFragment extends FragmentWithServices {
 
             profileService.updateStrollerProfile(viewModel.getStrollerId().getValue(), review).subscribe(response -> {
                 if (response.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Error updating data",
+                    CustomToast.show(getActivity(), "Error updating data",
                             Toast.LENGTH_LONG);
                     return;
                 }
@@ -102,7 +102,7 @@ public class ReviewFragment extends FragmentWithServices {
         dogWalksService.updateDogWalk(loggedUserDataService.getLoggedUserId(), loggedUserDataService.getCurrentWalkId(), WalkStatus.WAITING_PAYMENT, null)
                 .subscribe(response -> {
                     if (response.hasErrors()) {
-                        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could not update current walk status", Toast.LENGTH_SHORT).show());
+                        getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Could not update current walk status", Toast.LENGTH_SHORT).show());
                         return;
                     }
 

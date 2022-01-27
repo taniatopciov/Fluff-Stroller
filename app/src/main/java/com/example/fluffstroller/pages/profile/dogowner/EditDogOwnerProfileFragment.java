@@ -44,7 +44,7 @@ public class EditDogOwnerProfileFragment extends FragmentWithServices {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = EditDogOwnerProfileFragmentBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(requireActivity()).get(DogOwnerProfileViewModel.class);
+        viewModel = new ViewModelProvider(getActivity()).get(DogOwnerProfileViewModel.class);
 
         DogsAdapter dogsAdapter = new DogsAdapter(true);
 
@@ -73,7 +73,7 @@ public class EditDogOwnerProfileFragment extends FragmentWithServices {
 
             profileService.updateDogOwnerProfile(loggedUserDataService.getLoggedUserId(), name, phoneNumber, dogs).subscribe(response -> {
                 if (response.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Error updating data",
+                    CustomToast.show(getActivity(), "Error updating data",
                             Toast.LENGTH_LONG);
                     return;
                 }

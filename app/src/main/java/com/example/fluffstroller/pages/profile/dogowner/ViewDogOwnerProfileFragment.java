@@ -37,7 +37,7 @@ public class ViewDogOwnerProfileFragment extends FragmentWithServices {
                              @Nullable Bundle savedInstanceState) {
 
         binding = ViewDogOwnerProfileFragmentBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(requireActivity()).get(DogOwnerProfileViewModel.class);
+        viewModel = new ViewModelProvider(getActivity()).get(DogOwnerProfileViewModel.class);
 
         viewModel.clearData();
 
@@ -56,7 +56,7 @@ public class ViewDogOwnerProfileFragment extends FragmentWithServices {
 
             profileService.getProfileData(profileId).subscribe(response -> {
                 if (response.hasErrors() || response.data == null) {
-                    CustomToast.show(requireActivity(), "Error fetching data",
+                    CustomToast.show(getActivity(), "Error fetching data",
                             Toast.LENGTH_LONG);
                     return;
                 }

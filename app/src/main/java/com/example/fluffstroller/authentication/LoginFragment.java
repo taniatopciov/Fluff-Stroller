@@ -64,7 +64,7 @@ public class LoginFragment extends FragmentWithServices {
                         GoogleSignInAccount account = task.getResult(ApiException.class);
                         authenticationService.getLoginWithGoogleIntent(account.getIdToken()).subscribe(response -> {
                             if (response.hasErrors()) {
-                                CustomToast.show(requireActivity(), "Google sign in failed",
+                                CustomToast.show(getActivity(), "Google sign in failed",
                                         Toast.LENGTH_LONG);
                                 return;
                             }
@@ -73,7 +73,7 @@ public class LoginFragment extends FragmentWithServices {
                             }
                         });
                     } catch (ApiException e) {
-                        CustomToast.show(requireActivity(), "Google sign in failed",
+                        CustomToast.show(getActivity(), "Google sign in failed",
                                 Toast.LENGTH_LONG);
                     }
                 }
@@ -93,27 +93,27 @@ public class LoginFragment extends FragmentWithServices {
             String password = binding.passwordTextWithLabelLoginFragment.editText.getText().toString();
 
             if (email.isEmpty() || password.isEmpty()) {
-                CustomToast.show(requireActivity(), "All fields must be completed",
+                CustomToast.show(getActivity(), "All fields must be completed",
                         Toast.LENGTH_LONG);
                 return;
             }
 
             authenticationService.loginWithEmailAndPassword(email, password).subscribe(response -> {
                 if (response.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Invalid credentials",
+                    CustomToast.show(getActivity(), "Invalid credentials",
                             Toast.LENGTH_LONG);
                     return;
                 }
 
                 profileService.getProfileData(response.data.getUid()).subscribe(response2 -> {
                     if (response2.hasErrors()) {
-                        CustomToast.show(requireActivity(), "Fetching data from Firebase failed",
+                        CustomToast.show(getActivity(), "Fetching data from Firebase failed",
                                 Toast.LENGTH_LONG);
                         return;
                     }
                     loggedUserDataService.setLoggedUserData(response2.data);
 
-                    HideKeyboard.hide(requireActivity());
+                    HideKeyboard.hide(getActivity());
                     NavHostFragment.findNavController(this).navigate(LoginFragmentDirections.actionLoginFragmentToNavHome());
                 });
             });
@@ -126,13 +126,13 @@ public class LoginFragment extends FragmentWithServices {
             googleSignInSubject = new Subject<>();
             googleSignInSubject.subscribe(response -> {
                 if (response.data == null) {
-                    CustomToast.show(requireActivity(), "Fetching data from Firebase failed", Toast.LENGTH_LONG);
+                    CustomToast.show(getActivity(), "Fetching data from Firebase failed", Toast.LENGTH_LONG);
                     return;
                 }
 
                 profileService.getProfileData(response.data.getUid()).subscribe(response2 -> {
                     if (response2.hasErrors()) {
-                        CustomToast.show(requireActivity(), "Fetching data from Firebase failed", Toast.LENGTH_LONG);
+                        CustomToast.show(getActivity(), "Fetching data from Firebase failed", Toast.LENGTH_LONG);
                         return;
                     }
 
@@ -159,13 +159,13 @@ public class LoginFragment extends FragmentWithServices {
             public void onSuccess(LoginResult loginResult) {
                 authenticationService.loginWithFacebook(loginResult.getAccessToken()).subscribe(response -> {
                     if (response.hasErrors() || response.data == null) {
-                        CustomToast.show(requireActivity(), "Facebook Login error", Toast.LENGTH_LONG);
+                        CustomToast.show(getActivity(), "Facebook Login error", Toast.LENGTH_LONG);
                         return;
                     }
 
                     profileService.getProfileData(response.data.getUid()).subscribe(response2 -> {
                         if (response2.hasErrors()) {
-                            CustomToast.show(requireActivity(), "Fetching data from Firebase failed",
+                            CustomToast.show(getActivity(), "Fetching data from Firebase failed",
                                     Toast.LENGTH_LONG);
                             return;
                         }
@@ -185,12 +185,12 @@ public class LoginFragment extends FragmentWithServices {
 
             @Override
             public void onCancel() {
-                CustomToast.show(requireActivity(), "Facebook Login canceled", Toast.LENGTH_LONG);
+                CustomToast.show(getActivity(), "Facebook Login canceled", Toast.LENGTH_LONG);
             }
 
             @Override
             public void onError(@NonNull FacebookException e) {
-                CustomToast.show(requireActivity(), "Facebook Login error", Toast.LENGTH_LONG);
+                CustomToast.show(getActivity(), "Facebook Login error", Toast.LENGTH_LONG);
             }
         });
 
@@ -198,15 +198,15 @@ public class LoginFragment extends FragmentWithServices {
             String email = binding.emailTextWithLabelLoginFragment.editText.getText().toString();
 
             if (email.isEmpty()) {
-                CustomToast.show(requireActivity(), R.string.email_field_must_be_set, Toast.LENGTH_LONG);
+                CustomToast.show(getActivity(), R.string.email_field_must_be_set, Toast.LENGTH_LONG);
                 return;
             }
 
             authenticationService.sendResetPasswordRequest(email).subscribe(response -> {
                 if (response.hasErrors()) {
-                    CustomToast.show(requireActivity(), R.string.email_send_failed, Toast.LENGTH_LONG);
+                    CustomToast.show(getActivity(), R.string.email_send_failed, Toast.LENGTH_LONG);
                 } else {
-                    CustomToast.show(requireActivity(), R.string.reset_email_sent, Toast.LENGTH_LONG);
+                    CustomToast.show(getActivity(), R.string.reset_email_sent, Toast.LENGTH_LONG);
                 }
             });
         });

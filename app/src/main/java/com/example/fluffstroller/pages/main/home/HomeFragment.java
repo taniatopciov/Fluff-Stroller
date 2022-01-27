@@ -48,7 +48,7 @@ public class HomeFragment extends FragmentWithServices {
 
         permissionsService.checkPermissions(permissions, permissionGranted -> {
             if (!permissionGranted) {
-                CustomToast.show(requireActivity(), "Permission denied!", Toast.LENGTH_SHORT);
+                CustomToast.show(getActivity(), "Permission denied!", Toast.LENGTH_SHORT);
             }
         });
 

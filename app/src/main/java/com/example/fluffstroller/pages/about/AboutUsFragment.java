@@ -29,7 +29,7 @@ public class AboutUsFragment extends Fragment {
             String[] addresses = {"jobhunter.pad@gmail.com"};
             intent.putExtra(Intent.EXTRA_EMAIL, addresses);
             intent.putExtra(Intent.EXTRA_SUBJECT, "Fluff Stroller - Question");
-            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(Intent.createChooser(intent, "Choose E-mail Application"));
             }
         });

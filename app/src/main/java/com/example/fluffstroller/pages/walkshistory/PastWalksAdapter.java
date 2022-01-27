@@ -62,7 +62,7 @@ public class PastWalksAdapter extends RecyclerView.Adapter<PastWalksAdapter.View
             holder.name.setText(pastWalk.getOwnerName());
         } else {
             if (pastWalk.getAcceptedRequest() != null) {
-                holder.nameLabel.setText(R.string.stroller_name);
+                holder.nameLabel.setText(R.string.stroller_actual_name);
                 holder.name.setText(pastWalk.getAcceptedRequest().getStrollerName());
             } else {
                 holder.nameLabel.setVisibility(View.GONE);

@@ -50,7 +50,7 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
 
         registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
             if (response.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
+                CustomToast.show(getActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;
             }
             loggedUserDataService.setLoggedUserData(response.data);
@@ -101,7 +101,7 @@ public class DogOwnerMainPageWalkInProgressFragment extends FragmentWithServices
             String phoneNumber = viewModel.getWalkRequest().getValue().getStrollerPhoneNumber();
             intent.setData(Uri.parse("tel:" + phoneNumber));
 
-            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(Intent.createChooser(intent, "Choose Call Application"));
             }
         });

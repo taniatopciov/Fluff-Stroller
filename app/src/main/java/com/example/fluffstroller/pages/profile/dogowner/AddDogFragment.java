@@ -92,7 +92,7 @@ public class AddDogFragment extends Fragment {
                         if (bitmap != null) {
                             viewModel.setBitmap(bitmap);
                         } else {
-                            CustomToast.show(requireActivity(), "Picture not taken!",
+                            CustomToast.show(getActivity(), "Picture not taken!",
                                     Toast.LENGTH_LONG);
                         }
                     });
@@ -104,7 +104,7 @@ public class AddDogFragment extends Fragment {
                         if (bitmap != null) {
                             viewModel.setBitmap(bitmap);
                         } else {
-                            CustomToast.show(requireActivity(), "Picture not selected!",
+                            CustomToast.show(getActivity(), "Picture not selected!",
                                     Toast.LENGTH_LONG);
                         }
                     });
@@ -124,7 +124,7 @@ public class AddDogFragment extends Fragment {
             Bitmap dogImage = viewModel.getBitmap().getValue();
 
             if (name.isEmpty() || breed.isEmpty() || ageString.isEmpty()) {
-                CustomToast.show(requireActivity(), "Name, breed and age must be completed!",
+                CustomToast.show(getActivity(), "Name, breed and age must be completed!",
                         Toast.LENGTH_LONG);
                 return;
             }

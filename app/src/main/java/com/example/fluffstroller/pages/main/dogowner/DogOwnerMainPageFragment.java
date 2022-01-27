@@ -77,7 +77,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
 
         registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(res -> {
             if (res.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
+                CustomToast.show(getActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;
             }
 
@@ -151,14 +151,14 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
             List<String> checkedDogs = dogNamesAdapter.getCheckedDogs();
 
             if (!validateInputs() || checkedDogs.isEmpty()) {
-                CustomToast.show(requireActivity(), getResources().getString(R.string.empty_required_fields),
+                CustomToast.show(getActivity(), getResources().getString(R.string.empty_required_fields),
                         Toast.LENGTH_LONG);
                 return;
             }
 
             locationService.getCurrentLocation(getActivity()).subscribe(response -> {
                 if (response.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Could not get current location",
+                    CustomToast.show(getActivity(), "Could not get current location",
                             Toast.LENGTH_LONG);
                     return;
                 }
@@ -224,7 +224,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
         dogWalksService.createDogWalk(new DogWalk(checkedDogs, userId, userName, userPhoneNumber, totalPrice, walkTime, location)).subscribe(response -> {
             if (response.hasErrors() || response.data == null) {
                 response.exception.printStackTrace();
-                CustomToast.show(requireActivity(), "Couldn't create walk",
+                CustomToast.show(getActivity(), "Couldn't create walk",
                         Toast.LENGTH_LONG);
                 return;
             }
@@ -235,7 +235,7 @@ public class DogOwnerMainPageFragment extends FragmentWithServices {
             profileService.updateDogWalkPreview(userId, walkPreview).subscribe(res1 -> {
                 if (res1.hasErrors()) {
                     res1.exception.printStackTrace();
-                    CustomToast.show(requireActivity(), "Couldn't create walk",
+                    CustomToast.show(getActivity(), "Couldn't create walk",
                             Toast.LENGTH_LONG);
                 }
 

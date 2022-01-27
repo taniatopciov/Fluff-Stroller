@@ -67,7 +67,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(response -> {
             if (response.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
+                CustomToast.show(getActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;
             }
 
@@ -210,7 +210,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         dogWalksService.removeCurrentWalk(preview.getWalkId(), loggedUserDataService.getLoggedUserId()).subscribe(response -> {
             if (response.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not remove Walk",
+                CustomToast.show(getActivity(), "Could not remove Walk",
                         Toast.LENGTH_LONG);
                 return;
             }
@@ -240,7 +240,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         dogWalksService.getDogWalk(walkId).subscribe(res -> {
             if (res.hasErrors() || res.data == null) {
-                CustomToast.show(requireActivity(), "Could set walk in progress",
+                CustomToast.show(getActivity(), "Could set walk in progress",
                         Toast.LENGTH_LONG);
                 return;
             }
@@ -258,7 +258,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
             dogWalksService.updateDogWalk(loggedUserDataService.getLoggedUserId(), dogWalk.getId(), WalkStatus.WAITING_FOR_START, requests).subscribe(response -> {
                 if (response.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Could set walk preview in progress",
+                    CustomToast.show(getActivity(), "Could set walk preview in progress",
                             Toast.LENGTH_LONG);
                     return;
                 }
@@ -289,7 +289,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         dogWalksService.updateDogWalk(loggedUserDataService.getLoggedUserId(), loggedUserDataService.getCurrentWalkId(), viewModel.getStatus().getValue(), walkRequests).subscribe(response -> {
             if (response.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not update dog walk",
+                CustomToast.show(getActivity(), "Could not update dog walk",
                         Toast.LENGTH_LONG);
                 return;
             }
@@ -297,7 +297,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         profileService.updateCurrentRequest(requestPair.first.getStrollerId(), requestPair.first).subscribe(response -> {
             if (response.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not cancel request",
+                CustomToast.show(getActivity(), "Could not cancel request",
                         Toast.LENGTH_LONG);
                 return;
             }
@@ -313,7 +313,7 @@ public class DogOwnerMainPageWaitingForStrollerFragment extends FragmentWithServ
 
         intent.setData(Uri.parse("tel:" + requestPair.first.getStrollerPhoneNumber()));
 
-        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(Intent.createChooser(intent, "Choose Call Application"));
         }
     }

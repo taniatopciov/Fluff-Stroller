@@ -34,7 +34,7 @@ public class EditStrollerProfileFragment extends FragmentWithServices {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = EditStrollerProfileFragmentBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(requireActivity()).get(StrollerProfileViewModel.class);
+        viewModel = new ViewModelProvider(getActivity()).get(StrollerProfileViewModel.class);
 
         viewModel.getName().observe(getViewLifecycleOwner(), name -> binding.nameTextViewWithLabelEditStrollerProfile.setText(name));
         viewModel.getPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber -> binding.phoneNumberTextViewWithLabelEditStrollerProfile.setText(phoneNumber));
@@ -47,7 +47,7 @@ public class EditStrollerProfileFragment extends FragmentWithServices {
 
             profileService.updateStrollerProfile(loggedUserDataService.getLoggedUserId(), name, phoneNumber, description).subscribe(response -> {
                 if (response.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Error updating data",
+                    CustomToast.show(getActivity(), "Error updating data",
                             Toast.LENGTH_LONG);
                     return;
                 }

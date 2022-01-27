@@ -41,6 +41,7 @@
     <string name="no_requests">No Requests</string>
     <string name="stroller_name">John Doe</string>
     <string name="stroller">Stroller</string>
+    <string name="stroller_actual_name">Stroller name:</string>
     <string name="phone_number">Phone Number:</string>
     <string name="email_label">E-mail:</string>
     <string name="name_label">Name:</string>

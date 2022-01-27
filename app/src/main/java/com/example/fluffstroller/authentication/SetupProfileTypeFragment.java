@@ -52,7 +52,7 @@ public class SetupProfileTypeFragment extends FragmentWithServices {
 
             profileService.createProfile(userId, name, email, userType).subscribe(response2 -> {
                 if (response2.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Profile creation failed", Toast.LENGTH_LONG);
+                    CustomToast.show(getActivity(), "Profile creation failed", Toast.LENGTH_LONG);
                     response2.exception.printStackTrace();
                     return;
                 }

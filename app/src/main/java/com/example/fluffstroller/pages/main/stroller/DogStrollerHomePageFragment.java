@@ -114,7 +114,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
         });
 
         viewModel.getAvailableWalks().observe(getViewLifecycleOwner(), availableWalks -> {
-            requireActivity().runOnUiThread(() -> availableWalksAdapter.setAvailableWalks(availableWalks));
+            getActivity().runOnUiThread(() -> availableWalksAdapter.setAvailableWalks(availableWalks));
 
             if (googleMap == null) {
                 return;
@@ -155,7 +155,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
             locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
                 if (locationResponse.hasErrors()) {
-                    CustomToast.show(requireActivity(), "Could not get current location",
+                    CustomToast.show(getActivity(), "Could not get current location",
                             Toast.LENGTH_LONG);
                     return;
                 }
@@ -184,7 +184,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
         registerSubject(profileService.listenForProfileData(loggedUserDataService.getLoggedUserId())).subscribe(result -> {
             if (result.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
+                CustomToast.show(getActivity(), "Could not fetch data", Toast.LENGTH_SHORT);
                 return;
             }
 
@@ -234,7 +234,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
     private void getAvailableDogWalks() {
         locationService.getCurrentLocation(getActivity()).subscribe(locationResponse -> {
             if (locationResponse.hasErrors()) {
-                CustomToast.show(requireActivity(), "Could not get current location",
+                CustomToast.show(getActivity(), "Could not get current location",
                         Toast.LENGTH_LONG);
                 return;
             }
@@ -253,8 +253,12 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
             dogWalksService.getNearbyAvailableDogWalks(id, locationResponse.data, radius).subscribe(response -> {
                 if (response.hasErrors() || response.data == null) {
-                    CustomToast.show(requireActivity(), "Could not get nearby walks",
-                            Toast.LENGTH_LONG);
+                    try {
+                        CustomToast.show(getActivity(), "Could not get nearby walks",
+                                Toast.LENGTH_LONG);
+                    } catch (Exception e) {
+
+                    }
                     return;
                 }
 
@@ -348,7 +352,7 @@ public class DogStrollerHomePageFragment extends FragmentWithServices implements
 
         intent.setData(Uri.parse("tel:" + pair.first.getOwnerPhoneNumber()));
 
-        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(Intent.createChooser(intent, "Choose Call Application"));
         }
     }

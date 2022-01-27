@@ -11,6 +11,9 @@ import androidx.core.content.ContextCompat;
 public class CustomToast {
 
     public static void show(Activity activity, String message, int duration) {
+        if (activity == null) {
+            return;
+        }
         activity.runOnUiThread(() -> {
             try {
                 Toast toast = Toast.makeText(activity, message, duration);
@@ -25,6 +28,9 @@ public class CustomToast {
     }
 
     public static void show(Activity activity, int resourceId, int duration) {
+        if (activity == null) {
+            return;
+        }
         activity.runOnUiThread(() -> {
             try {
                 Toast toast = Toast.makeText(activity, resourceId, duration);
